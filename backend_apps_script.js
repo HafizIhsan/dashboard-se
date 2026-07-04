@@ -19,10 +19,17 @@ const SUBMIT_FIELDS = [
 // ============================================================
 function recordDailyProgress() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const today = Utilities.formatDate(new Date(), "Asia/Jakarta", "yyyy-MM-dd");
+  
+  let today;
+  try {
+    const file = DriveApp.getFileById(ss.getId());
+    today = Utilities.formatDate(file.getLastUpdated(), "Asia/Jakarta", "yyyy-MM-dd");
+  } catch (e) {
+    today = Utilities.formatDate(new Date(), "Asia/Jakarta", "yyyy-MM-dd");
+  }
 
   // --- UMKM (Sekarang baca langsung dari Sensus Ekonomi 2026) ---
-  calculateDaily(ss, {
+  const umkmChanged = calculateDaily(ss, {
     sourceSheet: "Sensus Ekonomi 2026",
     snapshotSheet: "snapshot-kemarin-umkm",
     dailySheet: "progress-harian-umkm",
@@ -30,7 +37,7 @@ function recordDailyProgress() {
   });
 
   // --- UB (Sekarang baca langsung dari Sensus Ekonomi 2026 - UB) ---
-  calculateDaily(ss, {
+  const ubChanged = calculateDaily(ss, {
     sourceSheet: "Sensus Ekonomi 2026 - UB",
     snapshotSheet: "snapshot-kemarin-ub",
     dailySheet: "progress-harian-ub",
@@ -38,6 +45,12 @@ function recordDailyProgress() {
   });
 
   Logger.log("✅ Kenaikan harian level KECAMATAN berhasil dihitung untuk tanggal: " + today);
+  
+  return {
+    umkm: umkmChanged,
+    ub: ubChanged,
+    today: today
+  };
 }
 
 function calculateDaily(ss, config) {
@@ -57,20 +70,39 @@ function calculateDaily(ss, config) {
   const snapshotData = getSheetAsObjects(snapshot);
   
   let latestPastDate = "";
+  let hasTodaySnapshot = false;
+
   snapshotData.forEach(row => {
     let rowDate = String(row["Tanggal"] || "").trim();
-    // Hanya ambil tanggal yang lebih kecil dari hari ini
-    if (rowDate && rowDate < config.today && rowDate > latestPastDate) {
+    if (rowDate === config.today) {
+      hasTodaySnapshot = true;
+    } else if (rowDate && rowDate < config.today && rowDate > latestPastDate) {
       latestPastDate = rowDate;
     }
   });
 
-  const snapshotMap = {};
-  snapshotData.forEach(row => {
+  const latestPastMap = {};
+  const currentTodaySnapshotMap = {};
+  let firstRowToday = -1;
+
+  snapshotData.forEach((row, idx) => {
     let rowDate = String(row["Tanggal"] || "").trim();
+    let kode = String(row["Wilayah"]).trim();
+    let vals = {
+      submit: Number(row["Submit"] || row["Submit Kemarin"] || 0),
+      open: Number(row["Open"] || 0),
+      draft: Number(row["Draft"] || 0)
+    };
+
     // Baca baris jika tanggalnya cocok dengan latestPastDate (atau kosong untuk kompatibilitas data lama)
     if (!rowDate || rowDate === latestPastDate) {
-      snapshotMap[String(row["Wilayah"]).trim()] = Number(row["Submit"] || row["Submit Kemarin"] || 0);
+      latestPastMap[kode] = vals;
+    }
+    
+    // Baca baris jika tanggalnya adalah hari ini (untuk update/overwrite)
+    if (rowDate === config.today) {
+      currentTodaySnapshotMap[kode] = vals;
+      if (firstRowToday === -1) firstRowToday = idx + 2; // +2 karena 0-index dan 1 baris header
     }
   });
 
@@ -99,12 +131,33 @@ function calculateDaily(ss, config) {
 
   const allKodes = Object.keys(todayMap); // Ambil semua kode unik kecamatan yang ada di data
 
-  // 4. Hitung kenaikan = today - kemarin
+  // Cek apakah ada perubahan data sama sekali (dibandingkan dengan snapshot terakhir yang tercatat)
+  let hasChanges = false;
+  const mapToCompare = hasTodaySnapshot ? currentTodaySnapshotMap : latestPastMap;
+
+  for (let i = 0; i < allKodes.length; i++) {
+    const kode = allKodes[i];
+    const todayVals = todayMap[kode];
+    const compVals = mapToCompare[kode] || { submit: 0, open: 0, draft: 0 };
+    
+    if (todayVals.submit !== compVals.submit || todayVals.open !== compVals.open || todayVals.draft !== compVals.draft) {
+      hasChanges = true;
+      break;
+    }
+  }
+
+  if (!hasChanges) {
+    Logger.log("⏩ Tidak ada perubahan data untuk " + config.sourceSheet + ", proses dilewati.");
+    return false;
+  }
+
+  // 4. Hitung kenaikan = today - kemarin (selalu bandingkan dengan latestPastDate)
   // 5. Update sheet progress-harian-*
   const dailyHeaders = ["Wilayah", "Nama Wilayah", "Kenaikan Harian", "Tanggal Update"];
   const dailyRows = allKodes.map(kode => {
     const submitToday = todayMap[kode].submit || 0;
-    const submitKemarin = snapshotMap[kode] || 0;
+    const pastVals = latestPastMap[kode] || { submit: 0 };
+    const submitKemarin = pastVals.submit || 0;
     const kenaikan = Math.max(0, submitToday - submitKemarin);
     return [kode, wilayahNames[kode], kenaikan, config.today];
   });
@@ -127,9 +180,22 @@ function calculateDaily(ss, config) {
   }
   
   if (snapshotRows.length > 0) {
-    const lastRow = snapshot.getLastRow();
-    snapshot.getRange(lastRow + 1, 1, snapshotRows.length, snapshotHeaders.length).setValues(snapshotRows);
+    if (firstRowToday !== -1) {
+      // Overwrite data hari ini agar tidak menjadi double
+      const lastRow = snapshot.getLastRow();
+      const numRowsToClear = lastRow - firstRowToday + 1;
+      if (numRowsToClear > 0) {
+        snapshot.getRange(firstRowToday, 1, numRowsToClear, snapshotHeaders.length).clearContent();
+      }
+      snapshot.getRange(firstRowToday, 1, snapshotRows.length, snapshotHeaders.length).setValues(snapshotRows);
+    } else {
+      // Tambahkan data baru
+      const lastRow = snapshot.getLastRow();
+      snapshot.getRange(lastRow + 1, 1, snapshotRows.length, snapshotHeaders.length).setValues(snapshotRows);
+    }
   }
+  
+  return true;
 }
 
 // ============================================================
@@ -212,7 +278,32 @@ function onOpen() {
   ui.createMenu('Dashboard SE')
       .addItem('Upload CSV Data Kecamatan', 'openUploadDialog')
       .addItem('Hitung Kenaikan Harian Manual', 'confirmRecordDailyProgress')
+      .addItem('Setel Jadwal Otomatis (Setiap Malam)', 'createDailyTrigger')
       .addToUi();
+}
+
+function createDailyTrigger() {
+  var ui = SpreadsheetApp.getUi();
+  try {
+    // Hapus trigger lama jika ada agar tidak menumpuk
+    const triggers = ScriptApp.getProjectTriggers();
+    for (let i = 0; i < triggers.length; i++) {
+      if (triggers[i].getHandlerFunction() === 'recordDailyProgress') {
+        ScriptApp.deleteTrigger(triggers[i]);
+      }
+    }
+    
+    // Buat trigger baru untuk berjalan setiap hari sekitar pukul 23:00 - 23:59
+    ScriptApp.newTrigger('recordDailyProgress')
+      .timeBased()
+      .atHour(23)
+      .everyDays(1)
+      .create();
+      
+    ui.alert('Sukses', 'Jadwal otomatis berhasil dibuat! Snapshot akan direkam otomatis setiap malam (antara pukul 23:00 - 24:00).', ui.ButtonSet.OK);
+  } catch (e) {
+    ui.alert('Error', 'Gagal membuat jadwal otomatis. Pastikan Anda memiliki izin yang cukup. Error: ' + e.message, ui.ButtonSet.OK);
+  }
 }
 
 function confirmRecordDailyProgress() {
@@ -224,8 +315,12 @@ function confirmRecordDailyProgress() {
   );
   
   if (response == ui.Button.YES) {
-    recordDailyProgress();
-    ui.alert('Sukses', 'Penghitungan kenaikan harian berhasil dijalankan.', ui.ButtonSet.OK);
+    var result = recordDailyProgress();
+    var msg = "Penghitungan selesai (Tanggal Data: " + result.today + ").\n\n";
+    msg += "• UMKM: " + (result.umkm ? "Diperbarui (Ada perubahan)" : "Dilewati (Tidak ada perubahan)") + "\n";
+    msg += "• UB: " + (result.ub ? "Diperbarui (Ada perubahan)" : "Dilewati (Tidak ada perubahan)");
+    
+    ui.alert('Sukses', msg, ui.ButtonSet.OK);
   }
 }
 
