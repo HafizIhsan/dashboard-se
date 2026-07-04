@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Monitoring Harian SE2026 | BPS Sumatera Barat</title>
+  <link class="favicon" rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+  <meta name="description"
+    content="Command Center monitoring progres harian Sensus Ekonomi 2026 (SE2026) — BPS Provinsi Sumatera Barat, styled with Impeccable taste." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Alumni+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap"
+    rel="stylesheet">
+
+  <!-- Frameworks (Tailwind for Layout) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Albert Sans"', 'sans-serif'],
+            mono: ['Courier New', 'Courier', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Design Tokens (impeccable.style system) -->
+  <style>
+    /* Styling variables mimicking pbakaus/impeccable (with Orange accent) */
+    :root {
+      --bg-primary: #0a0907;
+      --bg-secondary: #12100d;
+      --bg-tertiary: #191612;
+      --border-color: rgba(249, 115, 22, 0.12);
+      --border-hover: rgba(249, 115, 22, 0.25);
+      --text-primary: #f4f1eb;
+      --text-secondary: #f97316;
+      --text-muted: #8c857b;
+      --accent-color: #f97316;
+      --accent-hover: #ea580c;
+      --accent-subtle: rgba(249, 115, 22, 0.08);
+      --success-color: #a3c9a8;
+      --warning-color: #e5b974;
+      --danger-color: #d17a7a;
+      --font-alumni: "Alumni Sans", sans-serif;
+    }
+
+    html.light {
+      --bg-primary: #f7f4ef;
+      --bg-secondary: #eae5dc;
+      --bg-tertiary: #dfd9ce;
+      --border-color: rgba(234, 88, 12, 0.18);
+      --border-hover: rgba(234, 88, 12, 0.35);
+      --text-primary: #2d2b27;
+      --text-secondary: #c2410c;
+      --text-muted: #7d776d;
+      --accent-color: #ea580c;
+      --accent-hover: #c2410c;
+      --accent-subtle: rgba(234, 88, 12, 0.08);
+      --success-color: #558564;
+      --warning-color: #c98e30;
+      --danger-color: #b24c4c;
+    }
+
+    * {
+      font-family: 'Albert Sans', sans-serif;
+      box-sizing: border-box;
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Grain overlay for paper-like high-end look */
+    .grain-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.022'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Impeccable Card (Plinth design) */
+    .plinth-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .plinth-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .plinth-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-hover);
+      box-shadow: 0 8px 30px rgba(212, 178, 122, 0.05);
+    }
+
+    .plinth-card:hover::before {
+      opacity: 0.5;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-muted);
+    }
+
+    /* Elegant Stylized Metrics */
+    .metric-value {
+      font-family: var(--font-alumni);
+      font-size: 3.5rem;
+      line-height: 0.9;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    /* Stylized badges */
+    .badge-status {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 2px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-tertiary);
+    }
+
+    /* Custom Table Styling */
+    .impeccable-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    .impeccable-table th {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 12px 16px;
+    }
+
+    .impeccable-table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      transition: background-color 0.15s;
+    }
+
+    .impeccable-table tr:hover td {
+      background-color: var(--accent-subtle);
+    }
+
+    .impeccable-table tr.active-row td {
+      background-color: rgba(212, 178, 122, 0.15);
+    }
+
+    .drill-inner {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      padding: 16px;
+      margin: 8px 16px 16px;
+      border-radius: 4px;
+    }
+
+    /* Expand button transitions */
+    .expand-icon {
+      display: inline-block;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      color: var(--accent-color);
+    }
+
+    .expanded .expand-icon {
+      transform: rotate(90deg);
+    }
+
+    /* Custom dynamic progress bar */
+    .progress-bar-container {
+      height: 3px;
+      background: var(--border-color);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-color);
+      border-radius: 2px;
+      transition: width 1s ease-in-out;
+    }
+
+    /* Input controls */
+    .impeccable-input {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      border-radius: 4px;
+      padding: 6px 12px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .impeccable-input:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.15);
+    }
+
+    .impeccable-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      border-radius: 4px;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .impeccable-btn:hover {
+      border-color: var(--accent-color);
+      color: var(--text-primary);
+      background: var(--accent-subtle);
+    }
+
+    .impeccable-btn-active {
+      border-color: var(--accent-color);
+      color: var(--bg-primary);
+      background: var(--accent-color);
+    }
+
+    .impeccable-btn-active:hover {
+      background: var(--accent-hover);
+      color: var(--bg-primary);
+    }
+
+    /* Animation effects */
+    @keyframes pulse-orange {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4);
+      }
+
+      50% {
+        transform: scale(1.2);
+        opacity: 0.7;
+        box-shadow: 0 0 8px 2px rgba(249, 115, 22, 0.2);
+      }
+    }
+
+    /* Loading Overlay & Spinner */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-primary);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.4s ease, visibility 0.4s;
+    }
+
+    .loading-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid var(--border-color);
+      border-radius: 50%;
+      border-top-color: var(--accent-color);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-text {
+      margin-top: 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      font-family: 'Albert Sans', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen relative p-4 md:p-8 font-sans selection:bg-neutral-800 selection:text-amber-200">
+
+  <!-- Loading Spinner Overlay -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <div class="loading-text">Memuat Data...</div>
+  </div>
+
+  <!-- Grain Texture overlay -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- Main Container -->
+  <div class="max-w-7xl mx-auto space-y-8">
+
+    <!-- ===== HEADER ===== -->
+    <header
+      class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-6 border-b border-[var(--border-color)]">
+      <div class="flex items-center gap-4">
+        <!-- Logo -->
+        <div
+          class="w-12 h-12 rounded border border-[var(--accent-color)] flex items-center justify-center bg-[var(--bg-secondary)] shadow-sm">
+          <svg class="w-6 h-6 text-[var(--accent-color)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold tracking-tight text-[var(--text-primary)]">
+            MONITORING HARIAN <span class="text-[var(--accent-color)]">SE2026</span>
+          </h1>
+          <p class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-widest mt-0.5">
+            Sensus Ekonomi 2026 — Badan Pusat Statistik Provinsi Sumatera Barat
+          </p>
+        </div>
+      </div>
+
+      <!-- Header Controls -->
+      <div class="flex flex-wrap items-center gap-4">
+        <!-- Sync Card -->
+        <div
+          class="flex items-center gap-3 bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded px-3 py-1.5">
+          <span class="w-2.5 h-2.5 rounded-full bg-[var(--accent-color)] pulse-orange"></span>
+          <div>
+            <p class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider leading-none">Sinkronisasi Terakhir
+            </p>
+            <p id="sync-time" class="text-xs font-semibold text-[var(--text-secondary)] mt-0.5">-</p>
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="flex items-center gap-2">
+          <button onclick="toggleTheme()" class="impeccable-btn p-2" title="Toggle Theme">
+            <svg id="theme-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <!-- Default dark mode: show sun -->
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </button>
+          <button onclick="window.location.reload()" class="impeccable-btn p-2" title="Refresh Data">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== STAT CARDS ===== -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- Card 1: Prelist -->
+      <div class="plinth-card p-6 flex flex-col justify-between min-h-[170px]">
+        <div class="flex justify-between items-start">
+          <div>
+            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">TOTAL TARGET
+              PRELIST AWAL</span>
+            <div id="stat-target" class="metric-value text-[var(--text-primary)] mt-2">2,156,917</div>
+          </div>
+          <div class="text-[var(--text-muted)]">
+            <svg class="w-6 h-6 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+        </div>
+        <div class="flex gap-4 mt-6 border-t border-[var(--border-color)] pt-3 text-xs">
+          <div>
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">[Sensus Ekonomi 2026]
+              Target</span>
+            <span class="font-bold text-[var(--text-secondary)]">2,154,826</span>
+          </div>
+          <div class="border-l border-[var(--border-color)] pl-4">
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">[Sensus Ekonomi 2026 - UB]
+              Target</span>
+            <span class="font-bold text-[var(--text-secondary)]">2,091</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Assignment -->
+      <div class="plinth-card p-6 flex flex-col justify-between min-h-[170px]">
+        <div class="flex justify-between items-start">
+          <div>
+            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">ASSIGNMENT
+              FASIH</span>
+            <div id="stat-assigned" class="metric-value text-[var(--text-primary)] mt-2">2,336,167</div>
+          </div>
+          <div class="text-[var(--text-muted)]">
+            <svg class="w-6 h-6 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-2 mt-6 border-t border-[var(--border-color)] pt-3 text-xs">
+          <div>
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">Open</span>
+            <span class="font-semibold text-[var(--text-secondary)]">1,802,544</span>
+          </div>
+          <div>
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">Draft</span>
+            <span class="font-semibold text-[var(--warning-color)]">90,550</span>
+          </div>
+          <div>
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">Submit</span>
+            <span class="font-semibold text-[var(--success-color)]">443,073</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Progress -->
+      <div class="plinth-card p-6 flex flex-col justify-between min-h-[170px]">
+        <div class="flex justify-between items-start">
+          <div>
+            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">PROGRES SUBMIT</span>
+            <div class="flex items-baseline gap-2 mt-2">
+              <span id="stat-progress" class="metric-value text-[var(--text-primary)]">18.97<span
+                  class="font-sans text-2xl font-bold ml-0.5 text-[var(--accent-color)]">%</span></span>
+              <span id="stat-daily-change" class="text-[10px] text-[var(--success-color)] font-bold">▲ +0,00%</span>
+            </div>
+          </div>
+          <div class="text-[var(--text-muted)]">
+            <svg class="w-6 h-6 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+          </div>
+        </div>
+        <div class="mt-6">
+          <div class="progress-bar-container w-full">
+            <div class="progress-bar-fill" style="width: 18.97%"></div>
+          </div>
+          <div
+            class="flex justify-between items-center mt-2 text-[9px] text-[var(--text-muted)] uppercase tracking-wider">
+            <span>Realisasi</span>
+            <span>Target 100%</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ===== CHARTS SECTION ===== -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+
+      <!-- Chart 1: Donut -->
+      <div class="plinth-card p-6 flex flex-col">
+        <div>
+          <h3 class="text-sm font-bold tracking-tight">Breakdown Status</h3>
+          <p class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mt-0.5">Sebaran Status Penugasan</p>
+        </div>
+        <div class="my-6 flex justify-center">
+          <div id="donutChart" class="w-full"></div>
+        </div>
+      </div>
+
+      <!-- Chart 2: Cumulative Progress Rank -->
+      <div class="plinth-card p-6 flex flex-col justify-between">
+        <div>
+          <h3 class="text-sm font-bold tracking-tight">Progres Akumulatif %</h3>
+          <p class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mt-0.5">19 Kabupaten/Kota</p>
+        </div>
+        <div class="my-6">
+          <div id="progressRankChart"></div>
+        </div>
+      </div>
+
+      <!-- Chart 3: Cumulative Submit Vol Rank -->
+      <div class="plinth-card p-6 flex flex-col justify-between">
+        <div>
+          <h3 class="text-sm font-bold tracking-tight">Ranking Submit Akumulatif</h3>
+          <p class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mt-0.5">19 Kabupaten/Kota (Assignment)
+          </p>
+        </div>
+        <div class="my-6">
+          <div id="submitRankChart"></div>
+        </div>
+      </div>
+
+      <!-- Chart 4: Daily Progress Rank -->
+      <div class="plinth-card p-6 flex flex-col justify-between">
+        <div>
+          <h3 class="text-sm font-bold tracking-tight">Progres Harian</h3>
+          <p id="daily-chart-subtitle" class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mt-0.5">
+            Kenaikan Submit Hari Ini</p>
+        </div>
+        <div class="my-6">
+          <div id="dailyChart"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ===== TABLE SECTION ===== -->
+    <section class="plinth-card">
+
+      <!-- Table Header & Controls -->
+      <div
+        class="p-6 border-b border-[var(--border-color)] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 class="text-base font-bold tracking-tight text-[var(--text-primary)]">PROGRES WILAYAH AKUMULATIF</h2>
+          <p class="text-xs text-[var(--text-muted)] mt-0.5">
+            Data pemantauan progres harian di tingkat Kabupaten/Kota.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+          <!-- Search Input -->
+          <div class="relative w-full sm:w-64">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-4 w-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </span>
+            <input type="text" id="search-wilayah" onkeyup="filterWilayah()" placeholder="Cari wilayah..."
+              class="impeccable-input pl-9 w-full text-sm" />
+          </div>
+          <!-- Export Button -->
+          <button onclick="exportCSV()" class="impeccable-btn flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>Ekspor CSV</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Table Wrapper -->
+      <div class="overflow-x-auto">
+        <table class="impeccable-table text-left" id="dashboard-table">
+          <thead>
+            <tr>
+              <th rowspan="2" class="cursor-pointer pl-6" onclick="sortTable(1)">Wilayah <span
+                  id="sort-indicator-1">↕</span>
+              </th>
+              <th colspan="2" class="text-center bg-[rgba(212,178,122,0.02)]">Target Prelist Awal</th>
+              <th colspan="4" class="text-center bg-[rgba(163,201,168,0.02)]">Assignment [Sensus Ekonomi 2026]</th>
+              <th colspan="4" class="text-center bg-[rgba(229,185,116,0.02)]">Assignment [Sensus Ekonomi 2026 - UB]</th>
+              <th rowspan="2" class="text-right cursor-pointer" onclick="sortTable(10)">Progres % <span
+                  id="sort-indicator-10">↕</span></th>
+            </tr>
+            <tr class="text-[9px]">
+              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)]">[Sensus Ekonomi 2026]</th>
+              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)]">[Sensus Ekonomi 2026 - UB]
+              </th>
+
+              <th class="text-right bg-[rgba(163,201,168,0.02)]">Open</th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)]">Draft</th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] text-[var(--success-color)]">Submit</th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] font-bold">Total</th>
+
+              <th class="text-right bg-[rgba(229,185,116,0.02)]">Open</th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)]">Draft</th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] text-[var(--success-color)]">Submit</th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] font-bold">Total</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- Table content populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- ===== DATA & LOGIC ===== -->
+  <script>
+    // URL Apps Script Web App Anda (Masukkan URL /exec Anda di sini)
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzhSlF8WtnCP4NEXKU1SjT9fzTL6alRBOv3E93e4zkMHxETUhDIPr-5JGP3mmya6aNCZQ/exec";
+
+    // Helper format angka Indonesia: titik pemisah ribuan, koma pemisah desimal
+    function fmtNum(n) { return Number(n).toLocaleString('id-ID'); }
+    function fmtPct(n) { return Number(n).toFixed(2).replace('.', ','); }
+
+    // Data Dashboard SE2026 Sumatera Barat (Nilai awal 0, diisi dinamis dari Apps Script)
+    const dashboardData = [
+      { id: 1, kode: "1301", nama: "Kabupaten Kepulauan Mentawai", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 2, kode: "1302", nama: "Kabupaten Pesisir Selatan", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 3, kode: "1303", nama: "Kabupaten Solok", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 4, kode: "1304", nama: "Kabupaten Sijunjung", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 5, kode: "1305", nama: "Kabupaten Tanah Datar", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 6, kode: "1306", nama: "Kabupaten Padang Pariaman", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 7, kode: "1307", nama: "Kabupaten Agam", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 8, kode: "1308", nama: "Kabupaten Lima Puluh Kota", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 9, kode: "1309", nama: "Kabupaten Pasaman", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 10, kode: "1310", nama: "Kabupaten Solok Selatan", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 11, kode: "1311", nama: "Kabupaten Dharmasraya", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 12, kode: "1312", nama: "Kabupaten Pasaman Barat", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 13, kode: "1371", nama: "Kota Padang", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 14, kode: "1372", nama: "Kota Solok", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 15, kode: "1373", nama: "Kota Sawahlunto", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 16, kode: "1374", nama: "Kota Padang Panjang", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 17, kode: "1375", nama: "Kota Bukittinggi", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 18, kode: "1376", nama: "Kota Payakumbuh", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
+      { id: 19, kode: "1377", nama: "Kota Pariaman", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 }
+    ];
+
+    // Build overall Province summary (Default 0)
+    const sumData = {
+      targetUmkm: 0, targetUb: 0,
+      umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0,
+      ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0,
+      progress: 0, harianUmkm: 0, harianUb: 0
+    };
+
+    // Global Sorting state
+    let currentSortColumn = null;
+    let isSortAsc = true;
+
+    // Charts references
+    let donutChart, progressChart, submitChart, dailyChart;
+
+    // Fetch data dynamically from Google Sheets via Apps Script Web App
+    async function loadDataFromAppsScript() {
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "") {
+        console.log("Menggunakan data mockup lokal (APPS_SCRIPT_URL kosong).");
+        return;
+      }
+      try {
+        const response = await fetch(APPS_SCRIPT_URL);
+        const data = await response.json();
+
+        const umkmSheet = data["progress-assignment-umkm"];
+        const ubSheet = data["progress-assignment-ub"];
+        const targetSheet = data["target-wilayah"];
+        const snapshotUmkmSheet = data["snapshot-kemarin-umkm"];
+        const snapshotUbSheet = data["snapshot-kemarin-ub"];
+
+        if (!umkmSheet || !ubSheet) {
+          console.warn("Format sheet tidak sesuai di Google Sheets.");
+          return;
+        }
+
+        // Map data based on Wilayah code
+        dashboardData.forEach(w => {
+          // Dynamic Targets from spreadsheet if available
+          if (targetSheet) {
+            const targetRow = targetSheet.find(row => String(row.Wilayah) === w.kode);
+            if (targetRow) {
+              w.targetUmkm = Number(targetRow["Target UMKM"] || 0);
+              w.targetUb = Number(targetRow["Target UB"] || 0);
+            }
+          }
+
+          const umkmRow = umkmSheet.find(row => String(row.Wilayah) === w.kode);
+          const ubRow = ubSheet.find(row => String(row.Wilayah) === w.kode);
+
+          if (umkmRow) {
+            w.umkmOpen = Number(umkmRow.OPEN || 0);
+            w.umkmDraft = Number(umkmRow.DRAFT || 0) +
+              Number(umkmRow["REJECTED BY Pengawas"] || 0) +
+              Number(umkmRow["REJECTED BY Admin Kabupaten"] || 0) +
+              Number(umkmRow["REVOKED BY Pengawas"] || 0);
+
+            const submitFields = [
+              "SUBMITTED BY Pencacah", "APPROVED BY Pengawas", "SUBMITTED RESPONDENT",
+              "EDITED BY Pengawas", "EDITED BY Admin Kabupaten", "COMPLETED BY Admin Kabupaten"
+            ];
+            let umkmSubmit = 0;
+            submitFields.forEach(f => {
+              umkmSubmit += Number(umkmRow[f] || 0);
+            });
+            w.umkmSubmit = umkmSubmit;
+            w.umkmTotal = w.umkmOpen + w.umkmDraft + w.umkmSubmit;
+          }
+
+          if (ubRow) {
+            w.ubOpen = Number(ubRow.OPEN || 0);
+            w.ubDraft = Number(ubRow.DRAFT || 0) +
+              Number(ubRow["REJECTED BY Pengawas"] || 0) +
+              Number(ubRow["REJECTED BY Admin Kabupaten"] || 0) +
+              Number(ubRow["REVOKED BY Pengawas"] || 0);
+
+            const submitFields = [
+              "SUBMITTED BY Pencacah", "APPROVED BY Pengawas", "SUBMITTED RESPONDENT",
+              "EDITED BY Pengawas", "EDITED BY Admin Kabupaten", "COMPLETED BY Admin Kabupaten"
+            ];
+            let ubSubmit = 0;
+            submitFields.forEach(f => {
+              ubSubmit += Number(ubRow[f] || 0);
+            });
+            w.ubSubmit = ubSubmit;
+            w.ubTotal = w.ubOpen + w.ubDraft + w.ubSubmit;
+          }
+
+          // Recalculate progress: (umkmSubmit + ubSubmit) / (targetUmkm + targetUb) * 100
+          w.progress = ((w.umkmSubmit + w.ubSubmit) / (w.targetUmkm + w.targetUb)) * 100;
+
+          // Hitung selisih kenaikan harian secara lokal (Hari ini - Snapshot Kemarin)
+          let umkmKemarin = 0;
+          if (snapshotUmkmSheet && snapshotUmkmSheet.length > 0) {
+            // Cari baris yang cocok (bisa Wilayah atau wilayah)
+            const snapUmkm = snapshotUmkmSheet.find(row => {
+              const rowWilayah = row.Wilayah || row.wilayah || row.kode || "";
+              return String(rowWilayah).trim() === String(w.kode).trim();
+            });
+            if (snapUmkm) {
+              // Ambil nilai submit kemarin (bisa Submit Kemarin atau submit kemarin atau submit_kemarin)
+              umkmKemarin = Number(snapUmkm["Submit Kemarin"] || snapUmkm["submit kemarin"] || snapUmkm["Submit_Kemarin"] || 0);
+            }
+          }
+          w.harianUmkm = Math.max(0, w.umkmSubmit - umkmKemarin);
+
+          let ubKemarin = 0;
+          if (snapshotUbSheet && snapshotUbSheet.length > 0) {
+            const snapUb = snapshotUbSheet.find(row => {
+              const rowWilayah = row.Wilayah || row.wilayah || row.kode || "";
+              return String(rowWilayah).trim() === String(w.kode).trim();
+            });
+            if (snapUb) {
+              ubKemarin = Number(snapUb["Submit Kemarin"] || snapUb["submit kemarin"] || snapUb["Submit_Kemarin"] || 0);
+            }
+          }
+          w.harianUb = Math.max(0, w.ubSubmit - ubKemarin);
+        });
+
+        // Recalculate global sumData
+        sumData.targetUmkm = dashboardData.reduce((s, x) => s + x.targetUmkm, 0);
+        sumData.targetUb = dashboardData.reduce((s, x) => s + x.targetUb, 0);
+
+        sumData.umkmOpen = dashboardData.reduce((s, x) => s + x.umkmOpen, 0);
+        sumData.umkmDraft = dashboardData.reduce((s, x) => s + x.umkmDraft, 0);
+        sumData.umkmSubmit = dashboardData.reduce((s, x) => s + x.umkmSubmit, 0);
+        sumData.umkmTotal = dashboardData.reduce((s, x) => s + x.umkmTotal, 0);
+
+        sumData.ubOpen = dashboardData.reduce((s, x) => s + x.ubOpen, 0);
+        sumData.ubDraft = dashboardData.reduce((s, x) => s + x.ubDraft, 0);
+        sumData.ubSubmit = dashboardData.reduce((s, x) => s + x.ubSubmit, 0);
+        sumData.ubTotal = dashboardData.reduce((s, x) => s + x.ubTotal, 0);
+
+        sumData.harianUmkm = dashboardData.reduce((s, x) => s + (x.harianUmkm || 0), 0);
+        sumData.harianUb = dashboardData.reduce((s, x) => s + (x.harianUb || 0), 0);
+
+        sumData.progress = ((sumData.umkmSubmit + sumData.ubSubmit) / (sumData.targetUmkm + sumData.targetUb)) * 100;
+
+        // Update values in HTML cards
+        document.getElementById('stat-target').innerText = fmtNum(sumData.targetUmkm + sumData.targetUb);
+        document.getElementById('stat-assigned').innerText = fmtNum(sumData.umkmTotal + sumData.ubTotal);
+
+        const percentSpan = `<span class="font-sans text-2xl font-bold ml-0.5 text-[var(--accent-color)]">%</span>`;
+        document.getElementById('stat-progress').innerHTML = fmtPct(sumData.progress) + percentSpan;
+        document.querySelector('.progress-bar-fill').style.width = sumData.progress.toFixed(2) + '%';
+
+        // Update Kenaikan Harian Akumulatif (Persentase kenaikan harian terhadap total target)
+        const totalHarian = (sumData.harianUmkm || 0) + (sumData.harianUb || 0);
+        const totalTarget = sumData.targetUmkm + sumData.targetUb;
+        const dailyProgressPct = totalTarget > 0 ? (totalHarian / totalTarget * 100) : 0;
+        document.getElementById('stat-daily-change').innerText = `▲ +${fmtPct(dailyProgressPct)}%`;
+
+        // Update Sync time to Spreadsheet's last edit time from Apps Script
+        console.log("lastUpdated dari Apps Script:", data.lastUpdated);
+        if (data.lastUpdated) {
+          const updateTime = new Date(data.lastUpdated);
+          const options = {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: 'Asia/Jakarta'
+          };
+          document.getElementById('sync-time').innerText = updateTime.toLocaleDateString('id-ID', options) + ' WIB';
+        } else {
+          document.getElementById('sync-time').innerText = '-';
+        }
+      } catch (err) {
+        console.error("Gagal memuat data dari Apps Script:", err);
+      }
+    }
+
+    // Page Init
+    window.addEventListener('DOMContentLoaded', async () => {
+      // Restore Theme
+      const savedTheme = localStorage.getItem('impeccable-theme') || 'dark';
+      document.documentElement.className = savedTheme;
+      updateThemeIcon(savedTheme);
+
+      // Load data from Apps Script
+      await loadDataFromAppsScript();
+
+      // Hide loading spinner
+      const loader = document.getElementById('loading-overlay');
+      if (loader) {
+        loader.classList.add('hidden');
+      }
+
+      // Populate Table
+      renderTable(dashboardData);
+
+      // Init Charts
+      initAllCharts();
+    });
+
+    // Theme Toggle Function
+    function toggleTheme() {
+      const html = document.documentElement;
+      let nextTheme = 'dark';
+      if (html.classList.contains('dark')) {
+        html.className = 'light';
+        nextTheme = 'light';
+      } else {
+        html.className = 'dark';
+        nextTheme = 'dark';
+      }
+      localStorage.setItem('impeccable-theme', nextTheme);
+      updateThemeIcon(nextTheme);
+
+      // Update ApexCharts themes dynamically
+      destroyCharts();
+      initAllCharts();
+    }
+
+    function updateThemeIcon(theme) {
+      const icon = document.getElementById('theme-icon');
+      if (theme === 'light') {
+        icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />`;
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#f7f4ef');
+      } else {
+        icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />`;
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0a0907');
+      }
+    }
+
+    // Populate Table DOM
+    function renderTable(data) {
+      const tbody = document.getElementById('table-body');
+      tbody.innerHTML = '';
+
+      // First Row: Province Totals
+      const provTotalHarian = (sumData.harianUmkm || 0) + (sumData.harianUb || 0);
+      const provTotalTarget = sumData.targetUmkm + sumData.targetUb;
+      const provDailyPct = provTotalTarget > 0 ? (provTotalHarian / provTotalTarget * 100) : 0;
+
+      const provRow = document.createElement('tr');
+      provRow.className = 'bg-[rgba(212,178,122,0.06)] font-bold';
+      provRow.innerHTML = `
+        <td class="pl-6">BPS Provinsi Sumatera Barat</td>
+        <td class="text-right text-[var(--text-secondary)]">${fmtNum(sumData.targetUmkm)}</td>
+        <td class="text-right border-r border-[var(--border-color)] text-[var(--text-secondary)]">${fmtNum(sumData.targetUb)}</td>
+        
+        <td class="text-right text-neutral-400">${fmtNum(sumData.umkmOpen)}</td>
+        <td class="text-right text-[var(--warning-color)]">${fmtNum(sumData.umkmDraft)}</td>
+        <td class="text-right text-[var(--success-color)]">${fmtNum(sumData.umkmSubmit)}</td>
+        <td class="text-right border-r border-[var(--border-color)] text-[var(--text-primary)]">${fmtNum(sumData.umkmTotal)}</td>
+        
+        <td class="text-right text-neutral-400">${fmtNum(sumData.ubOpen)}</td>
+        <td class="text-right text-[var(--warning-color)]">${fmtNum(sumData.ubDraft)}</td>
+        <td class="text-right text-[var(--success-color)]">${fmtNum(sumData.ubSubmit)}</td>
+        <td class="text-right border-r border-[var(--border-color)] text-[var(--text-primary)]">${fmtNum(sumData.ubTotal)}</td>
+        
+        <td class="text-right font-bold text-[var(--accent-color)]">${fmtPct(sumData.progress)}% <span class="text-xs font-semibold text-[var(--success-color)] block md:inline ml-1">(+${fmtPct(provDailyPct)}%)</span></td>
+      `;
+      tbody.appendChild(provRow);
+
+      // Wilayah Rows
+      data.forEach((w) => {
+        const totalHarian = (w.harianUmkm || 0) + (w.harianUb || 0);
+        const totalTarget = w.targetUmkm + w.targetUb;
+        const dailyPct = totalTarget > 0 ? (totalHarian / totalTarget * 100) : 0;
+
+        const row = document.createElement('tr');
+        row.id = `wil-row-${w.id}`;
+        row.innerHTML = `
+          <td class="font-medium pl-6">[${w.kode}] ${w.nama}</td>
+          <td class="text-right text-[var(--text-muted)]">${fmtNum(w.targetUmkm)}</td>
+          <td class="text-right border-r border-[var(--border-color)] text-[var(--text-muted)]">${fmtNum(w.targetUb)}</td>
+          
+          <td class="text-right text-[var(--text-muted)]">${fmtNum(w.umkmOpen)}</td>
+          <td class="text-right text-[var(--warning-color)]">${fmtNum(w.umkmDraft)}</td>
+          <td class="text-right text-[var(--success-color)]">${fmtNum(w.umkmSubmit)}</td>
+          <td class="text-right border-r border-[var(--border-color)] font-semibold">${fmtNum(w.umkmTotal)}</td>
+          
+          <td class="text-right text-[var(--text-muted)]">${fmtNum(w.ubOpen)}</td>
+          <td class="text-right text-[var(--warning-color)]">${fmtNum(w.ubDraft)}</td>
+          <td class="text-right text-[var(--success-color)]">${fmtNum(w.ubSubmit)}</td>
+          <td class="text-right border-r border-[var(--border-color)] font-semibold">${fmtNum(w.ubTotal)}</td>
+          
+          <td class="text-right font-bold text-[var(--text-secondary)]">${fmtPct(w.progress)}% <span class="text-[10px] font-semibold text-[var(--success-color)] block md:inline ml-1">(+${fmtPct(dailyPct)}%)</span></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Filter wilayah in search field
+    function filterWilayah() {
+      const input = document.getElementById('search-wilayah');
+      const filter = input.value.toUpperCase();
+      const rows = document.querySelectorAll('#table-body > tr');
+
+      // Loop through all table rows, hide those who don't match the search query
+      rows.forEach(r => {
+        // Skip header
+        if (r.id.startsWith('wil-row-')) {
+          const textCell = r.getElementsByTagName('td')[0];
+          if (textCell) {
+            const txtValue = textCell.textContent || textCell.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              r.style.display = '';
+            } else {
+              r.style.display = 'none';
+            }
+          }
+        }
+      });
+    }
+
+    // Sort table rows dynamically
+    function sortTable(colIdx) {
+      if (currentSortColumn === colIdx) {
+        isSortAsc = !isSortAsc;
+      } else {
+        currentSortColumn = colIdx;
+        isSortAsc = true;
+      }
+
+      // Reset indicators
+      document.getElementById('sort-indicator-1').innerText = '↕';
+      document.getElementById('sort-indicator-10').innerText = '↕';
+
+      const indicator = document.getElementById(`sort-indicator-${colIdx}`);
+      if (indicator) {
+        indicator.innerText = isSortAsc ? '▲' : '▼';
+      }
+
+      // Sort data array
+      dashboardData.sort((a, b) => {
+        let valA, valB;
+        if (colIdx === 1) {
+          valA = a.nama.toLowerCase();
+          valB = b.nama.toLowerCase();
+        } else if (colIdx === 10) {
+          valA = a.progress;
+          valB = b.progress;
+        }
+
+        if (valA < valB) return isSortAsc ? -1 : 1;
+        if (valA > valB) return isSortAsc ? 1 : -1;
+        return 0;
+      });
+
+      renderTable(dashboardData);
+      filterWilayah();
+    }
+
+    // CSV Export
+    function exportCSV() {
+      let csv = 'Kode Wilayah,Nama Wilayah,Target UMKM,Target UB,UMKM Open,UMKM Draft,UMKM Submit,UMKM Total,UB Open,UB Draft,UB Submit,UB Total,Progres Akumulatif %\n';
+
+      // Province row
+      csv += `-,Provinsi Sumatera Barat,${sumData.targetUmkm},${sumData.targetUb},${sumData.umkmOpen},${sumData.umkmDraft},${sumData.umkmSubmit},${sumData.umkmTotal},${sumData.ubOpen},${sumData.ubDraft},${sumData.ubSubmit},${sumData.ubTotal},${sumData.progress}\n`;
+
+      // Wilayah rows
+      dashboardData.forEach(w => {
+        csv += `${w.kode},${w.nama},${w.targetUmkm},${w.targetUb},${w.umkmOpen},${w.umkmDraft},${w.umkmSubmit},${w.umkmTotal},${w.ubOpen},${w.ubDraft},${w.ubSubmit},${w.ubTotal},${w.progress}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute('download', `SE2026_Progres_Harian_Sumbar_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // ApexCharts settings & updates
+    function destroyCharts() {
+      if (donutChart) donutChart.destroy();
+      if (progressChart) progressChart.destroy();
+      if (submitChart) submitChart.destroy();
+      if (dailyChart) dailyChart.destroy();
+    }
+
+    function initAllCharts() {
+      const isDark = document.documentElement.classList.contains('dark');
+      const textPrimaryColor = isDark ? '#f4f1eb' : '#2d2b27';
+      const borderThemeColor = isDark ? 'rgba(249, 115, 22, 0.12)' : 'rgba(234, 88, 12, 0.18)';
+
+      const themeColors = {
+        orange: isDark ? '#f97316' : '#ea580c',
+        mutedOrange: isDark ? '#ea580c' : '#c2410c',
+        success: isDark ? '#a3c9a8' : '#558564',
+        warning: isDark ? '#e5b974' : '#c98e30',
+        danger: isDark ? '#d17a7a' : '#b24c4c',
+        neutrals: isDark ? '#3c3a35' : '#eae5dc'
+      };
+
+      // 1. Donut Chart (Superteam Asset Hub style)
+      const donutOptions = {
+        series: [sumData.umkmOpen + sumData.ubOpen, sumData.umkmDraft + sumData.ubDraft, sumData.umkmSubmit + sumData.ubSubmit],
+        labels: ['Open', 'Draft', 'Submitted'],
+        chart: {
+          type: 'donut',
+          height: 280,
+          background: 'transparent',
+          toolbar: { show: false },
+          foreColor: textPrimaryColor
+        },
+        colors: ['#3b82f6', '#f59e0b', '#10b981'], // Clean Blue, Amber, Emerald matching Asset Hub style
+        stroke: {
+          width: 0
+        },
+        legend: {
+          position: 'bottom',
+          fontFamily: 'Albert Sans',
+          fontSize: '11px',
+          labels: { colors: isDark ? '#9ca3af' : '#475569' }
+        },
+        dataLabels: {
+          enabled: true,
+          style: { fontSize: '11px', fontWeight: '600' },
+          dropShadow: { enabled: false }
+        },
+        tooltip: {
+          theme: isDark ? 'dark' : 'light',
+          y: {
+            formatter: (val) => fmtNum(val) + ' usaha'
+          }
+        },
+        plotOptions: {
+          pie: {
+            donut: {
+              size: '65%',
+              labels: {
+                show: true,
+                value: {
+                  show: true,
+                  fontFamily: 'Albert Sans',
+                  color: textPrimaryColor,
+                  formatter: (val) => fmtNum(val)
+                },
+                total: {
+                  show: true,
+                  label: 'TOTAL',
+                  fontFamily: 'Albert Sans',
+                  fontWeight: 600,
+                  color: isDark ? '#9ca3af' : '#475569',
+                  formatter: (w) => fmtNum(w.globals.seriesTotals.reduce((a, b) => a + b, 0))
+                }
+              }
+            }
+          }
+        }
+      };
+      donutChart = new ApexCharts(document.querySelector("#donutChart"), donutOptions);
+      donutChart.render();
+
+      // 2. Bar Chart: Progress Akumulatif (Superteam Asset Hub style)
+      const sortedByProgress = [...dashboardData].sort((a, b) => b.progress - a.progress);
+      const progressOptions = {
+        series: [{
+          name: 'Progres %',
+          data: sortedByProgress.map(x => parseFloat(x.progress.toFixed(2)))
+        }],
+        chart: {
+          type: 'bar',
+          height: 380,
+          background: 'transparent',
+          toolbar: { show: false },
+          foreColor: textPrimaryColor,
+          animations: { enabled: true, easing: 'easeinout', speed: 600 }
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            barHeight: '50%',
+            borderRadius: 4,
+            dataLabels: { position: 'top' }
+          }
+        },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            gradientToColors: ['#10b981'], // Gradient to Emerald
+            type: 'horizontal',
+            stops: [0, 100]
+          }
+        },
+        colors: ['#3b82f6'], // Base color Blue
+        dataLabels: {
+          enabled: true,
+          offsetX: 40,
+          style: {
+            fontSize: '10px',
+            fontWeight: '600',
+            colors: [isDark ? '#f4f1eb' : '#2d2b27']
+          },
+          formatter: (v) => `${fmtPct(v)}%`
+        },
+        xaxis: {
+          categories: sortedByProgress.map(x => `[${x.kode}]`),
+          labels: {
+            formatter: (v) => `${fmtPct(v)}%`,
+            style: { fontFamily: 'Albert Sans', fontSize: '10px', colors: '#9ca3af' },
+            hideOverlappingLabels: true
+          },
+          axisBorder: { show: false },
+          axisTicks: { show: false },
+          tickAmount: 4
+        },
+        yaxis: {
+          labels: {
+            maxWidth: 80,
+            style: { fontFamily: 'Albert Sans', fontSize: '10px', colors: '#9ca3af' }
+          }
+        },
+        grid: {
+          borderColor: isDark ? '#374151' : '#cbd5e1',
+          strokeDashArray: 3
+        },
+        tooltip: {
+          theme: isDark ? 'dark' : 'light',
+          bounds: 'window',
+          x: {
+            formatter: (v, { dataPointIndex: i }) => {
+              const item = sortedByProgress[i];
+              return item ? `[${item.kode}] ${item.nama}` : '';
+            }
+          },
+          y: {
+            formatter: (val) => `${fmtPct(val)}%`
+          }
+        }
+      };
+      progressChart = new ApexCharts(document.querySelector("#progressRankChart"), progressOptions);
+      progressChart.render();
+
+      // 3. Bar Chart: Volume Submit (Superteam Asset Hub style)
+      const sortedBySubmit = [...dashboardData].sort((a, b) => (b.umkmSubmit + b.ubSubmit) - (a.umkmSubmit + a.ubSubmit));
+      const submitOptions = {
+        series: [{
+          name: 'Total Submit',
+          data: sortedBySubmit.map(x => x.umkmSubmit + x.ubSubmit)
+        }],
+        chart: {
+          type: 'bar',
+          height: 380,
+          background: 'transparent',
+          toolbar: { show: false },
+          foreColor: textPrimaryColor,
+          animations: { enabled: true, easing: 'easeinout', speed: 600 }
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            barHeight: '50%',
+            borderRadius: 4,
+            dataLabels: { position: 'top' }
+          }
+        },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            gradientToColors: ['#f59e0b'], // Gradient to Amber
+            type: 'horizontal',
+            stops: [0, 100]
+          }
+        },
+        colors: ['#ef4444'], // Base color Red
+        dataLabels: {
+          enabled: true,
+          offsetX: 40,
+          style: {
+            fontSize: '10px',
+            fontWeight: '600',
+            colors: [isDark ? '#f4f1eb' : '#2d2b27']
+          },
+          formatter: (v) => fmtNum(v)
+        },
+        xaxis: {
+          categories: sortedBySubmit.map(x => `[${x.kode}]`),
+          labels: {
+            formatter: (v) => fmtNum(v),
+            style: { fontFamily: 'Albert Sans', fontSize: '10px', colors: '#9ca3af' },
+            hideOverlappingLabels: true
+          },
+          axisBorder: { show: false },
+          axisTicks: { show: false },
+          tickAmount: 4
+        },
+        yaxis: {
+          labels: {
+            maxWidth: 80,
+            style: { fontFamily: 'Albert Sans', fontSize: '10px', colors: '#9ca3af' }
+          }
+        },
+        grid: {
+          borderColor: isDark ? '#374151' : '#cbd5e1',
+          strokeDashArray: 3
+        },
+        tooltip: {
+          theme: isDark ? 'dark' : 'light',
+          bounds: 'window',
+          x: {
+            formatter: (v, { dataPointIndex: i }) => {
+              const item = sortedBySubmit[i];
+              return item ? `[${item.kode}] ${item.nama}` : '';
+            }
+          },
+          y: {
+            formatter: (val) => fmtNum(val) + ' Assignment'
+          }
+        }
+      };
+      submitChart = new ApexCharts(document.querySelector("#submitRankChart"), submitOptions);
+      submitChart.render();
+
+      // 4. Bar Chart: Kenaikan Harian dalam % (Superteam Asset Hub style)
+      const sortedByDaily = [...dashboardData].sort((a, b) => {
+        const pctB = ((b.harianUmkm || 0) + (b.harianUb || 0)) / (b.targetUmkm + b.targetUb) * 100;
+        const pctA = ((a.harianUmkm || 0) + (a.harianUb || 0)) / (a.targetUmkm + a.targetUb) * 100;
+        return pctB - pctA;
+      });
+      const dailyData = sortedByDaily.map(x => {
+        const total = (x.harianUmkm || 0) + (x.harianUb || 0);
+        return parseFloat(((total / (x.targetUmkm + x.targetUb)) * 100).toFixed(2));
+      });
+      const dailyOptions = {
+        series: [{
+          name: 'Kenaikan Harian',
+          data: dailyData
+        }],
+        chart: {
+          type: 'bar',
+          height: 380,
+          background: 'transparent',
+          toolbar: { show: false },
+          foreColor: textPrimaryColor,
+          animations: { enabled: true, easing: 'easeinout', speed: 600 }
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            barHeight: '50%',
+            borderRadius: 4,
+            dataLabels: { position: 'top' }
+          }
+        },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            gradientToColors: ['#3b82f6'], // Gradient to Blue
+            type: 'horizontal',
+            stops: [0, 100]
+          }
+        },
+        colors: ['#f59e0b'], // Base color Amber/Yellow
+        dataLabels: {
+          enabled: true,
+          offsetX: 40,
+          style: {
+            fontSize: '10px',
+            fontWeight: '600',
+            colors: [isDark ? '#f4f1eb' : '#2d2b27']
+          },
+          formatter: (v) => `${fmtPct(v)}%`
+        },
+        xaxis: {
+          categories: sortedByDaily.map(x => `[${x.kode}]`),
+          labels: {
+            formatter: (v) => `${fmtPct(v)}%`,
+            style: { fontFamily: 'Albert Sans', fontSize: '10px', colors: '#9ca3af' },
+            hideOverlappingLabels: true
+          },
+          axisBorder: { show: false },
+          axisTicks: { show: false },
+          tickAmount: 4
+        },
+        yaxis: {
+          labels: {
+            maxWidth: 80,
+            style: { fontFamily: 'Albert Sans', fontSize: '10px', colors: '#9ca3af' }
+          }
+        },
+        grid: {
+          borderColor: isDark ? '#374151' : '#cbd5e1',
+          strokeDashArray: 3
+        },
+        tooltip: {
+          theme: isDark ? 'dark' : 'light',
+          bounds: 'window',
+          x: {
+            formatter: (v, { dataPointIndex: i }) => {
+              const item = sortedByDaily[i];
+              return item ? `[${item.kode}] ${item.nama}` : '';
+            }
+          },
+          y: {
+            formatter: (val, { dataPointIndex: i }) => {
+              const item = sortedByDaily[i];
+              const total = (item.harianUmkm || 0) + (item.harianUb || 0);
+              return `${fmtPct(val)}% (${fmtNum(total)} Assignment)`;
+            }
+          }
+        }
+      };
+      dailyChart = new ApexCharts(document.querySelector("#dailyChart"), dailyOptions);
+      dailyChart.render();
+    }
+  </script>
+</body>
+
+</html>
