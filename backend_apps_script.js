@@ -211,8 +211,22 @@ function onOpen() {
   var ui = SpreadsheetApp.getUi();
   ui.createMenu('Dashboard SE')
       .addItem('Upload CSV Data Kecamatan', 'openUploadDialog')
-      .addItem('Hitung Kenaikan Harian Manual', 'recordDailyProgress')
+      .addItem('Hitung Kenaikan Harian Manual', 'confirmRecordDailyProgress')
       .addToUi();
+}
+
+function confirmRecordDailyProgress() {
+  var ui = SpreadsheetApp.getUi();
+  var response = ui.alert(
+    'Konfirmasi', 
+    'Apakah Anda yakin ingin menghitung dan mencatat kenaikan harian sekarang?', 
+    ui.ButtonSet.YES_NO
+  );
+  
+  if (response == ui.Button.YES) {
+    recordDailyProgress();
+    ui.alert('Sukses', 'Penghitungan kenaikan harian berhasil dijalankan.', ui.ButtonSet.OK);
+  }
 }
 
 function openUploadDialog() {
