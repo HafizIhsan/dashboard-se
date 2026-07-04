@@ -429,7 +429,7 @@
           <div>
             <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">TOTAL
               PRELIST AWAL</span>
-            <div id="stat-target" class="metric-value text-[var(--text-primary)] mt-2">2,156,917</div>
+            <div id="stat-target" class="metric-value text-[var(--text-primary)] mt-2">0</div>
           </div>
           <div class="text-[var(--text-muted)]">
             <svg class="w-6 h-6 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -458,7 +458,7 @@
           <div>
             <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">ASSIGNMENT
               FASIH</span>
-            <div id="stat-assigned" class="metric-value text-[var(--text-primary)] mt-2">2,336,167</div>
+            <div id="stat-assigned" class="metric-value text-[var(--text-primary)] mt-2">0</div>
           </div>
           <div class="text-[var(--text-muted)]">
             <svg class="w-6 h-6 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -501,7 +501,7 @@
           <div>
             <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">PROGRES SUBMIT</span>
             <div class="flex items-baseline gap-2 mt-2">
-              <span id="stat-progress" class="metric-value text-[var(--text-primary)]">18.97<span
+              <span id="stat-progress" class="metric-value text-[var(--text-primary)]">0,00<span
                   class="font-sans text-2xl font-bold ml-0.5 text-[var(--accent-color)]">%</span></span>
               <span id="stat-daily-change" class="text-[10px] text-[var(--success-color)] font-bold">▲ +0,00%</span>
             </div>
@@ -515,7 +515,7 @@
         </div>
         <div class="mt-6">
           <div class="progress-bar-container w-full">
-            <div class="progress-bar-fill" style="width: 18.97%"></div>
+            <div class="progress-bar-fill" style="width: 0%"></div>
           </div>
           <div
             class="flex justify-between items-center mt-2 text-[9px] text-[var(--text-muted)] uppercase tracking-wider">
@@ -761,15 +761,6 @@
         const ubKecSheet = data["ub-kecamatan"];
         const masterKecSheet = data["master-kec"];
 
-        // Console log for debugging
-        console.log("=== Data from Apps Script ===");
-        console.log("targetSheet:", targetSheet);
-        console.log("snapshotUmkmSheet:", snapshotUmkmSheet);
-        console.log("snapshotUbSheet:", snapshotUbSheet);
-        console.log("umkmKecSheet:", umkmKecSheet);
-        console.log("ubKecSheet:", ubKecSheet);
-        console.log("masterKecSheet:", masterKecSheet);
-        console.log("=============================");
 
         if (!umkmKecSheet || !ubKecSheet) {
           console.warn("Data kecamatan (umkm-kecamatan / ub-kecamatan) tidak ditemukan di payload Apps Script.");
@@ -992,7 +983,7 @@
         dailyChangeSpan.style.color = getDailyColor(dailyProgressPct);
 
         // Update Sync time to Spreadsheet's last edit time from Apps Script
-        console.log("lastUpdated dari Apps Script:", data.lastUpdated);
+
         if (data.lastUpdated) {
           const updateTime = new Date(data.lastUpdated);
           const options = {
