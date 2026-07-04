@@ -427,7 +427,7 @@
       <div class="plinth-card p-6 flex flex-col justify-between min-h-[170px]">
         <div class="flex justify-between items-start">
           <div>
-            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">TOTAL TARGET
+            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">TOTAL
               PRELIST AWAL</span>
             <div id="stat-target" class="metric-value text-[var(--text-primary)] mt-2">2,156,917</div>
           </div>
@@ -440,14 +440,14 @@
         </div>
         <div class="flex gap-4 mt-6 border-t border-[var(--border-color)] pt-3 text-xs">
           <div>
-            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">[Sensus Ekonomi 2026]
-              Target</span>
-            <span class="font-bold text-[var(--text-secondary)]">2,154,826</span>
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">[Sensus Ekonomi
+              2026]</span>
+            <span id="stat-target-umkm" class="font-bold text-[var(--text-secondary)]">0</span>
           </div>
           <div class="border-l border-[var(--border-color)] pl-4">
-            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">[Sensus Ekonomi 2026 - UB]
-              Target</span>
-            <span class="font-bold text-[var(--text-secondary)]">2,091</span>
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">[Sensus Ekonomi 2026 -
+              UB]</span>
+            <span id="stat-target-ub" class="font-bold text-[var(--text-secondary)]">0</span>
           </div>
         </div>
       </div>
@@ -470,15 +470,27 @@
         <div class="grid grid-cols-3 gap-2 mt-6 border-t border-[var(--border-color)] pt-3 text-xs">
           <div>
             <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">Open</span>
-            <span class="font-semibold text-[var(--text-secondary)]">1,802,544</span>
+            <span id="stat-open" class="font-semibold text-[var(--text-secondary)]">0</span>
           </div>
           <div>
             <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">Draft</span>
-            <span class="font-semibold text-[var(--warning-color)]">90,550</span>
+            <span id="stat-draft" class="font-semibold text-[var(--warning-color)]">0</span>
           </div>
           <div>
             <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">Submit</span>
-            <span class="font-semibold text-[var(--success-color)]">443,073</span>
+            <span id="stat-submit" class="font-semibold text-[var(--success-color)]">0</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 mt-2 border-t border-[var(--border-color)] pt-2 text-xs">
+          <div>
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">[Sensus Ekonomi
+              2026]</span>
+            <span id="stat-umkm-total" class="font-semibold text-[var(--text-secondary)]">0</span>
+          </div>
+          <div>
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">[Sensus Ekonomi 2026
+              - UB]</span>
+            <span id="stat-ub-total" class="font-semibold text-[var(--text-secondary)]">0</span>
           </div>
         </div>
       </div>
@@ -602,23 +614,22 @@
       </div>
 
       <!-- Table Wrapper -->
-      <div class="overflow-x-auto">
+      <div class="overflow-auto max-h-[90vh]">
         <table class="impeccable-table text-left" id="dashboard-table">
-          <thead>
+          <thead class="sticky top-0 z-20 shadow-sm">
             <tr>
               <th rowspan="2" class="cursor-pointer pl-6" onclick="sortTable(1)">Wilayah <span
                   id="sort-indicator-1">↕</span>
               </th>
-              <th colspan="2" class="text-center bg-[rgba(212,178,122,0.02)]">Target Prelist Awal</th>
-              <th colspan="4" class="text-center bg-[rgba(163,201,168,0.02)]">Assignment [Sensus Ekonomi 2026]</th>
-              <th colspan="4" class="text-center bg-[rgba(229,185,116,0.02)]">Assignment [Sensus Ekonomi 2026 - UB]</th>
+              <!-- <th colspan="2" class="text-center bg-[rgba(212,178,122,0.02)]">Target Prelist Awal</th> -->
+              <th colspan="4" class="text-center bg-[rgba(163,201,168,0.02)]">[Sensus Ekonomi 2026]</th>
+              <th colspan="4" class="text-center bg-[rgba(229,185,116,0.02)]">[Sensus Ekonomi 2026 - UB]</th>
               <th rowspan="2" class="text-right cursor-pointer" onclick="sortTable(10)">Progres % <span
                   id="sort-indicator-10">↕</span></th>
             </tr>
             <tr class="text-[9px]">
-              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)]">[Sensus Ekonomi 2026]</th>
-              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)]">[Sensus Ekonomi 2026 - UB]
-              </th>
+              <!-- <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)]">[Sensus Ekonomi 2026]</th> -->
+              <!-- <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)]">[Sensus Ekonomi 2026 - UB]</th> -->
 
               <th class="text-right bg-[rgba(163,201,168,0.02)]">Open</th>
               <th class="text-right bg-[rgba(163,201,168,0.02)]">Draft</th>
@@ -644,33 +655,60 @@
   <!-- ===== DATA & LOGIC ===== -->
   <script>
     // URL Apps Script Web App Anda (Masukkan URL /exec Anda di sini)
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzhSlF8WtnCP4NEXKU1SjT9fzTL6alRBOv3E93e4zkMHxETUhDIPr-5JGP3mmya6aNCZQ/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVPik_TzkUDoQqTq8uJHl8arQFyCE9Lqeum9B8Xsj5F9HF79ZNGOf9ViTi1lAlMEOmbw/exec";
 
     // Helper format angka Indonesia: titik pemisah ribuan, koma pemisah desimal
     function fmtNum(n) { return Number(n).toLocaleString('id-ID'); }
     function fmtPct(n) { return Number(n).toFixed(2).replace('.', ','); }
 
+    // Hitung persentase target progress berdasarkan hari berjalan (15 Juni 2026 - 31 Agustus 2026)
+    function getTargetProgress() {
+      const totalDays = 78; 
+      const start = new Date(2026, 5, 15);
+      const end = new Date(2026, 7, 31);
+      
+      const current = new Date();
+      current.setHours(0, 0, 0, 0);
+      
+      if (current < start) return 0;
+      if (current > end) return 100;
+      
+      const diffTime = current - start;
+      // Dihitung H-1 (hari ini tidak dihitung karena belum selesai)
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      
+      return (diffDays / totalDays) * 100;
+    }
+
+    function getProgressColor(progress) {
+      return progress < getTargetProgress() ? 'var(--danger-color)' : 'var(--success-color)';
+    }
+
+    function getDailyColor(pct) {
+      return pct <= 0 ? 'var(--danger-color)' : 'var(--success-color)';
+    }
+
     // Data Dashboard SE2026 Sumatera Barat (Nilai awal 0, diisi dinamis dari Apps Script)
     const dashboardData = [
-      { id: 1, kode: "1301", nama: "Kabupaten Kepulauan Mentawai", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 2, kode: "1302", nama: "Kabupaten Pesisir Selatan", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 3, kode: "1303", nama: "Kabupaten Solok", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 4, kode: "1304", nama: "Kabupaten Sijunjung", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 5, kode: "1305", nama: "Kabupaten Tanah Datar", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 6, kode: "1306", nama: "Kabupaten Padang Pariaman", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 7, kode: "1307", nama: "Kabupaten Agam", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 8, kode: "1308", nama: "Kabupaten Lima Puluh Kota", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 9, kode: "1309", nama: "Kabupaten Pasaman", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 10, kode: "1310", nama: "Kabupaten Solok Selatan", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 11, kode: "1311", nama: "Kabupaten Dharmasraya", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 12, kode: "1312", nama: "Kabupaten Pasaman Barat", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 13, kode: "1371", nama: "Kota Padang", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 14, kode: "1372", nama: "Kota Solok", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 15, kode: "1373", nama: "Kota Sawahlunto", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 16, kode: "1374", nama: "Kota Padang Panjang", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 17, kode: "1375", nama: "Kota Bukittinggi", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 18, kode: "1376", nama: "Kota Payakumbuh", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 },
-      { id: 19, kode: "1377", nama: "Kota Pariaman", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0 }
+      { id: 1, kode: "1301", nama: "Kabupaten Kepulauan Mentawai", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 2, kode: "1302", nama: "Kabupaten Pesisir Selatan", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 3, kode: "1303", nama: "Kabupaten Solok", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 4, kode: "1304", nama: "Kabupaten Sijunjung", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 5, kode: "1305", nama: "Kabupaten Tanah Datar", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 6, kode: "1306", nama: "Kabupaten Padang Pariaman", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 7, kode: "1307", nama: "Kabupaten Agam", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 8, kode: "1308", nama: "Kabupaten Lima Puluh Kota", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 9, kode: "1309", nama: "Kabupaten Pasaman", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 10, kode: "1310", nama: "Kabupaten Solok Selatan", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 11, kode: "1311", nama: "Kabupaten Dharmasraya", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 12, kode: "1312", nama: "Kabupaten Pasaman Barat", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 13, kode: "1371", nama: "Kota Padang", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 14, kode: "1372", nama: "Kota Solok", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 15, kode: "1373", nama: "Kota Sawahlunto", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 16, kode: "1374", nama: "Kota Padang Panjang", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 17, kode: "1375", nama: "Kota Bukittinggi", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 18, kode: "1376", nama: "Kota Payakumbuh", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 19, kode: "1377", nama: "Kota Pariaman", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] }
     ];
 
     // Build overall Province summary (Default 0)
@@ -685,6 +723,24 @@
     let currentSortColumn = null;
     let isSortAsc = true;
 
+    // Toggle Kecamatan Rows Function
+    function toggleKecamatan(kodeKab) {
+      const rows = document.querySelectorAll('.kec-row-' + kodeKab);
+      const icon = document.getElementById('icon-' + kodeKab);
+      let isHidden = true;
+      rows.forEach(r => {
+        if (r.style.display === 'none') {
+          r.style.display = '';
+          isHidden = false;
+        } else {
+          r.style.display = 'none';
+        }
+      });
+      if (icon) {
+        icon.innerText = isHidden ? '[+]' : '[-]';
+      }
+    }
+
     // Charts references
     let donutChart, progressChart, submitChart, dailyChart;
 
@@ -698,99 +754,188 @@
         const response = await fetch(APPS_SCRIPT_URL);
         const data = await response.json();
 
-        const umkmSheet = data["progress-assignment-umkm"];
-        const ubSheet = data["progress-assignment-ub"];
         const targetSheet = data["target-wilayah"];
         const snapshotUmkmSheet = data["snapshot-kemarin-umkm"];
         const snapshotUbSheet = data["snapshot-kemarin-ub"];
+        const umkmKecSheet = data["umkm-kecamatan"];
+        const ubKecSheet = data["ub-kecamatan"];
+        const masterKecSheet = data["master-kec"];
 
-        if (!umkmSheet || !ubSheet) {
-          console.warn("Format sheet tidak sesuai di Google Sheets.");
+        // Console log for debugging
+        console.log("=== Data from Apps Script ===");
+        console.log("targetSheet:", targetSheet);
+        console.log("snapshotUmkmSheet:", snapshotUmkmSheet);
+        console.log("snapshotUbSheet:", snapshotUbSheet);
+        console.log("umkmKecSheet:", umkmKecSheet);
+        console.log("ubKecSheet:", ubKecSheet);
+        console.log("masterKecSheet:", masterKecSheet);
+        console.log("=============================");
+
+        if (!umkmKecSheet || !ubKecSheet) {
+          console.warn("Data kecamatan (umkm-kecamatan / ub-kecamatan) tidak ditemukan di payload Apps Script.");
           return;
         }
 
-        // Map data based on Wilayah code
+        // Buat Index (Map) untuk O(1) lookup
+        const mapByWilayah = (sheet) => {
+          const map = new Map();
+          if (sheet) {
+            sheet.forEach(row => {
+              const wil = String(row.Wilayah || row.wilayah || row.kode || "").trim();
+              if (wil) map.set(wil, row);
+            });
+          }
+          return map;
+        };
+
+        const targetMap = mapByWilayah(targetSheet);
+        const snapUmkmMap = mapByWilayah(snapshotUmkmSheet);
+        const snapUbMap = mapByWilayah(snapshotUbSheet);
+        const umkmKecMap = mapByWilayah(umkmKecSheet);
+        const ubKecMap = mapByWilayah(ubKecSheet);
+
+        // Initialize dashboardData (Kabupaten) to 0, data will be aggregated from Kecamatan
         dashboardData.forEach(w => {
           // Dynamic Targets from spreadsheet if available
-          if (targetSheet) {
-            const targetRow = targetSheet.find(row => String(row.Wilayah) === w.kode);
-            if (targetRow) {
-              w.targetUmkm = Number(targetRow["Target UMKM"] || 0);
-              w.targetUb = Number(targetRow["Target UB"] || 0);
-            }
+          const targetRow = targetMap.get(w.kode);
+          if (targetRow) {
+            w.targetUmkm = Number(targetRow["Target UMKM"] || 0);
+            w.targetUb = Number(targetRow["Target UB"] || 0);
           }
 
-          const umkmRow = umkmSheet.find(row => String(row.Wilayah) === w.kode);
-          const ubRow = ubSheet.find(row => String(row.Wilayah) === w.kode);
-
-          if (umkmRow) {
-            w.umkmOpen = Number(umkmRow.OPEN || 0);
-            w.umkmDraft = Number(umkmRow.DRAFT || 0) +
-              Number(umkmRow["REJECTED BY Pengawas"] || 0) +
-              Number(umkmRow["REJECTED BY Admin Kabupaten"] || 0) +
-              Number(umkmRow["REVOKED BY Pengawas"] || 0);
-
-            const submitFields = [
-              "SUBMITTED BY Pencacah", "APPROVED BY Pengawas", "SUBMITTED RESPONDENT",
-              "EDITED BY Pengawas", "EDITED BY Admin Kabupaten", "COMPLETED BY Admin Kabupaten"
-            ];
-            let umkmSubmit = 0;
-            submitFields.forEach(f => {
-              umkmSubmit += Number(umkmRow[f] || 0);
-            });
-            w.umkmSubmit = umkmSubmit;
-            w.umkmTotal = w.umkmOpen + w.umkmDraft + w.umkmSubmit;
-          }
-
-          if (ubRow) {
-            w.ubOpen = Number(ubRow.OPEN || 0);
-            w.ubDraft = Number(ubRow.DRAFT || 0) +
-              Number(ubRow["REJECTED BY Pengawas"] || 0) +
-              Number(ubRow["REJECTED BY Admin Kabupaten"] || 0) +
-              Number(ubRow["REVOKED BY Pengawas"] || 0);
-
-            const submitFields = [
-              "SUBMITTED BY Pencacah", "APPROVED BY Pengawas", "SUBMITTED RESPONDENT",
-              "EDITED BY Pengawas", "EDITED BY Admin Kabupaten", "COMPLETED BY Admin Kabupaten"
-            ];
-            let ubSubmit = 0;
-            submitFields.forEach(f => {
-              ubSubmit += Number(ubRow[f] || 0);
-            });
-            w.ubSubmit = ubSubmit;
-            w.ubTotal = w.ubOpen + w.ubDraft + w.ubSubmit;
-          }
-
-          // Recalculate progress: (umkmSubmit + ubSubmit) / (targetUmkm + targetUb) * 100
-          w.progress = ((w.umkmSubmit + w.ubSubmit) / (w.targetUmkm + w.targetUb)) * 100;
-
-          // Hitung selisih kenaikan harian secara lokal (Hari ini - Snapshot Kemarin)
-          let umkmKemarin = 0;
-          if (snapshotUmkmSheet && snapshotUmkmSheet.length > 0) {
-            // Cari baris yang cocok (bisa Wilayah atau wilayah)
-            const snapUmkm = snapshotUmkmSheet.find(row => {
-              const rowWilayah = row.Wilayah || row.wilayah || row.kode || "";
-              return String(rowWilayah).trim() === String(w.kode).trim();
-            });
-            if (snapUmkm) {
-              // Ambil nilai submit kemarin (bisa Submit Kemarin atau submit kemarin atau submit_kemarin)
-              umkmKemarin = Number(snapUmkm["Submit Kemarin"] || snapUmkm["submit kemarin"] || snapUmkm["Submit_Kemarin"] || 0);
-            }
-          }
-          w.harianUmkm = Math.max(0, w.umkmSubmit - umkmKemarin);
-
-          let ubKemarin = 0;
-          if (snapshotUbSheet && snapshotUbSheet.length > 0) {
-            const snapUb = snapshotUbSheet.find(row => {
-              const rowWilayah = row.Wilayah || row.wilayah || row.kode || "";
-              return String(rowWilayah).trim() === String(w.kode).trim();
-            });
-            if (snapUb) {
-              ubKemarin = Number(snapUb["Submit Kemarin"] || snapUb["submit kemarin"] || snapUb["Submit_Kemarin"] || 0);
-            }
-          }
-          w.harianUb = Math.max(0, w.ubSubmit - ubKemarin);
+          w.umkmOpen = 0; w.umkmDraft = 0; w.umkmSubmit = 0; w.umkmTotal = 0;
+          w.ubOpen = 0; w.ubDraft = 0; w.ubSubmit = 0; w.ubTotal = 0;
+          w.harianUmkm = 0; w.harianUb = 0;
+          w.progress = 0;
         });
+
+        // Proses Data Kecamatan
+        if (masterKecSheet || umkmKecSheet || ubKecSheet) {
+          const allKecMap = new Map();
+
+          // 1. Collect from master
+          if (masterKecSheet) {
+            masterKecSheet.forEach(mk => {
+              const idKec = String(mk.idkec || mk.IDKEC || mk.id || "").trim();
+              const nmKec = mk.nmkec || mk.NMKEC || mk.nama || "-";
+              if (idKec) allKecMap.set(idKec, nmKec);
+            });
+          }
+
+          // 2. Collect from UMKM
+          if (umkmKecSheet) {
+            umkmKecSheet.forEach(row => {
+              const idKec = String(row.Wilayah || row.wilayah || "").trim();
+              if (idKec && !allKecMap.has(idKec)) allKecMap.set(idKec, "-");
+            });
+          }
+
+          // 3. Collect from UB
+          if (ubKecSheet) {
+            ubKecSheet.forEach(row => {
+              const idKec = String(row.Wilayah || row.wilayah || "").trim();
+              if (idKec && !allKecMap.has(idKec)) allKecMap.set(idKec, "-");
+            });
+          }
+
+          allKecMap.forEach((nmKec, idKec) => {
+            const kabKode = idKec.substring(0, 4);
+            const parentKab = dashboardData.find(w => w.kode === kabKode);
+
+            if (parentKab) {
+              let kData = {
+                kode: idKec,
+                nama: nmKec,
+                umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0,
+                ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0,
+                progress: 0
+              };
+
+              // UMKM Kecamatan
+              if (umkmKecSheet) {
+                const umkmRow = umkmKecMap.get(idKec);
+                if (umkmRow) {
+                  kData.umkmOpen = Number(umkmRow.OPEN || 0);
+                  kData.umkmDraft = Number(umkmRow.DRAFT || 0);
+
+                  const submitFields = [
+                    "SUBMITTED BY Pencacah", "APPROVED BY Pengawas", "SUBMITTED RESPONDENT",
+                    "EDITED BY Pengawas", "EDITED BY Admin Kabupaten", "COMPLETED BY Admin Kabupaten",
+                    "REJECTED BY Pengawas", "REJECTED BY Admin Kabupaten", "REVOKED BY Pengawas"
+                  ];
+                  let submit = 0;
+                  submitFields.forEach(f => { submit += Number(umkmRow[f] || 0); });
+                  kData.umkmSubmit = submit;
+                  kData.umkmTotal = kData.umkmOpen + kData.umkmDraft + kData.umkmSubmit;
+                }
+              }
+
+              // Harian UMKM Kecamatan
+              let umkmKemarin = 0;
+              const snapUmkm = snapUmkmMap.get(idKec);
+              if (snapUmkm) {
+                umkmKemarin = Number(snapUmkm["Submit Kemarin"] || snapUmkm["submit kemarin"] || snapUmkm["Submit_Kemarin"] || 0);
+              }
+              kData.harianUmkm = Math.max(0, kData.umkmSubmit - umkmKemarin);
+
+              // UB Kecamatan
+              if (ubKecSheet) {
+                const ubRow = ubKecMap.get(idKec);
+                if (ubRow) {
+                  kData.ubOpen = Number(ubRow.OPEN || 0);
+                  kData.ubDraft = Number(ubRow.DRAFT || 0);
+
+                  const submitFields = [
+                    "SUBMITTED BY Pencacah", "APPROVED BY Pengawas", "SUBMITTED RESPONDENT",
+                    "EDITED BY Pengawas", "EDITED BY Admin Kabupaten", "COMPLETED BY Admin Kabupaten",
+                    "REJECTED BY Pengawas", "REJECTED BY Admin Kabupaten", "REVOKED BY Pengawas"
+                  ];
+                  let submit = 0;
+                  submitFields.forEach(f => { submit += Number(ubRow[f] || 0); });
+                  kData.ubSubmit = submit;
+                  kData.ubTotal = kData.ubOpen + kData.ubDraft + kData.ubSubmit;
+                }
+              }
+
+              // Harian UB Kecamatan
+              let ubKemarin = 0;
+              const snapUb = snapUbMap.get(idKec);
+              if (snapUb) {
+                ubKemarin = Number(snapUb["Submit Kemarin"] || snapUb["submit kemarin"] || snapUb["Submit_Kemarin"] || 0);
+              }
+              kData.harianUb = Math.max(0, kData.ubSubmit - ubKemarin);
+
+              // Progres Kecamatan (asumsikan target = total assignment saat ini)
+              const totalTarget = kData.umkmTotal + kData.ubTotal;
+              kData.progress = totalTarget > 0 ? ((kData.umkmSubmit + kData.ubSubmit) / totalTarget) * 100 : 0;
+
+              // AGREGASI KE KABUPATEN INDUK
+              parentKab.umkmOpen += kData.umkmOpen;
+              parentKab.umkmDraft += kData.umkmDraft;
+              parentKab.umkmSubmit += kData.umkmSubmit;
+              parentKab.umkmTotal += kData.umkmTotal;
+
+              parentKab.ubOpen += kData.ubOpen;
+              parentKab.ubDraft += kData.ubDraft;
+              parentKab.ubSubmit += kData.ubSubmit;
+              parentKab.ubTotal += kData.ubTotal;
+
+              parentKab.harianUmkm += kData.harianUmkm;
+              parentKab.harianUb += kData.harianUb;
+
+              parentKab.kecamatans.push(kData);
+            }
+          });
+
+          // Sort kecamatan by kode
+          dashboardData.forEach(w => {
+            w.kecamatans.sort((a, b) => a.kode.localeCompare(b.kode));
+
+            // Re-calculate Progress untuk tiap Kabupaten setelah diagregasi dari Kecamatan
+            const totalAll = w.umkmTotal + w.ubTotal;
+            w.progress = totalAll > 0 ? ((w.umkmSubmit + w.ubSubmit) / totalAll) * 100 : 0;
+          });
+        }
 
         // Recalculate global sumData
         sumData.targetUmkm = dashboardData.reduce((s, x) => s + x.targetUmkm, 0);
@@ -809,21 +954,42 @@
         sumData.harianUmkm = dashboardData.reduce((s, x) => s + (x.harianUmkm || 0), 0);
         sumData.harianUb = dashboardData.reduce((s, x) => s + (x.harianUb || 0), 0);
 
-        sumData.progress = ((sumData.umkmSubmit + sumData.ubSubmit) / (sumData.targetUmkm + sumData.targetUb)) * 100;
+        const globalTotalAssignment = sumData.umkmTotal + sumData.ubTotal;
+        sumData.progress = globalTotalAssignment > 0 ? ((sumData.umkmSubmit + sumData.ubSubmit) / globalTotalAssignment) * 100 : 0;
 
         // Update values in HTML cards
         document.getElementById('stat-target').innerText = fmtNum(sumData.targetUmkm + sumData.targetUb);
+        document.getElementById('stat-target-umkm').innerText = fmtNum(sumData.targetUmkm);
+        document.getElementById('stat-target-ub').innerText = fmtNum(sumData.targetUb);
+
         document.getElementById('stat-assigned').innerText = fmtNum(sumData.umkmTotal + sumData.ubTotal);
+        document.getElementById('stat-open').innerText = fmtNum(sumData.umkmOpen + sumData.ubOpen);
+        document.getElementById('stat-draft').innerText = fmtNum(sumData.umkmDraft + sumData.ubDraft);
+        document.getElementById('stat-submit').innerText = fmtNum(sumData.umkmSubmit + sumData.ubSubmit);
+        document.getElementById('stat-umkm-total').innerText = fmtNum(sumData.umkmTotal);
+        document.getElementById('stat-ub-total').innerText = fmtNum(sumData.ubTotal);
 
-        const percentSpan = `<span class="font-sans text-2xl font-bold ml-0.5 text-[var(--accent-color)]">%</span>`;
-        document.getElementById('stat-progress').innerHTML = fmtPct(sumData.progress) + percentSpan;
+        const targetProg = getTargetProgress();
+        const mainProgColorVar = sumData.progress < targetProg ? 'var(--danger-color)' : 'var(--success-color)';
+
+        const percentSpan = `<span class="font-sans text-2xl font-bold ml-0.5" style="color: ${mainProgColorVar}">%</span>`;
+        const statProgEl = document.getElementById('stat-progress');
+        statProgEl.className = `metric-value`;
+        statProgEl.style.color = mainProgColorVar;
+        statProgEl.innerHTML = fmtPct(sumData.progress) + percentSpan;
+        
         document.querySelector('.progress-bar-fill').style.width = sumData.progress.toFixed(2) + '%';
+        // Ubah warna bar juga jika merah
+        document.querySelector('.progress-bar-fill').style.backgroundColor = mainProgColorVar;
 
-        // Update Kenaikan Harian Akumulatif (Persentase kenaikan harian terhadap total target)
+        // Update Kenaikan Harian Akumulatif (Persentase kenaikan harian terhadap total assignment)
         const totalHarian = (sumData.harianUmkm || 0) + (sumData.harianUb || 0);
-        const totalTarget = sumData.targetUmkm + sumData.targetUb;
+        const totalTarget = sumData.umkmTotal + sumData.ubTotal;
         const dailyProgressPct = totalTarget > 0 ? (totalHarian / totalTarget * 100) : 0;
-        document.getElementById('stat-daily-change').innerText = `▲ +${fmtPct(dailyProgressPct)}%`;
+        
+        const dailyChangeSpan = document.getElementById('stat-daily-change');
+        dailyChangeSpan.innerText = `▲ +${fmtPct(dailyProgressPct)}%`;
+        dailyChangeSpan.style.color = getDailyColor(dailyProgressPct);
 
         // Update Sync time to Spreadsheet's last edit time from Apps Script
         console.log("lastUpdated dari Apps Script:", data.lastUpdated);
@@ -904,17 +1070,19 @@
       const tbody = document.getElementById('table-body');
       tbody.innerHTML = '';
 
+      const fragment = document.createDocumentFragment();
+
       // First Row: Province Totals
       const provTotalHarian = (sumData.harianUmkm || 0) + (sumData.harianUb || 0);
-      const provTotalTarget = sumData.targetUmkm + sumData.targetUb;
+      const provTotalTarget = sumData.umkmTotal + sumData.ubTotal;
       const provDailyPct = provTotalTarget > 0 ? (provTotalHarian / provTotalTarget * 100) : 0;
 
       const provRow = document.createElement('tr');
       provRow.className = 'bg-[rgba(212,178,122,0.06)] font-bold';
       provRow.innerHTML = `
         <td class="pl-6">BPS Provinsi Sumatera Barat</td>
-        <td class="text-right text-[var(--text-secondary)]">${fmtNum(sumData.targetUmkm)}</td>
-        <td class="text-right border-r border-[var(--border-color)] text-[var(--text-secondary)]">${fmtNum(sumData.targetUb)}</td>
+        <!-- <td class="text-right text-[var(--text-secondary)]">${fmtNum(sumData.targetUmkm)}</td> -->
+        <!-- <td class="text-right border-r border-[var(--border-color)] text-[var(--text-secondary)]">${fmtNum(sumData.targetUb)}</td> -->
         
         <td class="text-right text-neutral-400">${fmtNum(sumData.umkmOpen)}</td>
         <td class="text-right text-[var(--warning-color)]">${fmtNum(sumData.umkmDraft)}</td>
@@ -926,22 +1094,29 @@
         <td class="text-right text-[var(--success-color)]">${fmtNum(sumData.ubSubmit)}</td>
         <td class="text-right border-r border-[var(--border-color)] text-[var(--text-primary)]">${fmtNum(sumData.ubTotal)}</td>
         
-        <td class="text-right font-bold text-[var(--accent-color)]">${fmtPct(sumData.progress)}% <span class="text-xs font-semibold text-[var(--success-color)] block md:inline ml-1">(+${fmtPct(provDailyPct)}%)</span></td>
+        <td class="text-right font-bold" style="color: ${getProgressColor(sumData.progress)}">${fmtPct(sumData.progress)}% <span class="text-xs font-semibold block md:inline ml-1" style="color: ${getDailyColor(provDailyPct)}">(+${fmtPct(provDailyPct)}%)</span></td>
       `;
-      tbody.appendChild(provRow);
+      fragment.appendChild(provRow);
 
       // Wilayah Rows
-      data.forEach((w) => {
+      data.forEach((w, index) => {
         const totalHarian = (w.harianUmkm || 0) + (w.harianUb || 0);
-        const totalTarget = w.targetUmkm + w.targetUb;
+        const totalTarget = w.umkmTotal + w.ubTotal;
         const dailyPct = totalTarget > 0 ? (totalHarian / totalTarget * 100) : 0;
 
+        const hasKec = w.kecamatans && w.kecamatans.length > 0;
+        const toggleIcon = hasKec ? `<span id="icon-${w.kode}" class="mr-2 text-[var(--accent-color)] text-lg cursor-pointer font-bold leading-none select-none" onclick="toggleKecamatan('${w.kode}')">[+]</span>` : '';
+
         const row = document.createElement('tr');
-        row.id = `wil-row-${w.id}`;
+        row.id = `wil-row-${w.kode}`;
+        const mainBgClass = index % 2 !== 0 ? 'bg-[rgba(0,0,0,0.04)] dark:bg-[rgba(255,255,255,0.04)]' : '';
+        row.className = `border-b border-[var(--border-color)] hover:bg-[rgba(229,185,116,0.08)] transition-colors ${mainBgClass}`;
         row.innerHTML = `
-          <td class="font-medium pl-6">[${w.kode}] ${w.nama}</td>
-          <td class="text-right text-[var(--text-muted)]">${fmtNum(w.targetUmkm)}</td>
-          <td class="text-right border-r border-[var(--border-color)] text-[var(--text-muted)]">${fmtNum(w.targetUb)}</td>
+          <td class="font-medium pl-6 whitespace-nowrap align-middle">
+            <div class="flex items-center">${toggleIcon}[${w.kode}] ${w.nama}</div>
+          </td>
+          <!-- <td class="text-right text-[var(--text-muted)] align-middle">${fmtNum(w.targetUmkm)}</td> -->
+          <!-- <td class="text-right border-r border-[var(--border-color)] text-[var(--text-muted)]">${fmtNum(w.targetUb)}</td> -->
           
           <td class="text-right text-[var(--text-muted)]">${fmtNum(w.umkmOpen)}</td>
           <td class="text-right text-[var(--warning-color)]">${fmtNum(w.umkmDraft)}</td>
@@ -953,10 +1128,68 @@
           <td class="text-right text-[var(--success-color)]">${fmtNum(w.ubSubmit)}</td>
           <td class="text-right border-r border-[var(--border-color)] font-semibold">${fmtNum(w.ubTotal)}</td>
           
-          <td class="text-right font-bold text-[var(--text-secondary)]">${fmtPct(w.progress)}% <span class="text-[10px] font-semibold text-[var(--success-color)] block md:inline ml-1">(+${fmtPct(dailyPct)}%)</span></td>
+          <td class="text-right font-bold" style="color: ${getProgressColor(w.progress)}">${fmtPct(w.progress)}% <span class="text-[10px] font-semibold block md:inline ml-1" style="color: ${getDailyColor(dailyPct)}">(+${fmtPct(dailyPct)}%)</span></td>
         `;
-        tbody.appendChild(row);
+        fragment.appendChild(row);
+
+        if (hasKec) {
+          let kecTableRows = w.kecamatans.map((kec, kIndex) => {
+            const bgClass = kIndex % 2 !== 0 ? 'bg-[rgba(0,0,0,0.05)] dark:bg-[rgba(255,255,255,0.05)]' : '';
+            return `
+            <tr class="border-b border-[var(--border-color)] last:border-0 hover:bg-[rgba(229,185,116,0.1)] transition-colors ${bgClass}">
+              <td class="py-2 px-3 text-[var(--text-primary)] font-medium">└ [${kec.kode}] ${kec.nama}</td>
+              <td class="text-right py-2 px-2 text-[var(--text-muted)]">${fmtNum(kec.umkmOpen)}</td>
+              <td class="text-right py-2 px-2 text-[var(--warning-color)]">${fmtNum(kec.umkmDraft)}</td>
+              <td class="text-right py-2 px-2 text-[var(--success-color)]">${fmtNum(kec.umkmSubmit)}</td>
+              <td class="text-right py-2 px-2 pr-4 border-r border-[var(--border-color)] font-semibold">${fmtNum(kec.umkmTotal)}</td>
+              
+              <td class="text-right py-2 px-2 pl-4 text-[var(--text-muted)]">${fmtNum(kec.ubOpen)}</td>
+              <td class="text-right py-2 px-2 text-[var(--warning-color)]">${fmtNum(kec.ubDraft)}</td>
+              <td class="text-right py-2 px-2 text-[var(--success-color)]">${fmtNum(kec.ubSubmit)}</td>
+              <td class="text-right py-2 px-2 pr-4 border-r border-[var(--border-color)] font-semibold">${fmtNum(kec.ubTotal)}</td>
+              
+              <td class="text-right py-2 px-3 font-bold" style="color: ${getProgressColor(kec.progress)}">${fmtPct(kec.progress)}%</td>
+            </tr>
+            `;
+          }).join('');
+
+          const kRowParent = document.createElement('tr');
+          kRowParent.className = `kec-row-${w.kode} bg-[rgba(0,0,0,0.06)] dark:bg-[rgba(0,0,0,0.4)]`;
+          kRowParent.style.display = 'none'; // Hidden by default
+          kRowParent.innerHTML = `
+            <td colspan="12" class="p-0 border-0">
+              <div class="px-6 py-4 shadow-inner border-y border-[var(--border-color)]">
+                <table class="w-full text-sm rounded-lg overflow-hidden border border-[var(--border-color)]">
+                  <thead class="bg-[rgba(229,185,116,0.08)] text-[var(--text-secondary)]">
+                    <tr>
+                      <th class="text-left py-2 px-3 font-semibold align-middle border-b border-[rgba(229,185,116,0.15)]" rowspan="2">Kecamatan</th>
+                      <th class="text-center py-1 px-2 font-bold border-b border-r border-[rgba(229,185,116,0.15)] tracking-wider" colspan="4">[Sensus Ekonomi 2026]</th>
+                      <th class="text-center py-1 px-2 font-bold border-b border-r border-[rgba(229,185,116,0.15)] tracking-wider" colspan="4">[Sensus Ekonomi 2026 - UB]</th>
+                      <th class="text-right py-2 px-3 font-bold align-middle border-b border-[rgba(229,185,116,0.15)]" rowspan="2">Progres</th>
+                    </tr>
+                    <tr>
+                      <th class="text-right py-2 px-2 font-semibold">Open</th>
+                      <th class="text-right py-2 px-2 font-semibold">Draft</th>
+                      <th class="text-right py-2 px-2 font-semibold">Submit</th>
+                      <th class="text-right py-2 px-2 pr-4 font-bold border-r border-[rgba(229,185,116,0.15)]">Total</th>
+                      <th class="text-right py-2 px-2 pl-4 font-semibold">Open</th>
+                      <th class="text-right py-2 px-2 font-semibold">Draft</th>
+                      <th class="text-right py-2 px-2 font-semibold">Submit</th>
+                      <th class="text-right py-2 px-2 pr-4 font-bold border-r border-[rgba(229,185,116,0.15)]">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${kecTableRows}
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          `;
+          fragment.appendChild(kRowParent);
+        }
       });
+
+      tbody.appendChild(fragment);
     }
 
     // Filter wilayah in search field
@@ -965,18 +1198,43 @@
       const filter = input.value.toUpperCase();
       const rows = document.querySelectorAll('#table-body > tr');
 
-      // Loop through all table rows, hide those who don't match the search query
+      let currentWilRow = null;
+      let currentWilMatch = false;
+
+      // Loop through all table rows
       rows.forEach(r => {
-        // Skip header
         if (r.id.startsWith('wil-row-')) {
+          currentWilRow = r;
           const textCell = r.getElementsByTagName('td')[0];
           if (textCell) {
             const txtValue = textCell.textContent || textCell.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            currentWilMatch = txtValue.toUpperCase().indexOf(filter) > -1;
+
+            if (currentWilMatch) {
               r.style.display = '';
             } else {
               r.style.display = 'none';
             }
+          }
+        } else if (r.className.includes('kec-row-')) {
+          if (!currentWilRow) return;
+
+          const kode = currentWilRow.id.replace('wil-row-', '');
+          const icon = document.getElementById('icon-' + kode);
+
+          const txtValue = r.textContent || r.innerText;
+          // Check if kecamatan matches. Ignore if filter is empty to prevent expanding all.
+          const kecMatch = filter !== '' && txtValue.toUpperCase().indexOf(filter) > -1;
+
+          if (kecMatch) {
+            // Show parent and expand kecamatan if child matches
+            currentWilRow.style.display = '';
+            r.style.display = '';
+            if (icon) icon.innerText = '[-]';
+          } else {
+            // Keep hidden or collapse
+            r.style.display = 'none';
+            if (icon) icon.innerText = '[+]';
           }
         }
       });
@@ -1022,14 +1280,17 @@
 
     // CSV Export
     function exportCSV() {
-      let csv = 'Kode Wilayah,Nama Wilayah,Target UMKM,Target UB,UMKM Open,UMKM Draft,UMKM Submit,UMKM Total,UB Open,UB Draft,UB Submit,UB Total,Progres Akumulatif %\n';
+      // let csv = 'Kode Wilayah,Nama Wilayah,Target [Sensus Ekonomi 2026],Target [Sensus Ekonomi 2026 - UB],[Sensus Ekonomi 2026] Open,...'
+      let csv = 'Kode Wilayah,Nama Wilayah,[Sensus Ekonomi 2026] Open,[Sensus Ekonomi 2026] Draft,[Sensus Ekonomi 2026] Submit,[Sensus Ekonomi 2026] Total,[Sensus Ekonomi 2026 - UB] Open,[Sensus Ekonomi 2026 - UB] Draft,[Sensus Ekonomi 2026 - UB] Submit,[Sensus Ekonomi 2026 - UB] Total,Progres Akumulatif %\n';
 
       // Province row
-      csv += `-,Provinsi Sumatera Barat,${sumData.targetUmkm},${sumData.targetUb},${sumData.umkmOpen},${sumData.umkmDraft},${sumData.umkmSubmit},${sumData.umkmTotal},${sumData.ubOpen},${sumData.ubDraft},${sumData.ubSubmit},${sumData.ubTotal},${sumData.progress}\n`;
+      // csv += ... (targetUmkm, targetUb)
+      csv += `-,Provinsi Sumatera Barat,${sumData.umkmOpen},${sumData.umkmDraft},${sumData.umkmSubmit},${sumData.umkmTotal},${sumData.ubOpen},${sumData.ubDraft},${sumData.ubSubmit},${sumData.ubTotal},${sumData.progress}\n`;
 
       // Wilayah rows
       dashboardData.forEach(w => {
-        csv += `${w.kode},${w.nama},${w.targetUmkm},${w.targetUb},${w.umkmOpen},${w.umkmDraft},${w.umkmSubmit},${w.umkmTotal},${w.ubOpen},${w.ubDraft},${w.ubSubmit},${w.ubTotal},${w.progress}\n`;
+        // csv += ... (w.targetUmkm, w.targetUb)
+        csv += `${w.kode},${w.nama},${w.umkmOpen},${w.umkmDraft},${w.umkmSubmit},${w.umkmTotal},${w.ubOpen},${w.ubDraft},${w.ubSubmit},${w.ubTotal},${w.progress}\n`;
       });
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
