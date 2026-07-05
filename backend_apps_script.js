@@ -21,11 +21,16 @@ function recordDailyProgress() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   
   let today;
+  let lastEditTimestamp;
   try {
     const file = DriveApp.getFileById(ss.getId());
-    today = Utilities.formatDate(file.getLastUpdated(), "Asia/Jakarta", "yyyy-MM-dd");
+    const lastUpdated = file.getLastUpdated();
+    today = Utilities.formatDate(lastUpdated, "Asia/Jakarta", "yyyy-MM-dd");
+    lastEditTimestamp = Utilities.formatDate(lastUpdated, "Asia/Jakarta", "yyyy-MM-dd HH:mm:ss");
   } catch (e) {
-    today = Utilities.formatDate(new Date(), "Asia/Jakarta", "yyyy-MM-dd");
+    const now = new Date();
+    today = Utilities.formatDate(now, "Asia/Jakarta", "yyyy-MM-dd");
+    lastEditTimestamp = Utilities.formatDate(now, "Asia/Jakarta", "yyyy-MM-dd HH:mm:ss");
   }
 
   // --- UMKM (Sekarang baca langsung dari Sensus Ekonomi 2026) ---
@@ -33,7 +38,8 @@ function recordDailyProgress() {
     sourceSheet: "Sensus Ekonomi 2026",
     snapshotSheet: "snapshot-kemarin-umkm",
     dailySheet: "progress-harian-umkm",
-    today: today
+    today: today,
+    timestamp: lastEditTimestamp
   });
 
   // --- UB (Sekarang baca langsung dari Sensus Ekonomi 2026 - UB) ---
@@ -41,15 +47,17 @@ function recordDailyProgress() {
     sourceSheet: "Sensus Ekonomi 2026 - UB",
     snapshotSheet: "snapshot-kemarin-ub",
     dailySheet: "progress-harian-ub",
-    today: today
+    today: today,
+    timestamp: lastEditTimestamp
   });
 
-  Logger.log("✅ Kenaikan harian level KECAMATAN berhasil dihitung untuk tanggal: " + today);
+  Logger.log("✅ Kenaikan harian level KECAMATAN berhasil dihitung untuk tanggal: " + lastEditTimestamp);
   
   return {
     umkm: umkmChanged,
     ub: ubChanged,
-    today: today
+    today: today,
+    timestamp: lastEditTimestamp
   };
 }
 
@@ -69,11 +77,19 @@ function calculateDaily(ss, config) {
   // 2. Baca snapshot kemarin (cari data dengan tanggal terbaru SEBELUM hari ini)
   const snapshotData = getSheetAsObjects(snapshot);
   
+  function getDateString(rawVal) {
+    if (!rawVal) return "";
+    if (rawVal instanceof Date) {
+      return Utilities.formatDate(rawVal, "Asia/Jakarta", "yyyy-MM-dd");
+    }
+    return String(rawVal).trim().substring(0, 10);
+  }
+  
   let latestPastDate = "";
   let hasTodaySnapshot = false;
 
   snapshotData.forEach(row => {
-    let rowDate = String(row["Tanggal"] || "").trim();
+    let rowDate = getDateString(row["Tanggal"]);
     if (rowDate === config.today) {
       hasTodaySnapshot = true;
     } else if (rowDate && rowDate < config.today && rowDate > latestPastDate) {
@@ -86,7 +102,7 @@ function calculateDaily(ss, config) {
   let firstRowToday = -1;
 
   snapshotData.forEach((row, idx) => {
-    let rowDate = String(row["Tanggal"] || "").trim();
+    let rowDate = getDateString(row["Tanggal"]);
     let kode = String(row["Wilayah"]).trim();
     let vals = {
       submit: Number(row["Submit"] || row["Submit Kemarin"] || 0),
@@ -159,7 +175,7 @@ function calculateDaily(ss, config) {
     const pastVals = latestPastMap[kode] || { submit: 0 };
     const submitKemarin = pastVals.submit || 0;
     const kenaikan = Math.max(0, submitToday - submitKemarin);
-    return [kode, wilayahNames[kode], kenaikan, config.today];
+    return [kode, wilayahNames[kode], kenaikan, "'" + config.timestamp];
   });
 
   daily.clearContents();
@@ -172,7 +188,7 @@ function calculateDaily(ss, config) {
   const snapshotHeaders = ["Tanggal", "Wilayah", "Submit", "Open", "Draft"];
   const snapshotRows = allKodes.map(kode => {
     const vals = todayMap[kode];
-    return [config.today, kode, vals.submit, vals.open, vals.draft];
+    return ["'" + config.timestamp, kode, vals.submit, vals.open, vals.draft];
   });
 
   if (snapshot.getLastRow() === 0) {
@@ -316,7 +332,7 @@ function confirmRecordDailyProgress() {
   
   if (response == ui.Button.YES) {
     var result = recordDailyProgress();
-    var msg = "Penghitungan selesai (Tanggal Data: " + result.today + ").\n\n";
+    var msg = "Penghitungan selesai (Tanggal Data: " + result.timestamp + ").\n\n";
     msg += "• UMKM: " + (result.umkm ? "Diperbarui (Ada perubahan)" : "Dilewati (Tidak ada perubahan)") + "\n";
     msg += "• UB: " + (result.ub ? "Diperbarui (Ada perubahan)" : "Dilewati (Tidak ada perubahan)");
     
