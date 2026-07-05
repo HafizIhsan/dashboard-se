@@ -705,7 +705,10 @@
     }
 
     function getDailyColor(pct) {
-      return pct <= 0 ? 'var(--danger-color)' : 'var(--success-color)';
+      const dailyTarget = 100 / 78; // Target harian minimum (sekitar 1.28%)
+      if (pct <= 0) return 'var(--danger-color)';
+      if (pct < dailyTarget) return 'var(--warning-color)';
+      return 'var(--success-color)';
     }
 
     // Data Dashboard SE2026 Sumatera Barat (Nilai awal 0, diisi dinamis dari Apps Script)
