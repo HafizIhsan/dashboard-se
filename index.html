@@ -186,11 +186,11 @@
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: 12px 16px;
+      padding: 12px 8px;
     }
 
     .impeccable-table td {
-      padding: 10px 16px;
+      padding: 10px 8px;
       border-bottom: 1px solid var(--border-color);
       font-size: 0.85rem;
       color: var(--text-primary);
@@ -364,7 +364,7 @@
   <div class="grain-overlay" aria-hidden="true"></div>
 
   <!-- Main Container -->
-  <div class="max-w-7xl mx-auto space-y-8">
+  <div class="w-full mx-auto space-y-8">
 
     <!-- ===== HEADER ===== -->
     <header
@@ -427,8 +427,7 @@
       <div class="plinth-card p-6 flex flex-col justify-between min-h-[170px]">
         <div class="flex justify-between items-start">
           <div>
-            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">TOTAL
-              PRELIST AWAL</span>
+            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">PRELIST AWAL</span>
             <div id="stat-target" class="metric-value text-[var(--text-primary)] mt-2">0</div>
           </div>
           <div class="text-[var(--text-muted)]">
@@ -438,16 +437,18 @@
             </svg>
           </div>
         </div>
-        <div class="flex gap-4 mt-6 border-t border-[var(--border-color)] pt-3 text-xs">
-          <div>
-            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">[Sensus Ekonomi
-              2026]</span>
+        <div class="flex justify-between mt-6 border-t border-[var(--border-color)] pt-3 text-xs w-full">
+          <div class="flex-1">
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">UMKM</span>
             <span id="stat-target-umkm" class="font-bold text-[var(--text-secondary)]">0</span>
           </div>
-          <div class="border-l border-[var(--border-color)] pl-4">
-            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">[Sensus Ekonomi 2026 -
-              UB]</span>
+          <div class="flex-1 border-l border-[var(--border-color)] pl-4">
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">UB</span>
             <span id="stat-target-ub" class="font-bold text-[var(--text-secondary)]">0</span>
+          </div>
+          <div class="flex-1 border-l border-[var(--border-color)] pl-4">
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">KELUARGA</span>
+            <span id="stat-target-keluarga" class="font-bold text-[var(--text-secondary)]">0</span>
           </div>
         </div>
       </div>
@@ -519,7 +520,16 @@
       <div class="plinth-card p-6 flex flex-col justify-between min-h-[170px]">
         <div class="flex justify-between items-start">
           <div>
-            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">PROGRES SUBMIT</span>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">PROGRES
+                SUBMIT</span>
+              <select id="progress-mode"
+                class="bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[10px] rounded px-1.5 py-1 outline-none text-[var(--text-secondary)] font-medium"
+                onchange="syncProgressMode('progress-mode')">
+                <option value="fasih" class="bg-[var(--bg-secondary)]">Berdasarkan Assignment Fasih</option>
+                <option value="prelist" class="bg-[var(--bg-secondary)]">Berdasarkan Prelist Awal</option>
+              </select>
+            </div>
             <div class="flex items-baseline gap-2 mt-2">
               <span id="stat-progress" class="metric-value text-[var(--text-primary)]">0,00<span
                   class="font-sans text-2xl font-bold ml-0.5 text-[var(--accent-color)]">%</span></span>
@@ -548,13 +558,13 @@
     </section>
 
     <!-- ===== CHARTS SECTION ===== -->
-    <section class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+    <section class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
 
       <!-- Chart 1: Donut -->
       <div class="plinth-card p-6 flex flex-col">
         <div>
-          <h3 class="text-sm font-bold tracking-tight">Breakdown Status</h3>
-          <p class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mt-0.5">Sebaran Status Penugasan</p>
+          <h3 class="text-sm font-bold tracking-tight italic">Breakdown Status</h3>
+          <p class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mt-0.5">Sebaran Status Assignment</p>
         </div>
         <div class="my-6 flex justify-center">
           <div id="donutChart" class="w-full"></div>
@@ -563,16 +573,27 @@
 
       <!-- Chart 2: Cumulative Progress Rank -->
       <div class="plinth-card p-6 flex flex-col justify-between">
-        <div>
-          <h3 class="text-sm font-bold tracking-tight">Progres Akumulatif %</h3>
-          <p class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mt-0.5">19 Kabupaten/Kota</p>
+        <div class="flex justify-between items-start gap-4">
+          <div>
+            <h3 class="text-sm font-bold tracking-tight">Progres Akumulatif %</h3>
+            <p class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mt-0.5">19 Kabupaten/Kota</p>
+          </div>
+          <div class="flex-shrink-0">
+            <select id="progress-mode-chart"
+              class="bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[10px] rounded px-1.5 py-1 outline-none text-[var(--text-secondary)] font-medium"
+              onchange="syncProgressMode('progress-mode-chart')">
+              <option value="fasih" class="bg-[var(--bg-secondary)]">Berdasarkan Assignment Fasih</option>
+              <option value="prelist" class="bg-[var(--bg-secondary)]">Berdasarkan Prelist Awal</option>
+            </select>
+          </div>
         </div>
         <div class="my-6">
           <div id="progressRankChart"></div>
         </div>
       </div>
 
-      <!-- Chart 3: Cumulative Submit Vol Rank -->
+      <!-- Chart 3: Cumulative Submit Vol Rank (Di-comment sesuai permintaan) -->
+      <!--
       <div class="plinth-card p-6 flex flex-col justify-between">
         <div>
           <h3 class="text-sm font-bold tracking-tight">Ranking Submit Akumulatif</h3>
@@ -583,11 +604,20 @@
           <div id="submitRankChart"></div>
         </div>
       </div>
+      -->
 
       <!-- Chart 4: Daily Progress Rank -->
       <div class="plinth-card p-6 flex flex-col justify-between">
         <div>
-          <h3 class="text-sm font-bold tracking-tight">Progres Harian</h3>
+          <div class="flex items-center justify-between gap-2">
+            <h3 class="text-sm font-bold tracking-tight">Progres Harian</h3>
+            <select id="progress-mode-daily"
+              class="bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[10px] rounded px-1.5 py-1 outline-none text-[var(--text-secondary)] font-medium"
+              onchange="syncProgressMode('progress-mode-daily')">
+              <option value="fasih" class="bg-[var(--bg-secondary)]">Berdasarkan Assignment Fasih</option>
+              <option value="prelist" class="bg-[var(--bg-secondary)]">Berdasarkan Prelist Awal</option>
+            </select>
+          </div>
           <p id="daily-chart-subtitle" class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mt-0.5">
             Kenaikan Submit Hari Ini</p>
         </div>
@@ -612,24 +642,41 @@
         </div>
         <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           <!-- Search Input -->
-          <div class="relative w-full sm:w-64">
-            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg class="h-4 w-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </span>
-            <input type="text" id="search-wilayah" onkeyup="filterWilayah()" placeholder="Cari wilayah..."
-              class="impeccable-input pl-9 w-full text-sm" />
+          <div class="relative w-full sm:w-64 flex flex-col justify-end">
+            <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
+            <div class="relative w-full">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-4 w-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </span>
+              <input type="text" id="search-wilayah" onkeyup="filterWilayah()" placeholder="Cari wilayah..."
+                class="impeccable-input pl-9 w-full text-sm h-[34px]" />
+            </div>
+          </div>
+          <!-- Progress Mode Select -->
+          <div class="relative w-full sm:w-auto flex flex-col justify-end">
+            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1 font-bold">Penghitungan %
+              progres:</span>
+            <select id="progress-mode-table"
+              class="bg-[var(--bg-secondary)] border border-[var(--border-color)] text-sm rounded px-2 outline-none text-[var(--text-secondary)] font-medium w-full h-[34px]"
+              onchange="syncProgressMode('progress-mode-table')">
+              <option value="fasih" class="bg-[var(--bg-secondary)]">Berdasarkan Assignment Fasih</option>
+              <option value="prelist" class="bg-[var(--bg-secondary)]">Berdasarkan Prelist Awal</option>
+            </select>
           </div>
           <!-- Export Button -->
-          <button onclick="exportCSV()" class="impeccable-btn flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Ekspor CSV</span>
-          </button>
+          <div class="flex flex-col justify-end w-full sm:w-auto">
+            <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
+            <button onclick="exportCSV()" class="impeccable-btn flex items-center justify-center gap-2 h-[34px]">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Unduh CSV</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -641,25 +688,37 @@
               <th rowspan="2" class="cursor-pointer pl-6" onclick="sortTable(1)">Wilayah <span
                   id="sort-indicator-1">↕</span>
               </th>
-              <!-- <th colspan="2" class="text-center bg-[rgba(212,178,122,0.02)]">Target Prelist Awal</th> -->
-              <th colspan="4" class="text-center bg-[rgba(163,201,168,0.02)]">[Sensus Ekonomi 2026]</th>
-              <th colspan="4" class="text-center bg-[rgba(229,185,116,0.02)]">[Sensus Ekonomi 2026 - UB]</th>
-              <th rowspan="2" class="text-right cursor-pointer" onclick="sortTable(10)">Progres % <span
-                  id="sort-indicator-10">↕</span></th>
+              <th colspan="4" class="text-center bg-[rgba(212,178,122,0.02)]">Target Prelist Awal</th>
+              <th id="th-umkm-group" colspan="5" class="text-center bg-[rgba(163,201,168,0.02)]">[Sensus Ekonomi 2026]
+              </th>
+              <th id="th-ub-group" colspan="5" class="text-center bg-[rgba(229,185,116,0.02)]">[Sensus Ekonomi 2026 -
+                UB]</th>
+              <th rowspan="2" class="text-right cursor-pointer align-middle" onclick="sortTable(10)">%
+                Progres<br>Akumulatif <span id="sort-indicator-10">↕</span></th>
             </tr>
             <tr class="text-[9px]">
-              <!-- <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)]">[Sensus Ekonomi 2026]</th> -->
-              <!-- <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)]">[Sensus Ekonomi 2026 - UB]</th> -->
+              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)]">UMKM</th>
+              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)]">UB</th>
+              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)]">Keluarga</th>
+              <th
+                class="text-right bg-[rgba(212,178,122,0.02)] border-r border-[var(--border-color)] text-[var(--text-secondary)] font-bold">
+                Total</th>
 
               <th class="text-right bg-[rgba(163,201,168,0.02)]">Open</th>
               <th class="text-right bg-[rgba(163,201,168,0.02)]">Draft</th>
               <th class="text-right bg-[rgba(163,201,168,0.02)] text-[var(--success-color)]">Submit</th>
-              <th class="text-right bg-[rgba(163,201,168,0.02)] font-bold">Total</th>
+              <th id="th-umkm-total" class="text-right bg-[rgba(163,201,168,0.02)] font-bold">Total</th>
+              <th id="th-umkm-pct"
+                class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] font-bold text-[var(--accent-color)]">
+                %</th>
 
               <th class="text-right bg-[rgba(229,185,116,0.02)]">Open</th>
               <th class="text-right bg-[rgba(229,185,116,0.02)]">Draft</th>
               <th class="text-right bg-[rgba(229,185,116,0.02)] text-[var(--success-color)]">Submit</th>
-              <th class="text-right bg-[rgba(229,185,116,0.02)] font-bold">Total</th>
+              <th id="th-ub-total" class="text-right bg-[rgba(229,185,116,0.02)] font-bold">Total</th>
+              <th id="th-ub-pct"
+                class="text-right bg-[rgba(229,185,116,0.02)] border-r border-[var(--border-color)] font-bold text-[var(--accent-color)]">
+                %</th>
             </tr>
           </thead>
           <tbody id="table-body">
@@ -736,10 +795,171 @@
 
     // Build overall Province summary (Default 0)
     const sumData = {
-      targetUmkm: 0, targetUb: 0,
+      targetUmkm: 0, targetUb: 0, targetKeluarga: 0,
       umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0,
       ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0,
       progress: 0, harianUmkm: 0, harianUb: 0
+    };
+
+    window.updateProgressCard = function () {
+      const mode = document.getElementById('progress-mode').value;
+      const statProgEl = document.getElementById('stat-progress');
+      const progressBarFill = document.querySelector('.progress-bar-fill');
+
+      const totalSubmit = sumData.umkmSubmit + sumData.ubSubmit;
+      const totalHarian = (sumData.harianUmkm || 0) + (sumData.harianUb || 0);
+
+      let denominator = 0;
+      if (mode === 'fasih') {
+        denominator = sumData.umkmTotal + sumData.ubTotal;
+      } else {
+        denominator = sumData.targetUmkm + sumData.targetUb + sumData.targetKeluarga;
+      }
+
+      const progressValue = denominator > 0 ? (totalSubmit / denominator) * 100 : 0;
+      const dailyProgressPct = denominator > 0 ? (totalHarian / denominator) * 100 : 0;
+
+      const targetProg = getTargetProgress();
+      const mainProgColorVar = progressValue < targetProg ? 'var(--danger-color)' : 'var(--success-color)';
+
+      const percentSpan = `<span class="font-sans text-2xl font-bold ml-0.5" style="color: ${mainProgColorVar}">%</span>`;
+
+      if (statProgEl) {
+        statProgEl.className = `metric-value`;
+        statProgEl.style.color = mainProgColorVar;
+        statProgEl.innerHTML = fmtPct(progressValue) + percentSpan;
+      }
+
+      if (progressBarFill) {
+        progressBarFill.style.width = Math.min(progressValue, 100).toFixed(2) + '%';
+        progressBarFill.style.backgroundColor = mainProgColorVar;
+      }
+
+      const dailyChangeSpan = document.getElementById('stat-daily-change');
+      if (dailyChangeSpan) {
+        dailyChangeSpan.innerText = `▲ +${fmtPct(dailyProgressPct)}%`;
+        dailyChangeSpan.style.color = getDailyColor(dailyProgressPct);
+      }
+    };
+
+    window.syncProgressMode = function (sourceId) {
+      const newVal = document.getElementById(sourceId).value;
+      const ids = ['progress-mode', 'progress-mode-daily', 'progress-mode-table', 'progress-mode-chart'];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.id !== sourceId) el.value = newVal;
+      });
+
+      updateProgressCard();
+      updateProgressChart();
+      updateDailyChart();
+      updateTableData();
+    };
+
+    window.updateTableData = function () {
+      const mode = document.getElementById('progress-mode-table') ? document.getElementById('progress-mode-table').value : 'fasih';
+
+      dashboardData.forEach(w => {
+        let totalSubmit = w.umkmSubmit + w.ubSubmit;
+        let den = mode === 'fasih' ? w.umkmTotal + w.ubTotal : (w.targetUmkm + w.targetUb + w.targetKeluarga);
+        w.progress = den > 0 ? (totalSubmit / den) * 100 : 0;
+
+        w.kecamatans.forEach(k => {
+          let kTotalSubmit = k.umkmSubmit + k.ubSubmit;
+          let kDen = mode === 'fasih' ? k.umkmTotal + k.ubTotal : (k.targetUmkm + k.targetUb + k.targetKeluarga);
+          k.progress = kDen > 0 ? (kTotalSubmit / kDen) * 100 : 0;
+        });
+      });
+
+      // Update sumData progress globally for table province row
+      let sumTotalSubmit = sumData.umkmSubmit + sumData.ubSubmit;
+      let sumDen = mode === 'fasih' ? sumData.umkmTotal + sumData.ubTotal : (sumData.targetUmkm + sumData.targetUb + sumData.targetKeluarga);
+      sumData.progress = sumDen > 0 ? (sumTotalSubmit / sumDen) * 100 : 0;
+
+      if (currentSortColumn !== null) {
+        dashboardData.sort((a, b) => {
+          let valA, valB;
+          if (currentSortColumn === 1) { valA = a.kode; valB = b.kode; }
+          else if (currentSortColumn === 10) { valA = a.progress; valB = b.progress; }
+
+          if (valA < valB) return isSortAsc ? -1 : 1;
+          if (valA > valB) return isSortAsc ? 1 : -1;
+          return 0;
+        });
+      }
+
+      renderTable(dashboardData);
+      filterWilayah();
+    };
+
+    window.updateProgressChart = function () {
+      if (!progressChart) return;
+      const mode = document.getElementById('progress-mode-chart') ? document.getElementById('progress-mode-chart').value : 'fasih';
+
+      const sortedByProgress = [...dashboardData].sort((a, b) => {
+        let totalA = a.umkmSubmit + a.ubSubmit;
+        let totalB = b.umkmSubmit + b.ubSubmit;
+        let denA = mode === 'fasih' ? a.umkmTotal + a.ubTotal : (a.targetUmkm + a.targetUb + a.targetKeluarga);
+        let denB = mode === 'fasih' ? b.umkmTotal + b.ubTotal : (b.targetUmkm + b.targetUb + b.targetKeluarga);
+        let pctA = denA > 0 ? (totalA / denA) * 100 : 0;
+        let pctB = denB > 0 ? (totalB / denB) * 100 : 0;
+        return pctB - pctA;
+      });
+
+      const progressData = sortedByProgress.map(x => {
+        let total = x.umkmSubmit + x.ubSubmit;
+        let den = mode === 'fasih' ? x.umkmTotal + x.ubTotal : (x.targetUmkm + x.targetUb + x.targetKeluarga);
+        return parseFloat((den > 0 ? (total / den) * 100 : 0).toFixed(2));
+      });
+
+      const newCategories = sortedByProgress.map(x => `[${x.kode}]`);
+
+      progressChart.updateOptions({
+        xaxis: { categories: newCategories },
+        tooltip: {
+          x: {
+            formatter: (v, { dataPointIndex: i }) => {
+              const item = sortedByProgress[i];
+              return item ? `[${item.kode}] ${item.nama}` : '';
+            }
+          }
+        }
+      });
+      progressChart.updateSeries([{
+        name: 'Progres %',
+        data: progressData
+      }]);
+    };
+
+    window.updateDailyChart = function () {
+      if (!dailyChart) return;
+      const mode = document.getElementById('progress-mode') ? document.getElementById('progress-mode').value : 'fasih';
+
+      const sortedByDaily = [...dashboardData].sort((a, b) => {
+        const totalA = (a.harianUmkm || 0) + (a.harianUb || 0);
+        const totalB = (b.harianUmkm || 0) + (b.harianUb || 0);
+        let denA = mode === 'fasih' ? a.umkmTotal + a.ubTotal : a.targetUmkm + a.targetUb + a.targetKeluarga;
+        let denB = mode === 'fasih' ? b.umkmTotal + b.ubTotal : b.targetUmkm + b.targetUb + b.targetKeluarga;
+        const pctA = denA > 0 ? (totalA / denA) * 100 : 0;
+        const pctB = denB > 0 ? (totalB / denB) * 100 : 0;
+        return pctB - pctA;
+      });
+
+      const dailyData = sortedByDaily.map(x => {
+        const total = (x.harianUmkm || 0) + (x.harianUb || 0);
+        let den = mode === 'fasih' ? x.umkmTotal + x.ubTotal : x.targetUmkm + x.targetUb + x.targetKeluarga;
+        return parseFloat((den > 0 ? (total / den) * 100 : 0).toFixed(2));
+      });
+
+      const newCategories = sortedByDaily.map(x => `[${x.kode}]`);
+
+      dailyChart.updateOptions({
+        xaxis: { categories: newCategories }
+      });
+      dailyChart.updateSeries([{
+        name: 'Kenaikan Harian',
+        data: dailyData
+      }]);
     };
 
     // Global Sorting state
@@ -810,12 +1030,9 @@
 
         // Initialize dashboardData (Kabupaten) to 0, data will be aggregated from Kecamatan
         dashboardData.forEach(w => {
-          // Dynamic Targets from spreadsheet if available
-          const targetRow = targetMap.get(w.kode);
-          if (targetRow) {
-            w.targetUmkm = Number(targetRow["Target UMKM"] || 0);
-            w.targetUb = Number(targetRow["Target UB"] || 0);
-          }
+          w.targetUmkm = 0;
+          w.targetUb = 0;
+          w.targetKeluarga = 0;
 
           w.umkmOpen = 0; w.umkmDraft = 0; w.umkmSubmit = 0; w.umkmTotal = 0;
           w.ubOpen = 0; w.ubDraft = 0; w.ubSubmit = 0; w.ubTotal = 0;
@@ -852,6 +1069,17 @@
             });
           }
 
+          // 4. Collect from Target
+          if (targetSheet) {
+            targetSheet.forEach(row => {
+              const idKec = String(row.Wilayah || row.wilayah || row.kode || "").trim();
+              // only add if it looks like a Kecamatan code (e.g. 7 digits)
+              if (idKec && idKec.length > 4 && !allKecMap.has(idKec)) {
+                allKecMap.set(idKec, row["Nama Wilayah"] || row.nama || "-");
+              }
+            });
+          }
+
           allKecMap.forEach((nmKec, idKec) => {
             const kabKode = idKec.substring(0, 4);
             const parentKab = dashboardData.find(w => w.kode === kabKode);
@@ -860,10 +1088,24 @@
               let kData = {
                 kode: idKec,
                 nama: nmKec,
+                targetUmkm: 0, targetUb: 0, targetKeluarga: 0,
                 umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0,
                 ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0,
                 progress: 0
               };
+
+              // Target Kecamatan
+              const targetRow = targetMap.get(idKec);
+              if (targetRow) {
+                const parseTarget = (val) => {
+                  if (!val) return 0;
+                  if (typeof val === 'number') return val;
+                  return Number(String(val).replace(/,/g, '').replace(/\./g, '')) || 0;
+                };
+                kData.targetUmkm = parseTarget(targetRow["Target UMKM"] || targetRow["TARGET UMKM"]);
+                kData.targetUb = parseTarget(targetRow["Target UB"] || targetRow["TARGET UB"]);
+                kData.targetKeluarga = parseTarget(targetRow["Target Keluarga"] || targetRow["TARGET KELUARGA"]);
+              }
 
               // UMKM Kecamatan
               if (umkmKecSheet) {
@@ -924,6 +1166,10 @@
               kData.progress = totalTarget > 0 ? ((kData.umkmSubmit + kData.ubSubmit) / totalTarget) * 100 : 0;
 
               // AGREGASI KE KABUPATEN INDUK
+              parentKab.targetUmkm += kData.targetUmkm;
+              parentKab.targetUb += kData.targetUb;
+              parentKab.targetKeluarga += kData.targetKeluarga;
+
               parentKab.umkmOpen += kData.umkmOpen;
               parentKab.umkmDraft += kData.umkmDraft;
               parentKab.umkmSubmit += kData.umkmSubmit;
@@ -954,6 +1200,7 @@
         // Recalculate global sumData
         sumData.targetUmkm = dashboardData.reduce((s, x) => s + x.targetUmkm, 0);
         sumData.targetUb = dashboardData.reduce((s, x) => s + x.targetUb, 0);
+        sumData.targetKeluarga = dashboardData.reduce((s, x) => s + (x.targetKeluarga || 0), 0);
 
         sumData.umkmOpen = dashboardData.reduce((s, x) => s + x.umkmOpen, 0);
         sumData.umkmDraft = dashboardData.reduce((s, x) => s + x.umkmDraft, 0);
@@ -972,9 +1219,12 @@
         sumData.progress = globalTotalAssignment > 0 ? ((sumData.umkmSubmit + sumData.ubSubmit) / globalTotalAssignment) * 100 : 0;
 
         // Update values in HTML cards
-        document.getElementById('stat-target').innerText = fmtNum(sumData.targetUmkm + sumData.targetUb);
+        document.getElementById('stat-target').innerText = fmtNum(sumData.targetUmkm + sumData.targetUb + sumData.targetKeluarga);
         document.getElementById('stat-target-umkm').innerText = fmtNum(sumData.targetUmkm);
         document.getElementById('stat-target-ub').innerText = fmtNum(sumData.targetUb);
+        if (document.getElementById('stat-target-keluarga')) {
+          document.getElementById('stat-target-keluarga').innerText = fmtNum(sumData.targetKeluarga);
+        }
 
         document.getElementById('stat-assigned').innerText = fmtNum(sumData.umkmTotal + sumData.ubTotal);
         document.getElementById('stat-open').innerText = fmtNum(sumData.umkmOpen + sumData.ubOpen);
@@ -983,27 +1233,10 @@
         document.getElementById('stat-umkm-total').innerText = fmtNum(sumData.umkmTotal);
         document.getElementById('stat-ub-total').innerText = fmtNum(sumData.ubTotal);
 
-        const targetProg = getTargetProgress();
-        const mainProgColorVar = sumData.progress < targetProg ? 'var(--danger-color)' : 'var(--success-color)';
-
-        const percentSpan = `<span class="font-sans text-2xl font-bold ml-0.5" style="color: ${mainProgColorVar}">%</span>`;
-        const statProgEl = document.getElementById('stat-progress');
-        statProgEl.className = `metric-value`;
-        statProgEl.style.color = mainProgColorVar;
-        statProgEl.innerHTML = fmtPct(sumData.progress) + percentSpan;
-
-        document.querySelector('.progress-bar-fill').style.width = sumData.progress.toFixed(2) + '%';
-        // Ubah warna bar juga jika merah
-        document.querySelector('.progress-bar-fill').style.backgroundColor = mainProgColorVar;
-
-        // Update Kenaikan Harian Akumulatif (Persentase kenaikan harian terhadap total assignment)
-        const totalHarian = (sumData.harianUmkm || 0) + (sumData.harianUb || 0);
-        const totalTarget = sumData.umkmTotal + sumData.ubTotal;
-        const dailyProgressPct = totalTarget > 0 ? (totalHarian / totalTarget * 100) : 0;
-
-        const dailyChangeSpan = document.getElementById('stat-daily-change');
-        dailyChangeSpan.innerText = `▲ +${fmtPct(dailyProgressPct)}%`;
-        dailyChangeSpan.style.color = getDailyColor(dailyProgressPct);
+        // Panggil fungsi update progress card agar mengikuti dropdown
+        if (typeof updateProgressCard === 'function') {
+          updateProgressCard();
+        }
 
         // Update Sync time to Spreadsheet's last edit time from Apps Script
 
@@ -1043,7 +1276,11 @@
       }
 
       // Populate Table
-      renderTable(dashboardData);
+      if (typeof updateTableData === 'function') {
+        updateTableData();
+      } else {
+        renderTable(dashboardData);
+      }
 
       // Init Charts
       initAllCharts();
@@ -1087,36 +1324,81 @@
       const fragment = document.createDocumentFragment();
 
       // First Row: Province Totals
+      const mode = document.getElementById('progress-mode-table') ? document.getElementById('progress-mode-table').value : 'fasih';
+      const showPct = mode === 'fasih';
+
+      // Update Header visibility and colspans dynamically
+      const thUmkmGroup = document.getElementById('th-umkm-group');
+      const thUbGroup = document.getElementById('th-ub-group');
+      const thUmkmPct = document.getElementById('th-umkm-pct');
+      const thUbPct = document.getElementById('th-ub-pct');
+      const thUmkmTotal = document.getElementById('th-umkm-total');
+      const thUbTotal = document.getElementById('th-ub-total');
+
+      if (thUmkmGroup) thUmkmGroup.colSpan = showPct ? 5 : 4;
+      if (thUbGroup) thUbGroup.colSpan = showPct ? 5 : 4;
+      if (thUmkmPct) thUmkmPct.style.display = showPct ? '' : 'none';
+      if (thUbPct) thUbPct.style.display = showPct ? '' : 'none';
+
+      if (thUmkmTotal) {
+        if (showPct) thUmkmTotal.classList.remove('border-r', 'border-[var(--border-color)]');
+        else thUmkmTotal.classList.add('border-r', 'border-[var(--border-color)]');
+      }
+      if (thUbTotal) {
+        if (showPct) thUbTotal.classList.remove('border-r', 'border-[var(--border-color)]');
+        else thUbTotal.classList.add('border-r', 'border-[var(--border-color)]');
+      }
+
       const provTotalHarian = (sumData.harianUmkm || 0) + (sumData.harianUb || 0);
-      const provTotalTarget = sumData.umkmTotal + sumData.ubTotal;
+      const provTotalTarget = mode === 'fasih' ? (sumData.umkmTotal + sumData.ubTotal) : (sumData.targetUmkm + sumData.targetUb + sumData.targetKeluarga);
       const provDailyPct = provTotalTarget > 0 ? (provTotalHarian / provTotalTarget * 100) : 0;
+
+      const provUmkmTarget = mode === 'fasih' ? sumData.umkmTotal : (sumData.targetUmkm + sumData.targetKeluarga);
+      const provUmkmProgress = provUmkmTarget > 0 ? (sumData.umkmSubmit / provUmkmTarget * 100) : 0;
+      const provUmkmDailyPct = provUmkmTarget > 0 ? ((sumData.harianUmkm || 0) / provUmkmTarget * 100) : 0;
+
+      const provUbTarget = mode === 'fasih' ? sumData.ubTotal : sumData.targetUb;
+      const provUbProgress = provUbTarget > 0 ? (sumData.ubSubmit / provUbTarget * 100) : 0;
+      const provUbDailyPct = provUbTarget > 0 ? ((sumData.harianUb || 0) / provUbTarget * 100) : 0;
 
       const provRow = document.createElement('tr');
       provRow.className = 'bg-[rgba(212,178,122,0.06)] font-bold';
       provRow.innerHTML = `
         <td class="pl-6">Sumatera Barat</td>
-        <!-- <td class="text-right text-[var(--text-secondary)]">${fmtNum(sumData.targetUmkm)}</td> -->
-        <!-- <td class="text-right border-r border-[var(--border-color)] text-[var(--text-secondary)]">${fmtNum(sumData.targetUb)}</td> -->
+        <td class="text-right text-[var(--text-secondary)]">${fmtNum(sumData.targetUmkm)}</td>
+        <td class="text-right text-[var(--text-secondary)]">${fmtNum(sumData.targetUb)}</td>
+        <td class="text-right text-[var(--text-secondary)]">${fmtNum(sumData.targetKeluarga)}</td>
+        <td class="text-right border-r border-[var(--border-color)] text-[var(--text-secondary)] font-bold">${fmtNum(sumData.targetUmkm + sumData.targetUb + sumData.targetKeluarga)}</td>
         
         <td class="text-right text-neutral-400">${fmtNum(sumData.umkmOpen)}</td>
         <td class="text-right text-[var(--warning-color)]">${fmtNum(sumData.umkmDraft)}</td>
         <td class="text-right text-[var(--success-color)]">${fmtNum(sumData.umkmSubmit)}</td>
-        <td class="text-right border-r border-[var(--border-color)] text-[var(--text-primary)]">${fmtNum(sumData.umkmTotal)}</td>
+        <td class="text-right text-[var(--text-primary)] ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(sumData.umkmTotal)}</td>
+        ${showPct ? `<td class="text-right border-r border-[var(--border-color)] font-bold" style="color: ${getProgressColor(provUmkmProgress)}">${fmtPct(provUmkmProgress)}% <span class="text-[10px] font-semibold block mt-0.5" style="color: ${getDailyColor(provUmkmDailyPct)}">(+${fmtPct(provUmkmDailyPct)}%)</span></td>` : ''}
         
         <td class="text-right text-neutral-400">${fmtNum(sumData.ubOpen)}</td>
         <td class="text-right text-[var(--warning-color)]">${fmtNum(sumData.ubDraft)}</td>
         <td class="text-right text-[var(--success-color)]">${fmtNum(sumData.ubSubmit)}</td>
-        <td class="text-right border-r border-[var(--border-color)] text-[var(--text-primary)]">${fmtNum(sumData.ubTotal)}</td>
+        <td class="text-right text-[var(--text-primary)] ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(sumData.ubTotal)}</td>
+        ${showPct ? `<td class="text-right border-r border-[var(--border-color)] font-bold" style="color: ${getProgressColor(provUbProgress)}">${fmtPct(provUbProgress)}% <span class="text-[10px] font-semibold block mt-0.5" style="color: ${getDailyColor(provUbDailyPct)}">(+${fmtPct(provUbDailyPct)}%)</span></td>` : ''}
         
-        <td class="text-right font-bold" style="color: ${getProgressColor(sumData.progress)}">${fmtPct(sumData.progress)}% <span class="text-xs font-semibold block md:inline ml-1" style="color: ${getDailyColor(provDailyPct)}">(+${fmtPct(provDailyPct)}%)</span></td>
+        <td class="text-right font-bold" style="color: ${getProgressColor(sumData.progress)}">${fmtPct(sumData.progress)}% <span class="text-xs font-semibold block mt-0.5" style="color: ${getDailyColor(provDailyPct)}">(+${fmtPct(provDailyPct)}%)</span></td>
       `;
       fragment.appendChild(provRow);
 
       // Wilayah Rows
       data.forEach((w, index) => {
         const totalHarian = (w.harianUmkm || 0) + (w.harianUb || 0);
-        const totalTarget = w.umkmTotal + w.ubTotal;
+        const totalTarget = mode === 'fasih' ? (w.umkmTotal + w.ubTotal) : (w.targetUmkm + w.targetUb + w.targetKeluarga);
         const dailyPct = totalTarget > 0 ? (totalHarian / totalTarget * 100) : 0;
+
+        const wUmkmTarget = mode === 'fasih' ? w.umkmTotal : (w.targetUmkm + w.targetKeluarga);
+        const wUmkmProgress = wUmkmTarget > 0 ? (w.umkmSubmit / wUmkmTarget * 100) : 0;
+        const wUmkmDailyPct = wUmkmTarget > 0 ? ((w.harianUmkm || 0) / wUmkmTarget * 100) : 0;
+
+        const wUbTarget = mode === 'fasih' ? w.ubTotal : w.targetUb;
+        const wUbProgress = wUbTarget > 0 ? (w.ubSubmit / wUbTarget * 100) : 0;
+        const wUbDailyPct = wUbTarget > 0 ? ((w.harianUb || 0) / wUbTarget * 100) : 0;
 
         const hasKec = w.kecamatans && w.kecamatans.length > 0;
         const toggleIcon = hasKec ? `<span id="icon-${w.kode}" class="mr-2 text-[var(--accent-color)] text-lg cursor-pointer font-bold leading-none select-none" onclick="toggleKecamatan('${w.kode}')">[+]</span>` : '';
@@ -1126,43 +1408,62 @@
         const mainBgClass = index % 2 !== 0 ? 'bg-[rgba(0,0,0,0.04)] dark:bg-[rgba(255,255,255,0.04)]' : '';
         row.className = `border-b border-[var(--border-color)] hover:bg-[rgba(229,185,116,0.08)] transition-colors ${mainBgClass}`;
         row.innerHTML = `
-          <td class="font-medium pl-6 whitespace-nowrap align-middle">
-            <div class="flex items-center">${toggleIcon}[${w.kode}] ${w.nama}</div>
+          <td class="font-medium pl-6 align-middle min-w-[140px] max-w-[200px]">
+            <div class="flex items-center">${toggleIcon}<span class="line-clamp-2" title="[${w.kode}] ${w.nama}">[${w.kode}] ${w.nama}</span></div>
           </td>
-          <!-- <td class="text-right text-[var(--text-muted)] align-middle">${fmtNum(w.targetUmkm)}</td> -->
-          <!-- <td class="text-right border-r border-[var(--border-color)] text-[var(--text-muted)]">${fmtNum(w.targetUb)}</td> -->
+          <td class="text-right text-[var(--text-muted)] align-middle">${fmtNum(w.targetUmkm)}</td>
+          <td class="text-right text-[var(--text-muted)]">${fmtNum(w.targetUb)}</td>
+          <td class="text-right text-[var(--text-muted)]">${fmtNum(w.targetKeluarga)}</td>
+          <td class="text-right border-r border-[var(--border-color)] text-[var(--text-muted)] font-bold">${fmtNum(w.targetUmkm + w.targetUb + w.targetKeluarga)}</td>
           
           <td class="text-right text-[var(--text-muted)]">${fmtNum(w.umkmOpen)}</td>
           <td class="text-right text-[var(--warning-color)]">${fmtNum(w.umkmDraft)}</td>
           <td class="text-right text-[var(--success-color)]">${fmtNum(w.umkmSubmit)}</td>
-          <td class="text-right border-r border-[var(--border-color)] font-semibold">${fmtNum(w.umkmTotal)}</td>
+          <td class="text-right font-semibold ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(w.umkmTotal)}</td>
+          ${showPct ? `<td class="text-right border-r border-[var(--border-color)] font-bold" style="color: ${getProgressColor(wUmkmProgress)}">${fmtPct(wUmkmProgress)}% <span class="text-[10px] font-semibold block mt-0.5" style="color: ${getDailyColor(wUmkmDailyPct)}">(+${fmtPct(wUmkmDailyPct)}%)</span></td>` : ''}
           
           <td class="text-right text-[var(--text-muted)]">${fmtNum(w.ubOpen)}</td>
           <td class="text-right text-[var(--warning-color)]">${fmtNum(w.ubDraft)}</td>
           <td class="text-right text-[var(--success-color)]">${fmtNum(w.ubSubmit)}</td>
-          <td class="text-right border-r border-[var(--border-color)] font-semibold">${fmtNum(w.ubTotal)}</td>
+          <td class="text-right font-semibold ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(w.ubTotal)}</td>
+          ${showPct ? `<td class="text-right border-r border-[var(--border-color)] font-bold" style="color: ${getProgressColor(wUbProgress)}">${fmtPct(wUbProgress)}% <span class="text-[10px] font-semibold block mt-0.5" style="color: ${getDailyColor(wUbDailyPct)}">(+${fmtPct(wUbDailyPct)}%)</span></td>` : ''}
           
-          <td class="text-right font-bold" style="color: ${getProgressColor(w.progress)}">${fmtPct(w.progress)}% <span class="text-[10px] font-semibold block md:inline ml-1" style="color: ${getDailyColor(dailyPct)}">(+${fmtPct(dailyPct)}%)</span></td>
+          <td class="text-right font-bold" style="color: ${getProgressColor(w.progress)}">${fmtPct(w.progress)}% <span class="text-[10px] font-semibold block mt-0.5" style="color: ${getDailyColor(dailyPct)}">(+${fmtPct(dailyPct)}%)</span></td>
         `;
         fragment.appendChild(row);
 
         if (hasKec) {
           w.kecamatans.forEach((kec, kIndex) => {
+            const kUmkmTarget = mode === 'fasih' ? kec.umkmTotal : (kec.targetUmkm + kec.targetKeluarga);
+            const kUmkmProgress = kUmkmTarget > 0 ? (kec.umkmSubmit / kUmkmTarget * 100) : 0;
+
+            const kUbTarget = mode === 'fasih' ? kec.ubTotal : kec.targetUb;
+            const kUbProgress = kUbTarget > 0 ? (kec.ubSubmit / kUbTarget * 100) : 0;
+
             const bgClass = kIndex % 2 !== 0 ? 'bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.02)]' : 'bg-[rgba(0,0,0,0.015)] dark:bg-[rgba(255,255,255,0.01)]';
             const kecRow = document.createElement('tr');
             kecRow.className = `kec-row-${w.kode} border-b border-[var(--border-color)] hover:bg-[rgba(229,185,116,0.1)] transition-colors ${bgClass}`;
             kecRow.style.display = 'none'; // Hidden by default
             kecRow.innerHTML = `
-              <td class="py-2 pl-12 text-[var(--text-primary)] font-medium text-[13px] opacity-80">└ [${kec.kode}] ${kec.nama}</td>
+              <td class="py-2 pl-12 text-[var(--text-primary)] font-medium text-[13px] opacity-80 min-w-[140px] max-w-[200px]">
+                <div class="line-clamp-2" title="└ [${kec.kode}] ${kec.nama}">└ [${kec.kode}] ${kec.nama}</div>
+              </td>
+              <td class="text-right py-2 px-2 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.targetUmkm)}</td>
+              <td class="text-right py-2 px-2 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.targetUb)}</td>
+              <td class="text-right py-2 px-2 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.targetKeluarga)}</td>
+              <td class="text-right py-2 px-2 border-r border-[var(--border-color)] text-[var(--text-muted)] text-[13px] font-bold">${fmtNum(kec.targetUmkm + kec.targetUb + kec.targetKeluarga)}</td>
+              
               <td class="text-right py-2 pr-2 pl-4 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.umkmOpen)}</td>
               <td class="text-right py-2 px-2 text-[var(--warning-color)] text-[13px]">${fmtNum(kec.umkmDraft)}</td>
               <td class="text-right py-2 px-2 text-[var(--success-color)] text-[13px]">${fmtNum(kec.umkmSubmit)}</td>
-              <td class="text-right py-2 px-2 border-r border-[var(--border-color)] font-semibold text-[13px]">${fmtNum(kec.umkmTotal)}</td>
+              <td class="text-right py-2 px-2 font-semibold text-[13px] ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(kec.umkmTotal)}</td>
+              ${showPct ? `<td class="text-right py-2 px-2 border-r border-[var(--border-color)] font-bold text-[13px] text-[var(--accent-color)]">${fmtPct(kUmkmProgress)}%</td>` : ''}
               
               <td class="text-right py-2 pr-2 pl-4 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.ubOpen)}</td>
               <td class="text-right py-2 px-2 text-[var(--warning-color)] text-[13px]">${fmtNum(kec.ubDraft)}</td>
               <td class="text-right py-2 px-2 text-[var(--success-color)] text-[13px]">${fmtNum(kec.ubSubmit)}</td>
-              <td class="text-right py-2 px-2 border-r border-[var(--border-color)] font-semibold text-[13px]">${fmtNum(kec.ubTotal)}</td>
+              <td class="text-right py-2 px-2 font-semibold text-[13px] ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(kec.ubTotal)}</td>
+              ${showPct ? `<td class="text-right py-2 px-2 border-r border-[var(--border-color)] font-bold text-[13px] text-[var(--accent-color)]">${fmtPct(kUbProgress)}%</td>` : ''}
               
               <td class="text-right py-2 pl-2 pr-4 font-bold text-[13px] text-[var(--accent-color)]">${fmtPct(kec.progress)}%</td>
             `;
@@ -1262,17 +1563,44 @@
 
     // CSV Export
     function exportCSV() {
-      // let csv = 'Kode Wilayah,Nama Wilayah,Target [Sensus Ekonomi 2026],Target [Sensus Ekonomi 2026 - UB],[Sensus Ekonomi 2026] Open,...'
-      let csv = 'Kode Wilayah,Nama Wilayah,[Sensus Ekonomi 2026] Open,[Sensus Ekonomi 2026] Draft,[Sensus Ekonomi 2026] Submit,[Sensus Ekonomi 2026] Total,[Sensus Ekonomi 2026 - UB] Open,[Sensus Ekonomi 2026 - UB] Draft,[Sensus Ekonomi 2026 - UB] Submit,[Sensus Ekonomi 2026 - UB] Total,Progres Akumulatif %\n';
+      const mode = document.getElementById('progress-mode-table') ? document.getElementById('progress-mode-table').value : 'fasih';
+
+      // Define CSV header
+      let csv = 'Kode,Wilayah,Prelist Awal-UMKM,Prelist Awal-UB,Prelist Awal-Keluarga,Total Prelist Awal,[SE2026] Open,[SE2026] Draft,[SE2026] Submit,[SE2026] Total,[SE2026] %,[SE2026-UB] Open,[SE2026-UB] Draft,[SE2026-UB] Submit,[SE2026-UB] Total,[SE2026-UB] %,% Progres Akumulatif\n';
+
+      const escape = (str) => `"${String(str).replace(/"/g, '""')}"`;
+
+      // Helper to generate row
+      const generateRow = (kode, nama, d, isProv = false) => {
+        const totalTarget = mode === 'fasih' ? (d.umkmTotal + d.ubTotal) : (d.targetUmkm + d.targetUb + d.targetKeluarga);
+
+        const umkmTarget = mode === 'fasih' ? d.umkmTotal : (d.targetUmkm + d.targetKeluarga);
+        const umkmProgress = umkmTarget > 0 ? (d.umkmSubmit / umkmTarget * 100) : 0;
+
+        const ubTarget = mode === 'fasih' ? d.ubTotal : d.targetUb;
+        const ubProgress = ubTarget > 0 ? (d.ubSubmit / ubTarget * 100) : 0;
+
+        const overallProgress = totalTarget > 0 ? ((d.umkmSubmit + d.ubSubmit) / totalTarget * 100) : 0;
+
+        const tUmkm = d.targetUmkm || 0;
+        const tUb = d.targetUb || 0;
+        const tKel = d.targetKeluarga || 0;
+        const tTot = tUmkm + tUb + tKel;
+
+        return `${kode},${escape(nama)},${tUmkm},${tUb},${tKel},${tTot},${d.umkmOpen},${d.umkmDraft},${d.umkmSubmit},${d.umkmTotal},${mode === 'fasih' ? umkmProgress.toFixed(2) : '-'},${d.ubOpen},${d.ubDraft},${d.ubSubmit},${d.ubTotal},${mode === 'fasih' ? ubProgress.toFixed(2) : '-'},${overallProgress.toFixed(2)}\n`;
+      };
 
       // Province row
-      // csv += ... (targetUmkm, targetUb)
-      csv += `-,Provinsi Sumatera Barat,${sumData.umkmOpen},${sumData.umkmDraft},${sumData.umkmSubmit},${sumData.umkmTotal},${sumData.ubOpen},${sumData.ubDraft},${sumData.ubSubmit},${sumData.ubTotal},${sumData.progress}\n`;
+      csv += generateRow('-', 'Provinsi Sumatera Barat', sumData, true);
 
-      // Wilayah rows
+      // Wilayah and Kecamatan rows
       dashboardData.forEach(w => {
-        // csv += ... (w.targetUmkm, w.targetUb)
-        csv += `${w.kode},${w.nama},${w.umkmOpen},${w.umkmDraft},${w.umkmSubmit},${w.umkmTotal},${w.ubOpen},${w.ubDraft},${w.ubSubmit},${w.ubTotal},${w.progress}\n`;
+        csv += generateRow(w.kode, w.nama, w);
+        if (w.kecamatans && w.kecamatans.length > 0) {
+          w.kecamatans.forEach(kec => {
+            csv += generateRow(kec.kode, `└ ${kec.nama}`, kec);
+          });
+        }
       });
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -1523,18 +1851,27 @@
           }
         }
       };
-      submitChart = new ApexCharts(document.querySelector("#submitRankChart"), submitOptions);
-      submitChart.render();
+      const submitEl = document.querySelector("#submitRankChart");
+      if (submitEl) {
+        submitChart = new ApexCharts(submitEl, submitOptions);
+        submitChart.render();
+      }
 
       // 4. Bar Chart: Kenaikan Harian dalam % (Superteam Asset Hub style)
+      const mode = document.getElementById('progress-mode') ? document.getElementById('progress-mode').value : 'fasih';
       const sortedByDaily = [...dashboardData].sort((a, b) => {
-        const pctB = ((b.harianUmkm || 0) + (b.harianUb || 0)) / (b.targetUmkm + b.targetUb) * 100;
-        const pctA = ((a.harianUmkm || 0) + (a.harianUb || 0)) / (a.targetUmkm + a.targetUb) * 100;
+        const totalA = (a.harianUmkm || 0) + (a.harianUb || 0);
+        const totalB = (b.harianUmkm || 0) + (b.harianUb || 0);
+        let denA = mode === 'fasih' ? a.umkmTotal + a.ubTotal : a.targetUmkm + a.targetUb + a.targetKeluarga;
+        let denB = mode === 'fasih' ? b.umkmTotal + b.ubTotal : b.targetUmkm + b.targetUb + b.targetKeluarga;
+        const pctA = denA > 0 ? (totalA / denA) * 100 : 0;
+        const pctB = denB > 0 ? (totalB / denB) * 100 : 0;
         return pctB - pctA;
       });
       const dailyData = sortedByDaily.map(x => {
         const total = (x.harianUmkm || 0) + (x.harianUb || 0);
-        return parseFloat(((total / (x.targetUmkm + x.targetUb)) * 100).toFixed(2));
+        let den = mode === 'fasih' ? x.umkmTotal + x.ubTotal : x.targetUmkm + x.targetUb + x.targetKeluarga;
+        return parseFloat((den > 0 ? (total / den) * 100 : 0).toFixed(2));
       });
       const dailyOptions = {
         series: [{
