@@ -301,7 +301,6 @@ function onOpen() {
 function createDailyTrigger() {
   var ui = SpreadsheetApp.getUi();
   try {
-    // Hapus trigger lama jika ada agar tidak menumpuk
     const triggers = ScriptApp.getProjectTriggers();
     for (let i = 0; i < triggers.length; i++) {
       if (triggers[i].getHandlerFunction() === 'recordDailyProgress') {
@@ -309,7 +308,6 @@ function createDailyTrigger() {
       }
     }
     
-    // Buat trigger baru untuk berjalan setiap hari sekitar pukul 23:00 - 23:59
     ScriptApp.newTrigger('recordDailyProgress')
       .timeBased()
       .atHour(23)
@@ -363,9 +361,11 @@ function processCSV(csvContent, sheetName) {
     
     if (wilayahCsvIdx === -1) return "Error: Kolom 'Wilayah' tidak ditemukan pada CSV.";
 
-    var sheetData = sheet.getDataRange().getValues();
-    var sheetHeaders = sheetData[0]; 
+    // Baca header yang sudah ada di sheet
+    var lastCol = sheet.getLastColumn();
+    var sheetHeaders = lastCol > 0 ? sheet.getRange(1, 1, 1, lastCol).getValues()[0] : [];
     
+    // Cek jika ada kolom baru di CSV yang belum ada di sheet
     var newColumnsAdded = false;
     for (var c = 0; c < csvHeaders.length; c++) {
       var headerName = csvHeaders[c].trim();
@@ -374,25 +374,30 @@ function processCSV(csvContent, sheetName) {
         newColumnsAdded = true;
       }
     }
+
+    // Tambahkan kolom 'Last Updated' jika belum ada
+    if (sheetHeaders.indexOf("Last Updated") === -1) {
+      sheetHeaders.push("Last Updated");
+      newColumnsAdded = true;
+    }
     
+    // Jika ada kolom baru, perbarui header di sheet
     if (newColumnsAdded) {
       sheet.getRange(1, 1, 1, sheetHeaders.length).setValues([sheetHeaders]);
-      for (var r = 0; r < sheetData.length; r++) {
-        while (sheetData[r].length < sheetHeaders.length) {
-          sheetData[r].push("");
-        }
-      }
     }
 
-    var wilayahSheetIdx = sheetHeaders.indexOf("Wilayah");
-    var sheetWilayahMap = {};
-    for (var i = 1; i < sheetData.length; i++) {
-      var rowWilayah = String(sheetData[i][wilayahSheetIdx]).trim();
-      if (rowWilayah !== "") sheetWilayahMap[rowWilayah] = i; 
+    // Kosongkan seluruh isi data di bawah header (mulai baris 2)
+    var lastRow = sheet.getLastRow();
+    var currentLastCol = sheet.getLastColumn(); // Gunakan kolom terbaru setelah update header
+    if (lastRow > 1 && currentLastCol > 0) {
+      sheet.getRange(2, 1, lastRow - 1, currentLastCol).clearContent();
     }
 
-    var rowsToAppend = [];
+    // Dapatkan timestamp waktu sekarang (Asia/Jakarta)
+    var timestamp = Utilities.formatDate(new Date(), "Asia/Jakarta", "yyyy-MM-dd HH:mm:ss");
+    var rowsToWrite = [];
 
+    // Map setiap baris CSV sesuai urutan kolom pada sheetHeaders
     for (var j = 1; j < csvData.length; j++) {
       var csvRow = csvData[j];
       var wilayahVal = String(csvRow[wilayahCsvIdx]).trim();
@@ -401,36 +406,27 @@ function processCSV(csvContent, sheetName) {
       var newRowData = [];
       for (var col = 0; col < sheetHeaders.length; col++) {
         var headerName = sheetHeaders[col];
-        var csvIdx = csvHeaders.indexOf(headerName);
-        if (csvIdx > -1) {
-          newRowData.push(csvRow[csvIdx]);
+        if (headerName === "Last Updated") {
+          newRowData.push("'" + timestamp); // Beri tanda kutip satu di depan agar format teks tidak otomatis terpotong di Sheets
         } else {
-          newRowData.push(""); 
+          var csvIdx = csvHeaders.indexOf(headerName);
+          if (csvIdx > -1) {
+            newRowData.push(csvRow[csvIdx]);
+          } else {
+            newRowData.push(""); 
+          }
         }
       }
-
-      if (sheetWilayahMap.hasOwnProperty(wilayahVal)) {
-        var rowIdx = sheetWilayahMap[wilayahVal]; 
-        var existingRow = sheetData[rowIdx];
-        for (var c = 0; c < sheetHeaders.length; c++) {
-          if (newRowData[c] === "") newRowData[c] = existingRow[c]; 
-        }
-        // Update di dalam memory array (batching) untuk menghindari ratusan API Call
-        sheetData[rowIdx] = newRowData;
-      } else {
-        rowsToAppend.push(newRowData);
-      }
+      rowsToWrite.push(newRowData);
     }
 
-    // TULIS KEMBALI baris yang diperbarui secara BATCHING (jauh lebih cepat dan hemat Kuota Google)
-    sheet.getRange(1, 1, sheetData.length, sheetHeaders.length).setValues(sheetData);
-
-    if (rowsToAppend.length > 0) {
-      sheet.getRange(sheet.getLastRow() + 1, 1, rowsToAppend.length, sheetHeaders.length).setValues(rowsToAppend);
+    // Tulis data baru secara BATCHING mulai dari baris 2
+    if (rowsToWrite.length > 0) {
+      sheet.getRange(2, 1, rowsToWrite.length, sheetHeaders.length).setValues(rowsToWrite);
     }
     
-    var pesan = "Sukses! Data [" + sheetName + "] berhasil diperbarui.";
-    if (newColumnsAdded) pesan += " (Ada penambahan kolom baru).";
+    var pesan = "Sukses! Data [" + sheetName + "] berhasil diperbarui (sheet telah dikosongkan terlebih dahulu).";
+    if (newColumnsAdded) pesan += " (Ada penambahan kolom baru / kolom 'Last Updated').";
     
     return pesan;
 
