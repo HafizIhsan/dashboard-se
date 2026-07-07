@@ -385,6 +385,16 @@
           <p class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-widest mt-0.5">
             Sensus Ekonomi 2026 — Badan Pusat Statistik Provinsi Sumatera Barat
           </p>
+          <p id="day-counter" class="mt-1.5 text-xs font-semibold tracking-wide">
+            <span
+              class="inline-flex items-center gap-1.5 bg-[var(--accent-subtle)] border border-[var(--border-color)] text-[var(--accent-color)] rounded-full px-3 py-0.5">
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span id="day-counter-text">Menghitung...</span>
+            </span>
+          </p>
         </div>
       </div>
 
@@ -769,6 +779,33 @@
       if (pct < dailyTarget) return 'var(--warning-color)';
       return 'var(--success-color)';
     }
+
+    // Hitung dan tampilkan hari ke-berapa dari total hari pendataan
+    function updateDayCounter() {
+      const totalDays = 78;
+      const start = new Date(2026, 5, 15); // 15 Juni 2026
+      const end = new Date(2026, 7, 31);   // 31 Agustus 2026
+
+      const current = new Date();
+      current.setHours(0, 0, 0, 0);
+
+      const el = document.getElementById('day-counter-text');
+      if (!el) return;
+
+      if (current < start) {
+        const diffTime = start - current;
+        const daysUntil = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        el.textContent = daysUntil + ' hari lagi menuju Pendataan SE2026';
+      } else if (current > end) {
+        el.textContent = 'Pendataan SE2026 telah selesai';
+      } else {
+        // Hari ke-1 = 15 Juni, hari ke-2 = 16 Juni, dst.
+        const diffTime = current - start;
+        const dayNumber = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        el.textContent = 'Hari ke-' + dayNumber + ' dari ' + totalDays + ' hari Pendataan SE2026 (15 Juni - 31 Agustus 2026)';
+      }
+    }
+    updateDayCounter();
 
     // Data Dashboard SE2026 Sumatera Barat (Nilai awal 0, diisi dinamis dari Apps Script)
     const dashboardData = [
