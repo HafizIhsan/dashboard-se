@@ -346,7 +346,81 @@ function openUploadDialog() {
   SpreadsheetApp.getUi().showModalDialog(html, 'Upload Data Kecamatan');
 }
 
-function processCSV(csvContent, sheetName) {
+/**
+ * Proses BATCH upload: terima array of {csvContent, sheetName}.
+ * Clear data HANYA SEKALI per sheet di awal, lalu append semua file CSV.
+ * Dipanggil dari Upload.html.
+ */
+function processMultipleCSV(filesArray) {
+  var results = [];
+  
+  // Kelompokkan file berdasarkan sheetName agar clear per sheet hanya 1x
+  var grouped = {};
+  for (var i = 0; i < filesArray.length; i++) {
+    var sheetName = filesArray[i].sheetName;
+    if (!grouped[sheetName]) grouped[sheetName] = [];
+    grouped[sheetName].push(filesArray[i].csvContent);
+  }
+  
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  
+  for (var sName in grouped) {
+    var sheet = ss.getSheetByName(sName);
+    if (!sheet) {
+      results.push("Error: Sheet dengan nama '" + sName + "' tidak ditemukan!");
+      continue;
+    }
+    
+    // CLEAR DATA SEKALI SAJA untuk sheet ini
+    clearSheetData_(sheet);
+    
+    // Proses setiap file CSV (mode append, tanpa clear)
+    var csvContents = grouped[sName];
+    for (var f = 0; f < csvContents.length; f++) {
+      var msg = processCSV(csvContents[f], sName, false); // false = jangan clear lagi
+      results.push(msg);
+    }
+  }
+  
+  return results;
+}
+
+/**
+ * Helper: Kosongkan seluruh isi data di bawah header (baris 2 ke bawah).
+ * Dipanggil sekali sebelum batch upload.
+ */
+function clearSheetData_(sheet) {
+  var lastRow = sheet.getLastRow();
+  var lastCol = sheet.getLastColumn();
+  if (lastRow > 1 && lastCol > 0) {
+    sheet.getRange(2, 1, lastRow - 1, lastCol).clearContent();
+  }
+}
+
+/**
+ * Fungsi PUBLIK: Dipanggil dari Upload.html SEKALI sebelum loop upload.
+ * Mengosongkan seluruh isi data sheet (baris 2 ke bawah), mempertahankan header.
+ * @param {string} sheetName - Nama sheet yang akan dikosongkan.
+ */
+function clearSheetBeforeUpload(sheetName) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(sheetName);
+  if (!sheet) return "Error: Sheet '" + sheetName + "' tidak ditemukan!";
+  clearSheetData_(sheet);
+  return "OK";
+}
+
+/**
+ * Proses satu file CSV ke sheet.
+ * @param {string} csvContent - Isi CSV sebagai string.
+ * @param {string} sheetName - Nama sheet tujuan.
+ * @param {boolean} [shouldClear=true] - Jika true, kosongkan sheet dulu (mode lama/single file).
+ *                                        Jika false, append ke baris berikutnya (mode batch).
+ */
+function processCSV(csvContent, sheetName, shouldClear) {
+  // Default: clear data (backward compatible jika dipanggil langsung dengan 2 argumen)
+  if (shouldClear === undefined) shouldClear = true;
+  
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getSheetByName(sheetName);
@@ -386,12 +460,14 @@ function processCSV(csvContent, sheetName) {
       sheet.getRange(1, 1, 1, sheetHeaders.length).setValues([sheetHeaders]);
     }
 
-    // Kosongkan seluruh isi data di bawah header (mulai baris 2)
-    var lastRow = sheet.getLastRow();
-    var currentLastCol = sheet.getLastColumn(); // Gunakan kolom terbaru setelah update header
-    if (lastRow > 1 && currentLastCol > 0) {
-      sheet.getRange(2, 1, lastRow - 1, currentLastCol).clearContent();
+    // Clear data HANYA jika shouldClear = true (mode single file / legacy)
+    if (shouldClear) {
+      clearSheetData_(sheet);
     }
+
+    // Tentukan baris awal untuk menulis data
+    // Jika mode append: tulis setelah data yang sudah ada
+    var startRow = shouldClear ? 2 : Math.max(2, sheet.getLastRow() + 1);
 
     // Dapatkan timestamp waktu sekarang (Asia/Jakarta)
     var timestamp = Utilities.formatDate(new Date(), "Asia/Jakarta", "yyyy-MM-dd HH:mm:ss");
@@ -407,7 +483,7 @@ function processCSV(csvContent, sheetName) {
       for (var col = 0; col < sheetHeaders.length; col++) {
         var headerName = sheetHeaders[col];
         if (headerName === "Last Updated") {
-          newRowData.push("'" + timestamp); // Beri tanda kutip satu di depan agar format teks tidak otomatis terpotong di Sheets
+          newRowData.push("'" + timestamp);
         } else {
           var csvIdx = csvHeaders.indexOf(headerName);
           if (csvIdx > -1) {
@@ -420,12 +496,13 @@ function processCSV(csvContent, sheetName) {
       rowsToWrite.push(newRowData);
     }
 
-    // Tulis data baru secara BATCHING mulai dari baris 2
+    // Tulis data baru secara BATCHING
     if (rowsToWrite.length > 0) {
-      sheet.getRange(2, 1, rowsToWrite.length, sheetHeaders.length).setValues(rowsToWrite);
+      sheet.getRange(startRow, 1, rowsToWrite.length, sheetHeaders.length).setValues(rowsToWrite);
     }
     
-    var pesan = "Sukses! Data [" + sheetName + "] berhasil diperbarui (sheet telah dikosongkan terlebih dahulu).";
+    var pesan = "Sukses! " + rowsToWrite.length + " baris data ditambahkan ke [" + sheetName + "].";
+    if (shouldClear) pesan += " (Sheet dikosongkan terlebih dahulu).";
     if (newColumnsAdded) pesan += " (Ada penambahan kolom baru / kolom 'Last Updated').";
     
     return pesan;

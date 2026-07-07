@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 15px; }
+    .btn { background: #4caf50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 15px; font-weight: bold;}
+    .btn:hover { background: #45a049; }
+    .btn:disabled { background: #cccccc; cursor: not-allowed; }
+    /* Membatasi tinggi status agar bisa di-scroll jika filenya banyak */
+    #status { margin-top: 15px; font-size: 12px; text-align: left; max-height: 150px; overflow-y: auto; background: #f9f9f9; padding: 10px; border-radius: 4px; border: 1px solid #ddd;}
+    .error { color: red; margin-bottom: 4px;}
+    .success { color: green; margin-bottom: 4px;}
+    .info { color: #333; margin-bottom: 4px; font-style: italic;}
+    .form-group { margin-bottom: 15px; }
+    label { font-weight: bold; font-size: 13px; display: block; margin-bottom: 5px;}
+    select, input { width: 100%; padding: 5px; box-sizing: border-box;}
+  </style>
+</head>
+<body>
+  
+  <div class="form-group">
+    <label for="sheetTarget">1. Pilih Data yang Mau Diupdate:</label>
+    <select id="sheetTarget">
+      <option value="Sensus Ekonomi 2026">[Sensus Ekonomi 2026]</option>
+      <option value="Sensus Ekonomi 2026 - UB">[Sensus Ekonomi 2026 - UB]</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="csvFile">2. Pilih File CSV (Bisa Lebih Dari 1 File):</label>
+    <!-- Atribut "multiple" ditambahkan agar bisa nge-blok (highlight) banyak file -->
+    <input type="file" id="csvFile" accept=".csv" multiple />
+  </div>
+  
+  <button class="btn" id="uploadBtn" onclick="uploadData()">Upload & Perbarui Data</button>
+
+  <div id="status"><i>Log progres upload akan muncul di sini...</i></div>
+
+  <script>
+    function uploadData() {
+      var fileInput = document.getElementById('csvFile');
+      var sheetTarget = document.getElementById('sheetTarget').value; 
+      var statusDiv = document.getElementById('status');
+      var btn = document.getElementById('uploadBtn');
+      
+      if (!fileInput.files.length) {
+        statusDiv.innerHTML = "<div class='error'>Silakan pilih minimal satu file CSV!</div>";
+        return;
+      }
+      
+      btn.disabled = true;
+      btn.innerText = "Memproses...";
+      statusDiv.innerHTML = ""; 
+      
+      var files = fileInput.files;
+      var currentIndex = 0;
+      var successCount = 0;
+
+      // ============================================================
+      // LANGKAH 1: Clear data SEKALI SAJA di awal, lalu proses file
+      // ============================================================
+      statusDiv.innerHTML += "<div class='info'>Mengosongkan sheet [" + sheetTarget + "]...</div>";
+      statusDiv.scrollTop = statusDiv.scrollHeight;
+
+      google.script.run
+        .withSuccessHandler(function(clearResult) {
+          if (clearResult !== "OK") {
+            statusDiv.innerHTML += "<div class='error'>" + clearResult + "</div>";
+            btn.disabled = false;
+            btn.innerText = "Upload & Perbarui Data";
+            return;
+          }
+          statusDiv.innerHTML += "<div class='success'>✓ Sheet dikosongkan. Mulai upload " + files.length + " file...</div>";
+          statusDiv.scrollTop = statusDiv.scrollHeight;
+
+          // ============================================================
+          // LANGKAH 2: Proses file satu per satu (TANPA clear lagi)
+          // ============================================================
+          processNextFile();
+        })
+        .withFailureHandler(function(err) {
+          statusDiv.innerHTML += "<div class='error'>Gagal mengosongkan sheet: " + err.message + "</div>";
+          btn.disabled = false;
+          btn.innerText = "Upload & Perbarui Data";
+        })
+        .clearSheetBeforeUpload(sheetTarget);
+
+      // Fungsi rekursif antrean untuk memproses file satu per satu 
+      // agar tidak membebani limit server Google
+      function processNextFile() {
+        if (currentIndex >= files.length) {
+          btn.disabled = false;
+          btn.innerText = "Upload & Perbarui Data";
+          statusDiv.innerHTML += "<br><strong>Selesai! " + successCount + " dari " + files.length + " file berhasil diproses ke " + sheetTarget + ".</strong>";
+          
+          // Auto-scroll ke paling bawah
+          statusDiv.scrollTop = statusDiv.scrollHeight;
+          return;
+        }
+
+        var file = files[currentIndex];
+        var reader = new FileReader();
+        
+        statusDiv.innerHTML += "<div class='info'>Membaca " + file.name + " (" + (currentIndex + 1) + "/" + files.length + ")...</div>";
+        statusDiv.scrollTop = statusDiv.scrollHeight;
+        
+        reader.onload = function(e) {
+          var csvContent = e.target.result;
+          
+          google.script.run
+            .withSuccessHandler(function(response) {
+              if (response.startsWith("Sukses")) {
+                 statusDiv.innerHTML += "<div class='success'>➔ " + file.name + ": OK!</div>";
+                 successCount++;
+              } else {
+                 statusDiv.innerHTML += "<div class='error'>➔ " + file.name + ": " + response + "</div>";
+              }
+              statusDiv.scrollTop = statusDiv.scrollHeight;
+              currentIndex++;
+              processNextFile(); // Lanjut ke file berikutnya
+            })
+            .withFailureHandler(function(err) {
+              statusDiv.innerHTML += "<div class='error'>➔ " + file.name + ": Gagal koneksi (" + err.message + ")</div>";
+              statusDiv.scrollTop = statusDiv.scrollHeight;
+              currentIndex++;
+              processNextFile(); // Tetap lanjut ke file berikutnya meskipun ada yang gagal
+            })
+            .processCSV(csvContent, sheetTarget, false); // false = JANGAN clear, langsung append
+        };
+        
+        reader.onerror = function() {
+          statusDiv.innerHTML += "<div class='error'>➔ " + file.name + ": Gagal membaca file lokal.</div>";
+          currentIndex++;
+          processNextFile();
+        };
+        
+        reader.readAsText(file);
+      }
+    }
+  </script>
+</body>
+</html>
