@@ -37,7 +37,6 @@ function recordDailyProgress() {
   const umkmChanged = calculateDaily(ss, {
     sourceSheet: "Sensus Ekonomi 2026",
     snapshotSheet: "snapshot-kemarin-umkm",
-    dailySheet: "progress-harian-umkm",
     today: today,
     timestamp: lastEditTimestamp
   });
@@ -46,7 +45,6 @@ function recordDailyProgress() {
   const ubChanged = calculateDaily(ss, {
     sourceSheet: "Sensus Ekonomi 2026 - UB",
     snapshotSheet: "snapshot-kemarin-ub",
-    dailySheet: "progress-harian-ub",
     today: today,
     timestamp: lastEditTimestamp
   });
@@ -62,11 +60,11 @@ function recordDailyProgress() {
 }
 
 function calculateDaily(ss, config) {
-  const source = ss.getSheetByName(config.sourceSheet);
-  const snapshot = ss.getSheetByName(config.snapshotSheet);
-  const daily = ss.getSheetByName(config.dailySheet);
+  // [MODIFIED] Menggunakan getSheetByNameCI agar aman dari perbedaan huruf besar/kecil & spasi
+  const source = getSheetByNameCI(ss, config.sourceSheet);
+  const snapshot = getSheetByNameCI(ss, config.snapshotSheet);
 
-  if (!source || !snapshot || !daily) {
+  if (!source || !snapshot) {
     Logger.log("❌ Sheet tidak ditemukan: " + config.sourceSheet);
     return;
   }
@@ -89,7 +87,8 @@ function calculateDaily(ss, config) {
   let hasTodaySnapshot = false;
 
   snapshotData.forEach(row => {
-    let rowDate = getDateString(row["Tanggal"]);
+    // [MODIFIED] Menggunakan getValCI agar pembacaan kolom Tanggal kebal perbedaan huruf/spasi
+    let rowDate = getDateString(getValCI(row, "Tanggal"));
     if (rowDate === config.today) {
       hasTodaySnapshot = true;
     } else if (rowDate && rowDate < config.today && rowDate > latestPastDate) {
@@ -102,12 +101,13 @@ function calculateDaily(ss, config) {
   let firstRowToday = -1;
 
   snapshotData.forEach((row, idx) => {
-    let rowDate = getDateString(row["Tanggal"]);
-    let kode = String(row["Wilayah"]).trim();
+    // [MODIFIED] Menggunakan getValCI untuk pembacaan kolom snapshot
+    let rowDate = getDateString(getValCI(row, "Tanggal"));
+    let kode = String(getValCI(row, "Wilayah") || "").trim();
     let vals = {
-      submit: Number(row["Submit"] || row["Submit Kemarin"] || 0),
-      open: Number(row["Open"] || 0),
-      draft: Number(row["Draft"] || 0)
+      submit: Number(getValCI(row, "Submit") || getValCI(row, "Submit Kemarin") || 0),
+      open: Number(getValCI(row, "Open") || 0),
+      draft: Number(getValCI(row, "Draft") || 0)
     };
 
     // Baca baris jika tanggalnya cocok dengan latestPastDate (atau kosong untuk kompatibilitas data lama)
@@ -127,21 +127,22 @@ function calculateDaily(ss, config) {
   const wilayahNames = {}; // Untuk menyimpan nama kecamatannya
   
   sourceData.forEach(row => {
-    const kode = String(row["Wilayah"]).trim();
+    // [MODIFIED] Menggunakan getValCI untuk kebal casing kolom Wilayah dan nama kecamatan
+    const kode = String(getValCI(row, "Wilayah") || "").trim();
     if (!kode) return;
     
     // Simpan nama wilayah untuk dipakai di laporan
-    wilayahNames[kode] = row["Nama Wilayah"] || row["Nama"] || row["nama"] || row["NMKEC"] || "-";
+    wilayahNames[kode] = getValCI(row, "Nama Wilayah") || getValCI(row, "Kecamatan") || getValCI(row, "Nama") || getValCI(row, "nama") || getValCI(row, "NMKEC") || "-";
 
     let totalSubmit = 0;
     SUBMIT_FIELDS.forEach(field => {
-      totalSubmit += Number(row[field] || 0);
+      totalSubmit += Number(getValCI(row, field) || 0);
     });
     
     todayMap[kode] = {
       submit: totalSubmit,
-      open: Number(row["OPEN"] || 0),
-      draft: Number(row["DRAFT"] || 0)
+      open: Number(getValCI(row, "OPEN") || getValCI(row, "Open") || 0),
+      draft: Number(getValCI(row, "DRAFT") || getValCI(row, "Draft") || 0)
     };
   });
 
@@ -168,23 +169,9 @@ function calculateDaily(ss, config) {
   }
 
   // 4. Hitung kenaikan = today - kemarin (selalu bandingkan dengan latestPastDate)
-  // 5. Update sheet progress-harian-*
-  const dailyHeaders = ["Wilayah", "Nama Wilayah", "Kenaikan Harian", "Tanggal Update"];
-  const dailyRows = allKodes.map(kode => {
-    const submitToday = todayMap[kode].submit || 0;
-    const pastVals = latestPastMap[kode] || { submit: 0 };
-    const submitKemarin = pastVals.submit || 0;
-    const kenaikan = Math.max(0, submitToday - submitKemarin);
-    return [kode, wilayahNames[kode], kenaikan, "'" + config.timestamp];
-  });
+  // (Penulisan ke sheet progress-harian-* sudah dihapus karena data dikalkulasi di frontend)
 
-  daily.clearContents();
-  daily.getRange(1, 1, 1, dailyHeaders.length).setValues([dailyHeaders]);
-  if (dailyRows.length > 0) {
-    daily.getRange(2, 1, dailyRows.length, dailyHeaders.length).setValues(dailyRows);
-  }
-
-  // 6. Update snapshot history = submit, open, draft hari ini
+  // 5. Update snapshot history = submit, open, draft hari ini
   const snapshotHeaders = ["Tanggal", "Wilayah", "Submit", "Open", "Draft"];
   const snapshotRows = allKodes.map(kode => {
     const vals = todayMap[kode];
@@ -261,7 +248,8 @@ function doGet() {
   };
   
   sheetNames.forEach(name => {
-    const sheet = ss.getSheetByName(name);
+    // [MODIFIED] Menggunakan getSheetByNameCI agar aman dari perbedaan huruf besar/kecil & spasi
+    const sheet = getSheetByNameCI(ss, name);
     if (sheet) {
       const data = sheet.getDataRange().getValues();
       const headers = data[0];
@@ -272,7 +260,36 @@ function doGet() {
         headers.forEach((h, j) => {
           row[h] = data[i][j];
         });
-        rows.push(row);
+        
+        // [MODIFIED] Map data agar kunci propertinya persis seperti yang diharapkan oleh index.html
+        var mappedRow = {};
+        if (name === "target-wilayah") {
+          mappedRow["Wilayah"] = getValCI(row, "Wilayah") || getValCI(row, "kode");
+          mappedRow["Target UMKM"] = getValCI(row, "Target UMKM") || getValCI(row, "TARGET UMKM");
+          mappedRow["Target UB"] = getValCI(row, "Target UB") || getValCI(row, "TARGET UB");
+          mappedRow["Target Keluarga"] = getValCI(row, "Target Keluarga") || getValCI(row, "TARGET KELUARGA");
+          mappedRow["Nama Wilayah"] = getValCI(row, "Nama Wilayah") || getValCI(row, "nama");
+        } else if (name === "snapshot-kemarin-umkm" || name === "snapshot-kemarin-ub") {
+          mappedRow["Wilayah"] = getValCI(row, "Wilayah") || getValCI(row, "kode");
+          mappedRow["Submit"] = getValCI(row, "Submit") || getValCI(row, "Submit Kemarin") || getValCI(row, "Submit_Kemarin") || 0;
+          mappedRow["Open"] = getValCI(row, "Open") || 0;
+          mappedRow["Draft"] = getValCI(row, "Draft") || 0;
+          mappedRow["Tanggal"] = getValCI(row, "Tanggal") || "";
+        } else if (name === "Sensus Ekonomi 2026" || name === "Sensus Ekonomi 2026 - UB") {
+          mappedRow["Wilayah"] = getValCI(row, "Wilayah") || getValCI(row, "kode");
+          mappedRow["OPEN"] = getValCI(row, "OPEN") || getValCI(row, "Open") || 0;
+          mappedRow["DRAFT"] = getValCI(row, "DRAFT") || getValCI(row, "Draft") || 0;
+          SUBMIT_FIELDS.forEach(function(field) {
+            mappedRow[field] = getValCI(row, field) || 0;
+          });
+        } else if (name === "master-kec") {
+          mappedRow["idkec"] = getValCI(row, "idkec") || getValCI(row, "id");
+          mappedRow["nmkec"] = getValCI(row, "nmkec") || getValCI(row, "nama");
+        } else {
+          mappedRow = row;
+        }
+        
+        rows.push(mappedRow);
       }
       
       result[name] = rows;
@@ -292,8 +309,8 @@ function doGet() {
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
   ui.createMenu('Dashboard SE')
-      .addItem('Upload CSV Data Kecamatan', 'openUploadDialog')
-      .addItem('Hitung Kenaikan Harian Manual', 'confirmRecordDailyProgress')
+      //.addItem('Upload CSV Data Kecamatan', 'openUploadDialog')
+      //.addItem('Hitung Kenaikan Harian Manual', 'confirmRecordDailyProgress')
       .addItem('Setel Jadwal Otomatis (Setiap Malam)', 'createDailyTrigger')
       .addToUi();
 }
@@ -365,7 +382,8 @@ function processMultipleCSV(filesArray) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   
   for (var sName in grouped) {
-    var sheet = ss.getSheetByName(sName);
+    // [MODIFIED] Menggunakan getSheetByNameCI agar aman dari perbedaan casing/spasi
+    var sheet = getSheetByNameCI(ss, sName);
     if (!sheet) {
       results.push("Error: Sheet dengan nama '" + sName + "' tidak ditemukan!");
       continue;
@@ -404,7 +422,8 @@ function clearSheetData_(sheet) {
  */
 function clearSheetBeforeUpload(sheetName) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName(sheetName);
+  // [MODIFIED] Menggunakan getSheetByNameCI agar aman dari casing/spasi
+  var sheet = getSheetByNameCI(ss, sheetName);
   if (!sheet) return "Error: Sheet '" + sheetName + "' tidak ditemukan!";
   clearSheetData_(sheet);
   return "OK";
@@ -423,15 +442,24 @@ function processCSV(csvContent, sheetName, shouldClear) {
   
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = ss.getSheetByName(sheetName);
+    // [MODIFIED] Menggunakan getSheetByNameCI agar aman dari casing/spasi
+    var sheet = getSheetByNameCI(ss, sheetName);
     
     if (!sheet) return "Error: Sheet dengan nama '" + sheetName + "' tidak ditemukan!";
 
     var csvData = Utilities.parseCsv(csvContent);
     if (csvData.length <= 1) return "Error: CSV kosong atau hanya berisi header.";
 
-    var csvHeaders = csvData[0];
-    var wilayahCsvIdx = csvHeaders.indexOf("Wilayah");
+    // [MODIFIED] Map ke lowerCase trim agar pencarian kolom kebal terhadap spasi/huruf besar-kecil
+    var csvHeaders = csvData[0].map(function(h) { return h.trim(); });
+    var wilayahCsvIdx = -1;
+    for (var i = 0; i < csvHeaders.length; i++) {
+      var normH = csvHeaders[i].toLowerCase();
+      if (normH === "wilayah" || normH === "kode") {
+        wilayahCsvIdx = i;
+        break;
+      }
+    }
     
     if (wilayahCsvIdx === -1) return "Error: Kolom 'Wilayah' tidak ditemukan pada CSV.";
 
@@ -443,9 +471,20 @@ function processCSV(csvContent, sheetName, shouldClear) {
     var newColumnsAdded = false;
     for (var c = 0; c < csvHeaders.length; c++) {
       var headerName = csvHeaders[c].trim();
-      if (headerName !== "" && sheetHeaders.indexOf(headerName) === -1) {
-        sheetHeaders.push(headerName);
-        newColumnsAdded = true;
+      if (headerName !== "") {
+        // Cek secara case-insensitive
+        var exists = false;
+        var normHeaderName = headerName.toLowerCase().replace(/[\s_-]/g, "");
+        for (var h = 0; h < sheetHeaders.length; h++) {
+          if (sheetHeaders[h].toLowerCase().replace(/[\s_-]/g, "") === normHeaderName) {
+            exists = true;
+            break;
+          }
+        }
+        if (!exists) {
+          sheetHeaders.push(headerName);
+          newColumnsAdded = true;
+        }
       }
     }
 
@@ -485,7 +524,15 @@ function processCSV(csvContent, sheetName, shouldClear) {
         if (headerName === "Last Updated") {
           newRowData.push("'" + timestamp);
         } else {
-          var csvIdx = csvHeaders.indexOf(headerName);
+          // [MODIFIED] Cari indeks kolom CSV secara case-insensitive & space-insensitive
+          var csvIdx = -1;
+          var normHeaderName = headerName.toLowerCase().replace(/[\s_-]/g, "");
+          for (var c = 0; c < csvHeaders.length; c++) {
+            if (csvHeaders[c].toLowerCase().replace(/[\s_-]/g, "") === normHeaderName) {
+              csvIdx = c;
+              break;
+            }
+          }
           if (csvIdx > -1) {
             newRowData.push(csvRow[csvIdx]);
           } else {
@@ -510,4 +557,195 @@ function processCSV(csvContent, sheetName, shouldClear) {
   } catch (error) {
     return "Error memproses data: " + error.toString();
   }
+}
+
+// ============================================================
+// --- FUNGSI TAMBAHAN UNTUK INTEGRASI SCRAPER OTOMATIS ---
+// ============================================================
+
+/**
+ * Menerima unggahan data otomatis dari Ekstensi Scraper.
+ */
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var rawSheetName = data.sheetName || "Sheet1";
+    
+    // 1. Sanitasi nama sheet (Google Sheets melarang karakter: \ / ? * : [ ])
+    var sheetName = sanitizeSheetName(rawSheetName);
+    
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = getSheetByNameCI(ss, sheetName);
+    
+    // 2. Jika tab dengan nama survey belum ada, buat baru secara otomatis
+    if (!sheet) {
+      sheet = ss.insertSheet(sheetName);
+    }
+    
+    // 3. Bersihkan seluruh isi tab tersebut agar diganti dengan data rekap terbaru
+    sheet.clear();
+    
+    var rows = data.rows; // Array of { code, name, kabCode, kabName, lastUpdated, stats: { ... } }
+    
+    if (!rows || rows.length === 0) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        message: "Tidak ada data rekapitulasi yang diterima."
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // 4. Kumpulkan seluruh kolom status secara dinamis dari data scraping
+    var statusKeys = [];
+    var seenKeys = {};
+    for (var i = 0; i < rows.length; i++) {
+      var stats = rows[i].stats;
+      for (var key in stats) {
+        if (!seenKeys[key]) {
+          seenKeys[key] = true;
+          statusKeys.push(key);
+        }
+      }
+    }
+    
+    // Taruh metrik "total" di paling depan kolom status
+    var totalIdx = statusKeys.indexOf("total");
+    if (totalIdx > -1) {
+      statusKeys.splice(totalIdx, 1);
+      statusKeys.unshift("total");
+    }
+    
+    // 5. Buat baris Header (Baris 1)
+    var headers = ["Last Updated", "Wilayah", "Kecamatan", "Kabupaten"];
+    for (var k = 0; k < statusKeys.length; k++) {
+      headers.push(statusKeys[k]);
+    }
+    
+    // 6. Siapkan kumpulan nilai baris
+    var values = [headers];
+    for (var i = 0; i < rows.length; i++) {
+      var item = rows[i];
+      var rowValues = [
+        item.lastUpdated,
+        item.code,
+        item.name,
+        item.kabName
+      ];
+      
+      for (var k = 0; k < statusKeys.length; k++) {
+        var key = statusKeys[k];
+        rowValues.push(item.stats[key] !== undefined ? item.stats[key] : 0);
+      }
+      values.push(rowValues);
+    }
+    
+    // 7. Tulis data ke sheet
+    var range = sheet.getRange(1, 1, values.length, headers.length);
+    range.setValues(values);
+    
+    // 8. Rapikan & Format Tipe Data Sel
+    if (values.length > 1) {
+      // Kode Wilayah diatur sebagai Plain Text agar tetap rapi (tidak memotong leading zero)
+      sheet.getRange(2, 2, values.length - 1, 1).setNumberFormat("@");
+      
+      // Jumlah Metrik diatur sebagai Angka biasa dengan ribuan separator
+      sheet.getRange(2, 5, values.length - 1, headers.length - 4).setNumberFormat("#,##0");
+    }
+    
+    // 9. Berikan border halus (#e2e8f0) ke seluruh tabel data
+    range.setBorder(true, true, true, true, true, true, "#e2e8f0", SpreadsheetApp.BorderStyle.SOLID);
+    
+    // 10. Terapkan styling premium pada Header (Baris 1)
+    var headerRange = sheet.getRange(1, 1, 1, headers.length);
+    headerRange.setBackground("#f79039") // Oranye BPS Premium
+               .setFontColor("#ffffff") // Teks putih
+               .setFontWeight("bold")
+               .setHorizontalAlignment("center")
+               .setVerticalAlignment("middle");
+                
+    sheet.setRowHeight(1, 28); // Tinggi baris header longgar
+    
+    // 11. Atur Perataan Kolom (Alignment)
+    if (values.length > 1) {
+      // Kolom Tanggal & Wilayah di tengah (Center)
+      sheet.getRange(2, 1, values.length - 1, 2).setHorizontalAlignment("center");
+      // Kolom Kecamatan & Kabupaten rata kiri (Left)
+      sheet.getRange(2, 3, values.length - 1, 2).setHorizontalAlignment("left");
+      // Kolom angka rata kanan (Right)
+      sheet.getRange(2, 5, values.length - 1, headers.length - 4).setHorizontalAlignment("right");
+    }
+    
+    sheet.setFrozenRows(1); // Bekukan baris header
+    
+    // 12. Atur lebar kolom otomatis & berikan padding agar lega
+    sheet.autoResizeColumns(1, headers.length);
+    for (var col = 1; col <= headers.length; col++) {
+      var currentWidth = sheet.getColumnWidth(col);
+      sheet.setColumnWidth(col, currentWidth + 15); // Tambah 15px lebar ekstra
+    }
+    
+    // 13. TRIGGER KALKULASI PROGRES HARIAN (Otomatis perbarui dashboard)
+    // var calcMsg = "";
+    // try {
+    //   var calcResult = recordDailyProgress();
+    //   calcMsg = " & Kalkulasi Kenaikan Harian Dashboard Berhasil.";
+    // } catch (calcError) {
+    //   Logger.log("Kalkulasi harian error: " + calcError.toString());
+    //   calcMsg = " (Kalkulasi harian dilewati: " + calcError.toString() + ").";
+    // }
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      message: "Berhasil menulis " + rows.length + " baris data ke tab '" + sheetName + "'" + calcMsg,
+      updatedCount: rows.length
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      error: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * Helper: Mencari Sheet secara case-insensitive & mengabaikan spasi/simbol.
+ */
+function getSheetByNameCI(ss, name) {
+  if (!ss || !name) return null;
+  var sheets = ss.getSheets();
+  var normName = name.toLowerCase().replace(/[\s_-]/g, "");
+  for (var i = 0; i < sheets.length; i++) {
+    var sName = sheets[i].getName();
+    if (sName.toLowerCase().replace(/[\s_-]/g, "") === normName) {
+      return sheets[i];
+    }
+  }
+  return null;
+}
+
+/**
+ * Helper: Mengambil properti objek secara case-insensitive & mengabaikan spasi/simbol.
+ */
+function getValCI(obj, key) {
+  if (!obj || !key) return undefined;
+  var normKey = String(key).toLowerCase().replace(/[\s_-]/g, "");
+  for (var k in obj) {
+    if (String(k).toLowerCase().replace(/[\s_-]/g, "") === normKey) {
+      return obj[k];
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Helper: Membersihkan nama sheet dari karakter ilegal.
+ */
+function sanitizeSheetName(name) {
+  if (!name) return "Sheet1";
+  var clean = name.replace(/[\\\/\?\*\:\[\]]/g, "");
+  clean = clean.trim();
+  if (clean.length > 99) {
+    clean = clean.substring(0, 99);
+  }
+  return clean || "Sheet1";
 }
