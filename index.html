@@ -823,7 +823,7 @@
         <div class="flex space-x-1">
           <button onclick="changePetugasPage(-1)" id="btn-prev-petugas"
             class="impeccable-btn-secondary px-3 py-1 text-sm disabled:opacity-50" disabled>Sebelumnya</button>
-          
+
           <div id="petugas-page-numbers" class="flex space-x-1 items-center">
             <!-- Dinamis oleh JS -->
           </div>
@@ -1274,8 +1274,8 @@
         const pencacah = row.Pencacah || "-";
 
         // Cari nama kabupaten dari kode wilayah
-        const regionCode = row.Wilayah || row.RegionCode || "-";
-        const kabCode = regionCode !== "-" ? regionCode.substring(0, 4) : "-";
+        const regionCode = String(row.Wilayah ?? row.RegionCode ?? "");
+        const kabCode = regionCode ? regionCode.substring(0, 4) : "-";
         const wilayahInfo = getNamaKecamatanAndKabupaten(regionCode, masterKecSheet, masterSubSlsSheet);
 
         // --- Agregasi Pengawas ---
@@ -1551,16 +1551,16 @@
         if (totalPages > 0) {
           let startPage = Math.max(1, currentPetugasPage - 2);
           let endPage = Math.min(totalPages, currentPetugasPage + 2);
-          
+
           if (startPage > 1) {
             pageHTML += `<button onclick="setPetugasPage(1)" class="px-3 py-1 text-sm rounded transition-colors ${currentPetugasPage === 1 ? 'bg-[var(--accent-color)] text-black font-bold' : 'hover:bg-[rgba(0,0,0,0.05)] dark:hover:bg-[rgba(255,255,255,0.1)]'}">1</button>`;
             if (startPage > 2) pageHTML += `<span class="px-1 py-1 text-sm text-[var(--text-muted)]">...</span>`;
           }
-          
+
           for (let p = startPage; p <= endPage; p++) {
             pageHTML += `<button onclick="setPetugasPage(${p})" class="px-3 py-1 text-sm rounded transition-colors ${currentPetugasPage === p ? 'bg-[var(--accent-color)] text-black font-bold shadow-sm' : 'hover:bg-[rgba(0,0,0,0.05)] dark:hover:bg-[rgba(255,255,255,0.1)]'}">${p}</button>`;
           }
-          
+
           if (endPage < totalPages) {
             if (endPage < totalPages - 1) pageHTML += `<span class="px-1 py-1 text-sm text-[var(--text-muted)]">...</span>`;
             pageHTML += `<button onclick="setPetugasPage(${totalPages})" class="px-3 py-1 text-sm rounded transition-colors ${currentPetugasPage === totalPages ? 'bg-[var(--accent-color)] text-black font-bold' : 'hover:bg-[rgba(0,0,0,0.05)] dark:hover:bg-[rgba(255,255,255,0.1)]'}">${totalPages}</button>`;
