@@ -745,7 +745,8 @@
 
 
     <!-- ===== TABLE PETUGAS SECTION ===== -->
-    <section class="plinth-card mt-6">
+    <!-- Tabel dan pengolahan data di-hide sementara -->
+    <section class="plinth-card mt-6" style="display: none;">
       <div
         class="p-6 border-b border-[var(--border-color)] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -1616,9 +1617,10 @@
       const petugasSheet = data["Sensus Ekonomi 2026 - Rekap Petugas"];
       const snapshotPetugasSheet = data["Snapshot - Petugas"];
 
-      if (petugasSheet) {
-        renderPetugasTable(petugasSheet, snapshotPetugasSheet, masterKecSheet, masterSubSlsSheet);
-      }
+      // Dihide sementara
+      // if (petugasSheet) {
+      //   renderPetugasTable(petugasSheet, snapshotPetugasSheet, masterKecSheet, masterSubSlsSheet);
+      // }
 
 
 
