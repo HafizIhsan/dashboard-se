@@ -699,40 +699,52 @@
         <table class="impeccable-table text-left" id="dashboard-table">
           <thead class="sticky top-0 z-20 shadow-sm">
             <tr>
-              <th rowspan="2" class="cursor-pointer pl-6" onclick="sortTable(1)">Wilayah <span
-                  id="sort-indicator-1">↕</span>
+              <th rowspan="2" class="cursor-pointer pl-6 select-none" onclick="sortTable('wilayah')">Wilayah <span
+                  id="sort-indicator-wilayah">↕</span>
               </th>
               <th colspan="4" class="text-center bg-[rgba(212,178,122,0.02)]">Target Prelist Awal</th>
               <th id="th-umkm-group" colspan="5" class="text-center bg-[rgba(163,201,168,0.02)]">[Sensus Ekonomi 2026]
               </th>
               <th id="th-ub-group" colspan="5" class="text-center bg-[rgba(229,185,116,0.02)]">[Sensus Ekonomi 2026 -
                 UB]</th>
-              <th rowspan="2" class="text-right cursor-pointer align-middle" onclick="sortTable(10)">%
-                Progres<br>Akumulatif <span id="sort-indicator-10">↕</span></th>
+              <th rowspan="2" class="text-right cursor-pointer align-middle select-none"
+                onclick="sortTable('progress')">%
+                Progres<br>Akumulatif <span id="sort-indicator-progress">↕</span></th>
             </tr>
             <tr class="text-[9px]">
-              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)]">UMKM</th>
-              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)]">UB</th>
-              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)]">Keluarga</th>
+              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)] cursor-pointer select-none"
+                onclick="sortTable('targetUmkm')">UMKM <span id="sort-indicator-targetUmkm">↕</span></th>
+              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)] cursor-pointer select-none"
+                onclick="sortTable('targetUb')">UB <span id="sort-indicator-targetUb">↕</span></th>
+              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)] cursor-pointer select-none"
+                onclick="sortTable('targetKeluarga')">Keluarga <span id="sort-indicator-targetKeluarga">↕</span></th>
               <th
-                class="text-right bg-[rgba(212,178,122,0.02)] border-r border-[var(--border-color)] text-[var(--text-secondary)] font-bold">
-                Total</th>
+                class="text-right bg-[rgba(212,178,122,0.02)] border-r border-[var(--border-color)] text-[var(--text-secondary)] font-bold cursor-pointer select-none"
+                onclick="sortTable('targetTotal')">Total <span id="sort-indicator-targetTotal">↕</span></th>
 
-              <th class="text-right bg-[rgba(163,201,168,0.02)]">Open</th>
-              <th class="text-right bg-[rgba(163,201,168,0.02)]">Draft</th>
-              <th class="text-right bg-[rgba(163,201,168,0.02)] text-[var(--success-color)]">Submit</th>
-              <th id="th-umkm-total" class="text-right bg-[rgba(163,201,168,0.02)] font-bold">Total</th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
+                onclick="sortTable('umkmOpen')">Open <span id="sort-indicator-umkmOpen">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
+                onclick="sortTable('umkmDraft')">Draft <span id="sort-indicator-umkmDraft">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] text-[var(--success-color)] cursor-pointer select-none"
+                onclick="sortTable('umkmSubmit')">Submit <span id="sort-indicator-umkmSubmit">↕</span></th>
+              <th id="th-umkm-total" class="text-right bg-[rgba(163,201,168,0.02)] font-bold cursor-pointer select-none"
+                onclick="sortTable('umkmTotal')">Total <span id="sort-indicator-umkmTotal">↕</span></th>
               <th id="th-umkm-pct"
-                class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] font-bold text-[var(--accent-color)]">
-                %</th>
+                class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] font-bold text-[var(--accent-color)] cursor-pointer select-none"
+                onclick="sortTable('umkmPct')">% <span id="sort-indicator-umkmPct">↕</span></th>
 
-              <th class="text-right bg-[rgba(229,185,116,0.02)]">Open</th>
-              <th class="text-right bg-[rgba(229,185,116,0.02)]">Draft</th>
-              <th class="text-right bg-[rgba(229,185,116,0.02)] text-[var(--success-color)]">Submit</th>
-              <th id="th-ub-total" class="text-right bg-[rgba(229,185,116,0.02)] font-bold">Total</th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
+                onclick="sortTable('ubOpen')">Open <span id="sort-indicator-ubOpen">↕</span></th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
+                onclick="sortTable('ubDraft')">Draft <span id="sort-indicator-ubDraft">↕</span></th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] text-[var(--success-color)] cursor-pointer select-none"
+                onclick="sortTable('ubSubmit')">Submit <span id="sort-indicator-ubSubmit">↕</span></th>
+              <th id="th-ub-total" class="text-right bg-[rgba(229,185,116,0.02)] font-bold cursor-pointer select-none"
+                onclick="sortTable('ubTotal')">Total <span id="sort-indicator-ubTotal">↕</span></th>
               <th id="th-ub-pct"
-                class="text-right bg-[rgba(229,185,116,0.02)] border-r border-[var(--border-color)] font-bold text-[var(--accent-color)]">
-                %</th>
+                class="text-right bg-[rgba(229,185,116,0.02)] border-r border-[var(--border-color)] font-bold text-[var(--accent-color)] cursor-pointer select-none"
+                onclick="sortTable('ubPct')">% <span id="sort-indicator-ubPct">↕</span></th>
             </tr>
           </thead>
           <tbody id="table-body">
@@ -841,7 +853,7 @@
   <!-- ===== DATA & LOGIC ===== -->
   <script>
     // URL Apps Script Web App Anda (Masukkan URL /exec Anda di sini)
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyb21hCGKlCBlGNJjtC38mmlnqdRb3DOt0YEdHWAOg3kKjSZY_kBnH4jBGd6zz9GPRFoA/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziZ_3YRU7h6LPtzBFJLWXgcwojbCf3ZysNzZz79-cZCP_3JY8uOHdtUbmwn1anDWClrg/exec";
 
     // Helper format angka Indonesia: titik pemisah ribuan, koma pemisah desimal
     function fmtNum(n) { return Number(n).toLocaleString('id-ID'); }
@@ -1013,8 +1025,82 @@
       if (currentSortColumn !== null) {
         dashboardData.sort((a, b) => {
           let valA, valB;
-          if (currentSortColumn === 1) { valA = a.kode; valB = b.kode; }
-          else if (currentSortColumn === 10) { valA = a.progress; valB = b.progress; }
+          const key = currentSortColumn;
+          switch (key) {
+            case 'wilayah':
+            case 1:
+              valA = a.kode;
+              valB = b.kode;
+              break;
+            case 'targetUmkm':
+              valA = a.targetUmkm;
+              valB = b.targetUmkm;
+              break;
+            case 'targetUb':
+              valA = a.targetUb;
+              valB = b.targetUb;
+              break;
+            case 'targetKeluarga':
+              valA = a.targetKeluarga || 0;
+              valB = b.targetKeluarga || 0;
+              break;
+            case 'targetTotal':
+              valA = a.targetUmkm + a.targetUb + (a.targetKeluarga || 0);
+              valB = b.targetUmkm + b.targetUb + (b.targetKeluarga || 0);
+              break;
+            case 'umkmOpen':
+              valA = a.umkmOpen;
+              valB = b.umkmOpen;
+              break;
+            case 'umkmDraft':
+              valA = a.umkmDraft;
+              valB = b.umkmDraft;
+              break;
+            case 'umkmSubmit':
+              valA = a.umkmSubmit;
+              valB = b.umkmSubmit;
+              break;
+            case 'umkmTotal':
+              valA = a.umkmTotal;
+              valB = b.umkmTotal;
+              break;
+            case 'umkmPct':
+              const aUmkmTarget = mode === 'fasih' ? a.umkmTotal : (a.targetUmkm + (a.targetKeluarga || 0));
+              const bUmkmTarget = mode === 'fasih' ? b.umkmTotal : (b.targetUmkm + (b.targetKeluarga || 0));
+              valA = aUmkmTarget > 0 ? (a.umkmSubmit / aUmkmTarget) : 0;
+              valB = bUmkmTarget > 0 ? (b.umkmSubmit / bUmkmTarget) : 0;
+              break;
+            case 'ubOpen':
+              valA = a.ubOpen;
+              valB = b.ubOpen;
+              break;
+            case 'ubDraft':
+              valA = a.ubDraft;
+              valB = b.ubDraft;
+              break;
+            case 'ubSubmit':
+              valA = a.ubSubmit;
+              valB = b.ubSubmit;
+              break;
+            case 'ubTotal':
+              valA = a.ubTotal;
+              valB = b.ubTotal;
+              break;
+            case 'ubPct':
+              const aUbTarget = mode === 'fasih' ? a.ubTotal : a.targetUb;
+              const bUbTarget = mode === 'fasih' ? b.ubTotal : b.targetUb;
+              valA = aUbTarget > 0 ? (a.ubSubmit / aUbTarget) : 0;
+              valB = bUbTarget > 0 ? (b.ubSubmit / bUbTarget) : 0;
+              break;
+            case 'progress':
+            case 10:
+              valA = a.progress;
+              valB = b.progress;
+              break;
+            default:
+              valA = a.kode;
+              valB = b.kode;
+          }
 
           if (valA < valB) return isSortAsc ? -1 : 1;
           if (valA > valB) return isSortAsc ? 1 : -1;
@@ -1132,16 +1218,15 @@
     let petugasSortWilayahOrder = 'asc';
     let petugasSortProgressOrder = null;
 
+    let petugasSortColumn = 'wilayah';
+    let petugasSortOrder = 'asc';
+
     function togglePetugasSort(col) {
-      if (col === 'wilayah') {
-        petugasSortWilayahOrder = petugasSortWilayahOrder === 'asc' ? 'desc' : 'asc';
-        petugasSortProgressOrder = null;
-      } else if (col === 'progress') {
-        if (!petugasSortProgressOrder) {
-          petugasSortProgressOrder = 'desc';
-        } else {
-          petugasSortProgressOrder = petugasSortProgressOrder === 'asc' ? 'desc' : 'asc';
-        }
+      if (petugasSortColumn === col) {
+        petugasSortOrder = petugasSortOrder === 'asc' ? 'desc' : 'asc';
+      } else {
+        petugasSortColumn = col;
+        petugasSortOrder = 'asc';
       }
       drawPetugasRows();
     }
@@ -1151,11 +1236,8 @@
       const descIcon = `<svg class="w-3 h-3 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
       const neutralIcon = `<svg class="w-3 h-3 inline opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>`;
 
-      if (col === 'wilayah') {
-        return petugasSortWilayahOrder === 'asc' ? ascIcon : descIcon;
-      } else if (col === 'progress') {
-        if (!petugasSortProgressOrder) return neutralIcon;
-        return petugasSortProgressOrder === 'asc' ? ascIcon : descIcon;
+      if (petugasSortColumn === col) {
+        return petugasSortOrder === 'asc' ? ascIcon : descIcon;
       }
       return neutralIcon;
     }
@@ -1412,10 +1494,12 @@
           <th class="pl-6 min-w-[250px] cursor-pointer hover:text-[var(--accent-color)] select-none transition-colors" onclick="togglePetugasSort('wilayah')" title="Urutkan berdasarkan Wilayah">
             <div class="flex items-center gap-1">Wilayah ${getPetugasSortIcon('wilayah')}</div>
           </th>
-          <th>${activePetugasTab === 'pengawas' ? 'Pengawas' : 'Pencacah'}</th>
+          <th class="cursor-pointer hover:text-[var(--accent-color)] select-none transition-colors" onclick="togglePetugasSort('nama')" title="Urutkan berdasarkan Nama">
+            <div class="flex items-center gap-1">${activePetugasTab === 'pengawas' ? 'Pengawas' : 'Pencacah'} ${getPetugasSortIcon('nama')}</div>
+          </th>
       `;
       petugasStatusArray.forEach(st => {
-        headerHTML += `<th class="text-right">${st}</th>`;
+        headerHTML += `<th class="text-right cursor-pointer hover:text-[var(--accent-color)] select-none transition-colors" onclick="togglePetugasSort('${st}')">${st} ${getPetugasSortIcon(st)}</th>`;
       });
       headerHTML += `<th class="text-right align-middle cursor-pointer hover:text-[var(--accent-color)] select-none transition-colors" onclick="togglePetugasSort('progress')" title="Urutkan berdasarkan % Progres Akumulatif">
         <div class="flex justify-end items-center gap-1">% Progres<br>Akumulatif ${getPetugasSortIcon('progress')}</div>
@@ -1443,24 +1527,26 @@
 
       // Sorting 
       filteredData.sort((a, b) => {
-        const kabA = a.KabKode || "";
-        const kabB = b.KabKode || "";
-        let kabCmp = kabA.localeCompare(kabB);
-
-        // Primary sort: Wilayah
-        if (kabCmp !== 0) {
-          return petugasSortWilayahOrder === 'asc' ? kabCmp : -kabCmp;
+        let valA, valB;
+        if (petugasSortColumn === 'wilayah') {
+          valA = a.KabKode || "";
+          valB = b.KabKode || "";
+        } else if (petugasSortColumn === 'nama') {
+          valA = a.Nama || "";
+          valB = b.Nama || "";
+        } else if (petugasSortColumn === 'progress') {
+          valA = calculatePetugasProgress(a, activePetugasTab);
+          valB = calculatePetugasProgress(b, activePetugasTab);
+        } else {
+          // Dynamic status column
+          valA = Number(a[petugasSortColumn] || 0);
+          valB = Number(b[petugasSortColumn] || 0);
         }
 
-        // Secondary sort: Progress
-        if (petugasSortProgressOrder) {
-          const progA = calculatePetugasProgress(a, activePetugasTab);
-          const progB = calculatePetugasProgress(b, activePetugasTab);
-          if (progA < progB) return petugasSortProgressOrder === 'asc' ? -1 : 1;
-          if (progA > progB) return petugasSortProgressOrder === 'asc' ? 1 : -1;
-        }
+        if (valA < valB) return petugasSortOrder === 'asc' ? -1 : 1;
+        if (valA > valB) return petugasSortOrder === 'asc' ? 1 : -1;
 
-        // Fallback tertiary sort: Nama (Email)
+        // Fallback tertiary sort: Nama
         const namaA = a.Nama || "";
         const namaB = b.Nama || "";
         return namaA.localeCompare(namaB);
@@ -1641,9 +1727,38 @@
         return map;
       };
 
+      const dataDateStr = data.lastUpdated ? data.lastUpdated.substring(0, 10) : "";
+
+      const getYesterdaySnapshotDate = (sheet, currentDataDate) => {
+        if (!sheet || sheet.length === 0) return "";
+        const dates = [...new Set(sheet.map(row => {
+          const t = row.Tanggal || row.tanggal || "";
+          return typeof t === 'string' ? t.substring(0, 10) : "";
+        }).filter(Boolean))].sort().reverse();
+        if (dates.length === 0) return "";
+        if (dates[0] === currentDataDate && dates.length > 1) {
+          return dates[1];
+        }
+        return dates[0];
+      };
+
+      const filterSnapshotByDate = (sheet, targetDate) => {
+        if (!sheet) return [];
+        return sheet.filter(row => {
+          const t = row.Tanggal || row.tanggal || "";
+          return typeof t === 'string' && t.substring(0, 10) === targetDate;
+        });
+      };
+
+      const targetUmkmDate = getYesterdaySnapshotDate(snapshotUmkmSheet, dataDateStr);
+      const targetUbDate = getYesterdaySnapshotDate(snapshotUbSheet, dataDateStr);
+
+      const filteredUmkmSnap = filterSnapshotByDate(snapshotUmkmSheet, targetUmkmDate);
+      const filteredUbSnap = filterSnapshotByDate(snapshotUbSheet, targetUbDate);
+
       const targetMap = mapByWilayah(targetSheet);
-      const snapUmkmMap = mapByWilayah(snapshotUmkmSheet);
-      const snapUbMap = mapByWilayah(snapshotUbSheet);
+      const snapUmkmMap = mapByWilayah(filteredUmkmSnap);
+      const snapUbMap = mapByWilayah(filteredUbSnap);
       const umkmKecMap = mapByWilayah(umkmKecSheet);
       const ubKecMap = mapByWilayah(ubKecSheet);
 
@@ -2186,32 +2301,108 @@
     }
 
     // Sort table rows dynamically
-    function sortTable(colIdx) {
-      if (currentSortColumn === colIdx) {
+    function sortTable(key) {
+      if (currentSortColumn === key) {
         isSortAsc = !isSortAsc;
       } else {
-        currentSortColumn = colIdx;
+        currentSortColumn = key;
         isSortAsc = true;
       }
 
       // Reset indicators
-      document.getElementById('sort-indicator-1').innerText = '↕';
-      document.getElementById('sort-indicator-10').innerText = '↕';
+      const allSortKeys = [
+        'wilayah', 'targetUmkm', 'targetUb', 'targetKeluarga', 'targetTotal',
+        'umkmOpen', 'umkmDraft', 'umkmSubmit', 'umkmTotal', 'umkmPct',
+        'ubOpen', 'ubDraft', 'ubSubmit', 'ubTotal', 'ubPct', 'progress'
+      ];
+      allSortKeys.forEach(k => {
+        const ind = document.getElementById(`sort-indicator-${k}`);
+        if (ind) ind.innerText = '↕';
+      });
 
-      const indicator = document.getElementById(`sort-indicator-${colIdx}`);
+      const indicator = document.getElementById(`sort-indicator-${key}`);
       if (indicator) {
         indicator.innerText = isSortAsc ? '▲' : '▼';
       }
 
       // Sort data array
+      const mode = document.getElementById('progress-mode-table') ? document.getElementById('progress-mode-table').value : 'fasih';
       dashboardData.sort((a, b) => {
         let valA, valB;
-        if (colIdx === 1) {
-          valA = a.kode;
-          valB = b.kode;
-        } else if (colIdx === 10) {
-          valA = a.progress;
-          valB = b.progress;
+        switch (key) {
+          case 'wilayah':
+          case 1:
+            valA = a.kode;
+            valB = b.kode;
+            break;
+          case 'targetUmkm':
+            valA = a.targetUmkm;
+            valB = b.targetUmkm;
+            break;
+          case 'targetUb':
+            valA = a.targetUb;
+            valB = b.targetUb;
+            break;
+          case 'targetKeluarga':
+            valA = a.targetKeluarga || 0;
+            valB = b.targetKeluarga || 0;
+            break;
+          case 'targetTotal':
+            valA = a.targetUmkm + a.targetUb + (a.targetKeluarga || 0);
+            valB = b.targetUmkm + b.targetUb + (b.targetKeluarga || 0);
+            break;
+          case 'umkmOpen':
+            valA = a.umkmOpen;
+            valB = b.umkmOpen;
+            break;
+          case 'umkmDraft':
+            valA = a.umkmDraft;
+            valB = b.umkmDraft;
+            break;
+          case 'umkmSubmit':
+            valA = a.umkmSubmit;
+            valB = b.umkmSubmit;
+            break;
+          case 'umkmTotal':
+            valA = a.umkmTotal;
+            valB = b.umkmTotal;
+            break;
+          case 'umkmPct':
+            const aUmkmTarget = mode === 'fasih' ? a.umkmTotal : (a.targetUmkm + (a.targetKeluarga || 0));
+            const bUmkmTarget = mode === 'fasih' ? b.umkmTotal : (b.targetUmkm + (b.targetKeluarga || 0));
+            valA = aUmkmTarget > 0 ? (a.umkmSubmit / aUmkmTarget) : 0;
+            valB = bUmkmTarget > 0 ? (b.umkmSubmit / bUmkmTarget) : 0;
+            break;
+          case 'ubOpen':
+            valA = a.ubOpen;
+            valB = b.ubOpen;
+            break;
+          case 'ubDraft':
+            valA = a.ubDraft;
+            valB = b.ubDraft;
+            break;
+          case 'ubSubmit':
+            valA = a.ubSubmit;
+            valB = b.ubSubmit;
+            break;
+          case 'ubTotal':
+            valA = a.ubTotal;
+            valB = b.ubTotal;
+            break;
+          case 'ubPct':
+            const aUbTarget = mode === 'fasih' ? a.ubTotal : a.targetUb;
+            const bUbTarget = mode === 'fasih' ? b.ubTotal : b.targetUb;
+            valA = aUbTarget > 0 ? (a.ubSubmit / aUbTarget) : 0;
+            valB = bUbTarget > 0 ? (b.ubSubmit / bUbTarget) : 0;
+            break;
+          case 'progress':
+          case 10:
+            valA = a.progress;
+            valB = b.progress;
+            break;
+          default:
+            valA = a.kode;
+            valB = b.kode;
         }
 
         if (valA < valB) return isSortAsc ? -1 : 1;
