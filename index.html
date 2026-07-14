@@ -187,11 +187,11 @@
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: 12px 8px;
+      padding: 12px 5px;
     }
 
     .impeccable-table td {
-      padding: 10px 8px;
+      padding: 10px 5px;
       border-bottom: 1px solid var(--border-color);
       font-size: 0.85rem;
       color: var(--text-primary);
@@ -699,7 +699,7 @@
         <table class="impeccable-table text-left" id="dashboard-table">
           <thead class="sticky top-0 z-20 shadow-sm">
             <tr>
-              <th rowspan="2" class="cursor-pointer pl-6 select-none" onclick="sortTable('wilayah')">Wilayah <span
+              <th rowspan="2" class="cursor-pointer pl-6 select-none whitespace-nowrap" onclick="sortTable('wilayah')">Wilayah <span
                   id="sort-indicator-wilayah">↕</span>
               </th>
               <th colspan="4" class="text-center bg-[rgba(212,178,122,0.02)]">Target Prelist Awal</th>
@@ -707,11 +707,11 @@
               </th>
               <th id="th-ub-group" colspan="5" class="text-center bg-[rgba(229,185,116,0.02)]">[Sensus Ekonomi 2026 -
                 UB]</th>
-              <th rowspan="2" class="text-right cursor-pointer align-middle select-none"
+              <th rowspan="2" class="text-right cursor-pointer align-middle select-none whitespace-nowrap"
                 onclick="sortTable('progress')">%
                 Progres<br>Akumulatif <span id="sort-indicator-progress">↕</span></th>
             </tr>
-            <tr class="text-[9px]">
+            <tr class="text-[8px] md:text-[9px] whitespace-nowrap">
               <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)] cursor-pointer select-none"
                 onclick="sortTable('targetUmkm')">UMKM <span id="sort-indicator-targetUmkm">↕</span></th>
               <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)] cursor-pointer select-none"
