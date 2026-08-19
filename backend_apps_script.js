@@ -790,3 +790,51 @@ function sanitizeSheetName(name) {
   }
   return clean || "Sheet1";
 }
+
+// ============================================================
+// MENU CUSTOM GOOGLE SPREADSHEET (NAVIGASI DASHBOARD SE)
+// ============================================================
+function onOpen() {
+  var ui = SpreadsheetApp.getUi();
+  ui.createMenu('Dashboard SE')
+    .addItem('Upload Data (CSV / Excel)', 'openUploadDialog')
+    .addSeparator()
+    .addItem('Hitung Kenaikan Harian Manual', 'recordDailyProgressManual')
+    .addItem('Catat Baseline Prelist SubSLS Manual', 'recordPrelistBaselineManual')
+    .addSeparator()
+    .addItem('Hapus Cache Web Dashboard', 'clearDashboardCacheManual')
+    .addToUi();
+}
+
+function openUploadDialog() {
+  var html = HtmlService.createHtmlOutputFromFile('Upload')
+    .setWidth(580)
+    .setHeight(520)
+    .setTitle('Upload Data Dashboard SE2026');
+  SpreadsheetApp.getUi().showModalDialog(html, 'Upload Data Dashboard SE2026');
+}
+
+function recordDailyProgressManual() {
+  var res = recordDailyProgress();
+  SpreadsheetApp.getUi().alert(
+    'Selesai! Kenaikan harian berhasil dihitung.\n' +
+    'UMKM diperbarui: ' + (res.umkm ? 'Ya' : 'Tidak') + '\n' +
+    'UB diperbarui: ' + (res.ub ? 'Ya' : 'Tidak') + '\n' +
+    'Waktu: ' + res.timestamp
+  );
+}
+
+function recordPrelistBaselineManual() {
+  var msg = recordPrelistBaseline('Rekap Prelist SubSLS');
+  SpreadsheetApp.getUi().alert(msg);
+}
+
+function clearDashboardCacheManual() {
+  try {
+    CacheService.getScriptCache().remove('dashboardPayload');
+    SpreadsheetApp.getUi().alert('Sukses! Cache dashboard berhasil dibersihkan.');
+  } catch (e) {
+    SpreadsheetApp.getUi().alert('Gagal membersihkan cache: ' + e.toString());
+  }
+}
+
