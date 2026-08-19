@@ -239,15 +239,12 @@
             <span id="stat-submit" class="font-semibold text-[var(--success-color)]">0</span>
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-2 mt-2 border-t border-[var(--border-color)] pt-2 text-xs">
           <div>
-            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">[Sensus Ekonomi
-              2026]</span>
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">[Sensus Ekonomi 2026 (UMKM)]</span>
             <span id="stat-umkm-total" class="font-semibold text-[var(--text-secondary)]">0</span>
           </div>
           <div>
-            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">[Sensus Ekonomi 2026
-              - UB]</span>
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">[Sensus Ekonomi 2026 (UB)]</span>
             <span id="stat-ub-total" class="font-semibold text-[var(--text-secondary)]">0</span>
           </div>
         </div>
@@ -426,10 +423,8 @@
                   id="sort-indicator-wilayah">↕</span>
               </th>
               <th colspan="4" class="text-center bg-[rgba(212,178,122,0.02)]">Target Prelist Awal</th>
-              <th id="th-umkm-group" colspan="5" class="text-center bg-[rgba(163,201,168,0.02)]">[Sensus Ekonomi 2026]
-              </th>
-              <th id="th-ub-group" colspan="5" class="text-center bg-[rgba(229,185,116,0.02)]">[Sensus Ekonomi 2026 -
-                UB]</th>
+              <th id="th-umkm-group" colspan="5" class="text-center bg-[rgba(163,201,168,0.02)]">[Sensus Ekonomi 2026 (UMKM)]</th>
+              <th id="th-ub-group" colspan="5" class="text-center bg-[rgba(229,185,116,0.02)]">[Sensus Ekonomi 2026 (UB)]</th>
               <th rowspan="2" class="text-right cursor-pointer align-middle select-none whitespace-nowrap"
                 onclick="sortTable('progress')">%
                 Progres<br>Akumulatif <span id="sort-indicator-progress">↕</span></th>
@@ -646,100 +641,9 @@
       </div>
     </section>
 
-
-    <!-- ===== TABLE PETUGAS SECTION ===== -->
-    <!-- Tabel dan pengolahan data di-hide sementara -->
-    <section class="plinth-card mt-6" style="display: none;">
-      <div
-        class="p-6 border-b border-[var(--border-color)] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 class="text-base font-bold tracking-tight text-[var(--text-primary)]">PROGRES KINERJA PETUGAS</h2>
-          <p class="text-xs text-[var(--text-muted)] mt-0.5">
-            Data pemantauan progres harian di tingkat Petugas.
-          </p>
-        </div>
-        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <div class="relative w-full sm:w-48 flex flex-col justify-end">
-            <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
-            <select id="filter-kab-petugas" onchange="filterPetugas()" class="impeccable-input w-full text-sm h-[34px]">
-              <option value="">Semua Kabupaten/Kota</option>
-            </select>
-          </div>
-          <div class="relative w-full sm:w-64 flex flex-col justify-end">
-            <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
-            <div class="relative w-full">
-              <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg class="h-4 w-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </span>
-              <input type="text" id="search-petugas" onkeyup="filterPetugas()" placeholder="Cari petugas / wilayah..."
-                class="impeccable-input pl-9 w-full text-sm h-[34px]" />
-            </div>
-          </div>
-          <div class="relative w-full sm:w-auto flex flex-col justify-end">
-            <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
-            <button onclick="downloadExcelPetugas()"
-              class="h-[34px] bg-[var(--accent-color)] text-black px-4 rounded font-semibold text-sm hover:opacity-90 flex items-center gap-2 w-full justify-center transition-opacity"
-              title="Unduh Excel Petugas">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-              <span class="hidden sm:inline">Unduh Excel</span>
-            </button>
-          </div>
-        </div>
-      </div>
-      <!-- Tab Navigation untuk Petugas -->
-      <div class="px-6 border-b border-[var(--border-color)]">
-        <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-          <button onclick="switchPetugasTab('pengawas')" id="tab-pengawas"
-            class="border-[var(--accent-color)] text-[var(--text-primary)] whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm transition-colors">
-            Pengawas
-          </button>
-          <button onclick="switchPetugasTab('pencacah')" id="tab-pencacah"
-            class="border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:border-[var(--border-color)] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
-            Pencacah
-          </button>
-        </nav>
-      </div>
-      <div class="overflow-auto max-h-[70vh]">
-        <table class="impeccable-table text-left" id="petugas-table">
-          <thead class="sticky top-0 z-20 shadow-sm" id="petugas-table-head">
-            <tr id="petugas-table-header-row">
-              <th class="pl-6 min-w-[250px]">Wilayah</th>
-              <th>Pengawas</th>
-              <!-- Dinamis berdasarkan data -->
-            </tr>
-          </thead>
-          <tbody id="petugas-table-body">
-            <!-- Table content populated by JS -->
-          </tbody>
-        </table>
-      </div>
-
-      <div class="flex items-center justify-between p-4 border-t border-[var(--border-color)]">
-        <div class="text-sm text-[var(--text-muted)]" id="petugas-page-info">
-          Menampilkan 0 data
-        </div>
-        <div class="flex space-x-1">
-          <button onclick="changePetugasPage(-1)" id="btn-prev-petugas"
-            class="impeccable-btn-secondary px-3 py-1 text-sm disabled:opacity-50" disabled>Sebelumnya</button>
-
-          <div id="petugas-page-numbers" class="flex space-x-1 items-center">
-            <!-- Dinamis oleh JS -->
-          </div>
-
-          <button onclick="changePetugasPage(1)" id="btn-next-petugas"
-            class="impeccable-btn-secondary px-3 py-1 text-sm disabled:opacity-50" disabled>Berikutnya</button>
-        </div>
-      </div>
-    </section>
-
-
   </div>
+
+  <!-- ===== DATA & LOGIC ===== -->
 
   <!-- ===== DATA & LOGIC ===== -->
   <script>
@@ -1116,20 +1020,6 @@
     // Charts references
     let donutChart, progressChart, submitChart, dailyChart;
 
-
-    let petugasDataPengawas = [];
-    let petugasDataPencacah = [];
-    let activePetugasTab = 'pengawas';
-    let petugasStatusArray = [];
-    let currentPetugasPage = 1;
-    const petugasRowsPerPage = 10;
-
-    let petugasSortWilayahOrder = 'asc';
-    let petugasSortProgressOrder = null;
-
-    let petugasSortColumn = 'wilayah';
-    let petugasSortOrder = 'asc';
-
     // ====== REKAP PRELIST & ASSIGNMENT BARU PER SUB SLS ======
     let prelistSubSlsData = [];
     let filteredPrelistSubSlsData = [];
@@ -1363,9 +1253,9 @@
         html += pageRows.map((row, index) => {
           const rowBgClass = index % 2 !== 0 ? 'bg-[rgba(0,0,0,0.04)] dark:bg-[rgba(255,255,255,0.04)]' : '';
           const slsCellHtml = row.namaSls 
-            ? `<div class="font-semibold text-xs text-[var(--text-primary)] leading-tight tracking-tight">${escapePrelistHtml(row.namaSls)}</div>
-               <div class="font-mono text-[10px] text-[var(--text-muted)] mt-0.5 tracking-wider font-normal">${escapePrelistHtml(row.kode)}</div>`
-            : `<span class="font-mono text-xs text-[var(--text-primary)]">${escapePrelistHtml(row.kode)}</span>`;
+            ? `<div class="font-bold text-xs text-[var(--text-primary)] leading-tight tracking-tight">${escapePrelistHtml(row.namaSls)}</div>
+               <div class="font-mono text-xs text-[var(--text-secondary)] mt-1 font-semibold tracking-wide">${escapePrelistHtml(row.kode)}</div>`
+            : `<span class="font-mono text-xs text-[var(--text-primary)] font-semibold">${escapePrelistHtml(row.kode)}</span>`;
 
           return `<tr class="border-b border-[var(--border-color)] hover:bg-[rgba(229,185,116,0.08)] transition-colors ${rowBgClass}">
             <td class="pl-6 py-2.5 whitespace-nowrap border-r border-[var(--border-color)]">${slsCellHtml}</td>
@@ -1603,475 +1493,18 @@
       }
     });
 
-    function togglePetugasSort(col) {
-      if (petugasSortColumn === col) {
-        petugasSortOrder = petugasSortOrder === 'asc' ? 'desc' : 'asc';
-      } else {
-        petugasSortColumn = col;
-        petugasSortOrder = 'asc';
-      }
-      drawPetugasRows();
-    }
-
-    function getPetugasSortIcon(col) {
-      const ascIcon = `<svg class="w-3 h-3 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>`;
-      const descIcon = `<svg class="w-3 h-3 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
-      const neutralIcon = `<svg class="w-3 h-3 inline opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>`;
-
-      if (petugasSortColumn === col) {
-        return petugasSortOrder === 'asc' ? ascIcon : descIcon;
-      }
-      return neutralIcon;
-    }
-
-    function switchPetugasTab(tabName) {
-      activePetugasTab = tabName;
-
-      // Update UI tab
-      const tabPengawas = document.getElementById('tab-pengawas');
-      const tabPencacah = document.getElementById('tab-pencacah');
-
-      if (tabName === 'pengawas') {
-        tabPengawas.className = "border-[var(--accent-color)] text-[var(--text-primary)] whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm transition-colors";
-        tabPencacah.className = "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:border-[var(--border-color)] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors";
-      } else {
-        tabPencacah.className = "border-[var(--accent-color)] text-[var(--text-primary)] whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm transition-colors";
-        tabPengawas.className = "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:border-[var(--border-color)] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors";
-      }
-
-      currentPetugasPage = 1; // Reset halaman ke 1 setiap ganti tab
-
-      // Update dropdown kabupaten untuk data yang aktif
-      const activeData = tabName === 'pengawas' ? petugasDataPengawas : petugasDataPencacah;
-      populatePetugasKabFilter(activeData);
-
-      drawPetugasRows();
-    }
-
-    function populatePetugasKabFilter(activeData) {
-      const kabSelect = document.getElementById('filter-kab-petugas');
-      if (kabSelect) {
-        const kabMap = new Map();
-        activeData.forEach(item => {
-          if (item.Kabupaten && item.Kabupaten !== "-") {
-            kabMap.set(item.KabKode, item.Kabupaten);
-          }
-        });
-        // Sort by KabKode
-        const sortedKab = Array.from(kabMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
-        let kabOptions = `<option value="">Semua Kabupaten/Kota</option>`;
-        sortedKab.forEach(([kode, kab]) => {
-          kabOptions += `<option value="${kab}">[${kode}] ${kab}</option>`;
-        });
-        kabSelect.innerHTML = kabOptions;
-      }
-    }
-
-    function getNamaKecamatanAndKabupaten(regionCode, masterKecSheet, masterSubSlsSheet) {
-      if (!regionCode || regionCode === "-") return { kec: "-", kab: "-" };
-      const codeStr = String(regionCode);
-      if (codeStr.length < 4) return { kec: "-", kab: "-" };
-
-      const kabCode = codeStr.substring(0, 4);
-
-      let kabName = "-";
-      const kabObj = dashboardData.find(w => w.kode === kabCode);
-      if (kabObj) kabName = kabObj.nama;
-
-      let subRegionName = "-";
-      if (codeStr.length >= 14 && masterSubSlsSheet) {
-        const rowSls = masterSubSlsSheet.find(r => String(r.idsubsls) === codeStr || String(r.IDSUBSLS) === codeStr);
-        if (rowSls) subRegionName = rowSls.nmsls || rowSls.NMSLS || "-";
-      }
-
-      return { kec: subRegionName, kab: kabName };
-    }
-
-    function renderPetugasTable(petugasData, snapshotData, masterKecSheet, masterSubSlsSheet) {
-      const thead = document.getElementById('petugas-table-head');
-      const tbody = document.getElementById('petugas-table-body');
-      if (!thead || !tbody) return;
-
-      // Determine dynamic statuses
-      const standardKeys = ["Wilayah", "RegionCode", "Kecamatan", "Kabupaten", "Pengawas", "Pencacah"];
-      let statusKeys = new Set();
-
-      petugasData.forEach(row => {
-        for (let key in row) {
-          if (!standardKeys.includes(key) && key !== "Total" && key !== "lastUpdated" && key !== "Last Updated") {
-            statusKeys.add(key);
-          }
-        }
-      });
-
-      // Urutkan kolom status sesuai urutan yang ditentukan (sama dengan backend doPost)
-      const predefinedOrder = [
-        "total", "Pengawas", "Pencacah",
-        "OPEN", "DRAFT",
-        "SUBMITTED BY Pencacah", "SUBMITTED RESPONDENT",
-        "REJECTED BY Pengawas", "EDITED BY Pengawas",
-        "REVOKED BY Pengawas", "APPROVED BY Pengawas",
-        "EDITED BY Admin Kabupaten", "REJECTED BY Admin Kabupaten",
-        "REVOKED BY Admin Kabupaten", "COMPLETED BY Admin Kabupaten"
-      ];
-
-      const statusArray = [];
-      // Masukkan yang ada di predefinedOrder terlebih dahulu
-      predefinedOrder.forEach(key => {
-        if (statusKeys.has(key)) {
-          statusArray.push(key);
-          statusKeys.delete(key);
-        }
-      });
-      // Masukkan sisa status yang tidak ada di predefinedOrder
-      statusKeys.forEach(key => {
-        statusArray.push(key);
-      });
-
-      petugasStatusArray = statusArray; // Simpan secara global untuk drawPetugasRows
-
-      // Agregasi terpisah untuk Pengawas dan Pencacah
-      const mapPengawas = new Map();
-      const mapPencacah = new Map();
-
-      petugasData.forEach(row => {
-        const pengawas = row.Pengawas || "-";
-        const pencacah = row.Pencacah || "-";
-
-        // Cari nama kabupaten dari kode wilayah
-        const regionCode = String(row.Wilayah ?? row.RegionCode ?? "");
-        const kabCode = regionCode ? regionCode.substring(0, 4) : "-";
-        const wilayahInfo = getNamaKecamatanAndKabupaten(regionCode, masterKecSheet, masterSubSlsSheet);
-
-        // --- Agregasi Pengawas ---
-        if (pengawas !== "-" && pengawas !== "") {
-          if (!mapPengawas.has(pengawas)) {
-            let rowObj = {
-              KabKode: kabCode,
-              Kabupaten: wilayahInfo.kab,
-              Nama: pengawas, // field umum yang dipakai di drawPetugasRows
-              details: []
-            };
-            statusArray.forEach(st => { rowObj[st] = 0; });
-            rowObj.statuses = statusArray;
-            mapPengawas.set(pengawas, rowObj);
-          }
-
-          const aggRow = mapPengawas.get(pengawas);
-          if (aggRow.Kabupaten === "-" && wilayahInfo.kab !== "-") {
-            aggRow.Kabupaten = wilayahInfo.kab;
-          }
-
-          let detailRow = { Wilayah: regionCode, Kecamatan: wilayahInfo.kec };
-          statusArray.forEach(st => {
-            const val = Number(row[st] || 0);
-            detailRow[st] = val;
-            aggRow[st] += val;
-          });
-          aggRow.details.push(detailRow);
-        }
-
-        // --- Agregasi Pencacah ---
-        if (pencacah !== "-" && pencacah !== "") {
-          if (!mapPencacah.has(pencacah)) {
-            let rowObj = {
-              KabKode: kabCode,
-              Kabupaten: wilayahInfo.kab,
-              Nama: pencacah, // field umum yang dipakai di drawPetugasRows
-              details: []
-            };
-            statusArray.forEach(st => { rowObj[st] = 0; });
-            rowObj.statuses = statusArray;
-            mapPencacah.set(pencacah, rowObj);
-          }
-
-          const aggRow = mapPencacah.get(pencacah);
-          if (aggRow.Kabupaten === "-" && wilayahInfo.kab !== "-") {
-            aggRow.Kabupaten = wilayahInfo.kab;
-          }
-
-          let detailRow = { Wilayah: regionCode, Kecamatan: wilayahInfo.kec };
-          statusArray.forEach(st => {
-            const val = Number(row[st] || 0);
-            detailRow[st] = val;
-            aggRow[st] += val;
-          });
-          aggRow.details.push(detailRow);
-        }
-      });
-
-      petugasDataPengawas = Array.from(mapPengawas.values());
-      petugasDataPencacah = Array.from(mapPencacah.values());
-
-      // Karena default-nya tab pengawas yang aktif, populate filternya dengan data pengawas
-      populatePetugasKabFilter(petugasDataPengawas);
-
-
-
-      drawPetugasRows();
-    }
-
-    function calculatePetugasProgress(row, role) {
-      const total = row['total'] || 0;
-      if (total === 0) return 0;
-
-      let completed = 0;
-      let denominator = total;
-
-      if (role === 'pencacah') {
-        const pencacahStatuses = [
-          "SUBMITTED BY Pencacah",
-          "SUBMITTED RESPONDENT",
-          "REJECTED BY Pengawas",
-          "EDITED BY Pengawas",
-          "REVOKED BY Pengawas",
-          "APPROVED BY Pengawas",
-          "EDITED BY Admin Kabupaten",
-          "REJECTED BY Admin Kabupaten",
-          "REVOKED BY Admin Kabupaten",
-          "COMPLETED BY Admin Kabupaten"
-        ];
-        pencacahStatuses.forEach(st => completed += (row[st] || 0));
-      } else {
-        const pengawasStatuses = [
-          "REJECTED BY Pengawas",
-          "EDITED BY Pengawas",
-          "REVOKED BY Pengawas",
-          "APPROVED BY Pengawas",
-          "EDITED BY Admin Kabupaten",
-          "REJECTED BY Admin Kabupaten",
-          "REVOKED BY Admin Kabupaten",
-          "COMPLETED BY Admin Kabupaten"
-        ];
-        pengawasStatuses.forEach(st => completed += (row[st] || 0));
-
-        const denominatorStatuses = [
-          "SUBMITTED BY Pencacah",
-          "SUBMITTED RESPONDENT",
-          "REJECTED BY Pengawas",
-          "EDITED BY Pengawas",
-          "REVOKED BY Pengawas",
-          "APPROVED BY Pengawas",
-          "EDITED BY Admin Kabupaten",
-          "REJECTED BY Admin Kabupaten",
-          "REVOKED BY Admin Kabupaten",
-          "COMPLETED BY Admin Kabupaten"
-        ];
-        denominator = 0;
-        denominatorStatuses.forEach(st => denominator += (row[st] || 0));
-      }
-
-      if (denominator === 0) return 0;
-      return (completed / denominator * 100);
-    }
-
-    function drawPetugasRows() {
-      const tbody = document.getElementById('petugas-table-body');
-      const thead = document.getElementById('petugas-table-head');
-      if (!tbody || !thead) return;
-
-      // Update header dinamis berdasarkan tab
-      let headerHTML = `
-        <tr id="petugas-table-header-row">
-          <th class="pl-6 min-w-[250px] cursor-pointer hover:text-[var(--accent-color)] select-none transition-colors" onclick="togglePetugasSort('wilayah')" title="Urutkan berdasarkan Wilayah">
-            <div class="flex items-center gap-1">Wilayah ${getPetugasSortIcon('wilayah')}</div>
-          </th>
-          <th class="cursor-pointer hover:text-[var(--accent-color)] select-none transition-colors" onclick="togglePetugasSort('nama')" title="Urutkan berdasarkan Nama">
-            <div class="flex items-center gap-1">${activePetugasTab === 'pengawas' ? 'Pengawas' : 'Pencacah'} ${getPetugasSortIcon('nama')}</div>
-          </th>
-      `;
-      petugasStatusArray.forEach(st => {
-        headerHTML += `<th class="text-right cursor-pointer hover:text-[var(--accent-color)] select-none transition-colors" onclick="togglePetugasSort('${st}')">${st} ${getPetugasSortIcon(st)}</th>`;
-      });
-      headerHTML += `<th class="text-right align-middle cursor-pointer hover:text-[var(--accent-color)] select-none transition-colors" onclick="togglePetugasSort('progress')" title="Urutkan berdasarkan % Progres Akumulatif">
-        <div class="flex justify-end items-center gap-1">% Progres<br>Akumulatif ${getPetugasSortIcon('progress')}</div>
-      </th>`;
-      headerHTML += `</tr>`;
-      thead.innerHTML = headerHTML;
-
-      const searchTerm = (document.getElementById('search-petugas') ? document.getElementById('search-petugas').value.toLowerCase() : "");
-      const filterKab = (document.getElementById('filter-kab-petugas') ? document.getElementById('filter-kab-petugas').value : "");
-
-      const activeData = activePetugasTab === 'pengawas' ? petugasDataPengawas : petugasDataPencacah;
-
-      let filteredData = activeData.filter(row => {
-        let matchSearch = true;
-        if (searchTerm) {
-          matchSearch = row.Nama.toLowerCase().includes(searchTerm) ||
-            row.Kabupaten.toLowerCase().includes(searchTerm);
-        }
-        let matchKab = true;
-        if (filterKab) {
-          matchKab = row.Kabupaten === filterKab;
-        }
-        return matchSearch && matchKab;
-      });
-
-      // Sorting 
-      filteredData.sort((a, b) => {
-        let valA, valB;
-        if (petugasSortColumn === 'wilayah') {
-          valA = a.KabKode || "";
-          valB = b.KabKode || "";
-        } else if (petugasSortColumn === 'nama') {
-          valA = a.Nama || "";
-          valB = b.Nama || "";
-        } else if (petugasSortColumn === 'progress') {
-          valA = calculatePetugasProgress(a, activePetugasTab);
-          valB = calculatePetugasProgress(b, activePetugasTab);
-        } else {
-          // Dynamic status column
-          valA = Number(a[petugasSortColumn] || 0);
-          valB = Number(b[petugasSortColumn] || 0);
-        }
-
-        if (valA < valB) return petugasSortOrder === 'asc' ? -1 : 1;
-        if (valA > valB) return petugasSortOrder === 'asc' ? 1 : -1;
-
-        // Fallback tertiary sort: Nama
-        const namaA = a.Nama || "";
-        const namaB = b.Nama || "";
-        return namaA.localeCompare(namaB);
-      });
-
-      // Pagination
-      const totalRows = filteredData.length;
-      const totalPages = Math.ceil(totalRows / petugasRowsPerPage) || 1;
-
-      if (currentPetugasPage > totalPages) currentPetugasPage = totalPages;
-      if (currentPetugasPage < 1) currentPetugasPage = 1;
-
-      const startIndex = (currentPetugasPage - 1) * petugasRowsPerPage;
-      const endIndex = Math.min(startIndex + petugasRowsPerPage, totalRows);
-
-      const pageData = filteredData.slice(startIndex, endIndex);
-
-      let html = "";
-      pageData.forEach((row, idx) => {
-        const absoluteIdx = startIndex + idx;
-        const detailId = `petugas-detail-${absoluteIdx}`;
-        // Tampilkan chevron untuk SEMUA baris (sehingga jika hanya ada 1 detail region code, dropdown tetap bisa dibuka)
-        const hasDetails = row.details && row.details.length > 0;
-        const bgClass = absoluteIdx % 2 !== 0 ? 'bg-[rgba(0,0,0,0.04)] dark:bg-[rgba(255,255,255,0.04)]' : '';
-
-        // Baris utama (agregat)
-        html += `<tr class="border-b border-[var(--border-color)] hover:bg-[rgba(229,185,116,0.08)] transition-colors ${bgClass} ${hasDetails ? 'cursor-pointer' : ''}" ${hasDetails ? `onclick="togglePetugasDetail('${detailId}', this)"` : ''}>`;
-
-        const toggleIcon = hasDetails ? `<span class="mr-2 text-[var(--accent-color)] text-lg font-bold leading-none select-none petugas-chevron">[+]</span>` : '';
-        html += `<td class="font-medium pl-6 align-middle min-w-[250px]">`;
-        html += `<div class="flex items-center">${toggleIcon}<span class="line-clamp-2" title="[${row.KabKode}] ${row.Kabupaten}">[${row.KabKode}] ${row.Kabupaten}</span></div>`;
-        html += `</td>`;
-
-        html += `<td>${row.Nama}</td>`;
-        row.statuses.forEach(st => {
-          html += `<td class="text-right font-semibold">${fmtNum(row[st])}</td>`;
-        });
-        const pct = calculatePetugasProgress(row, activePetugasTab);
-        html += `<td class="text-right font-bold" style="color: ${getProgressColor(pct)}">${fmtPct(pct)}%</td>`;
-        html += `</tr>`;
-
-        // Baris detail per wilayah (tersembunyi secara default, desain sama dengan baris utama)
-        if (hasDetails) {
-          // Mengurutkan detail (dropdown region code) berdasarkan kode wilayah
-          row.details.sort((a, b) => {
-            const wA = a.Wilayah || "";
-            const wB = b.Wilayah || "";
-            return wA.localeCompare(wB);
-          });
-
-          row.details.forEach(detail => {
-            html += `<tr class="petugas-detail-row ${detailId} border-b border-[var(--border-color)]" style="display:none; background: var(--bg-tertiary);">`;
-            html += `<td class="pl-10 text-[var(--text-secondary)]" colspan="2">`;
-            html += `<span class="opacity-50 mr-1">┗</span>[${detail.Wilayah}] ${detail.Kecamatan}</td>`;
-            row.statuses.forEach(st => {
-              html += `<td class="text-right text-[var(--text-secondary)]">${fmtNum(detail[st])}</td>`;
-            });
-            const dPct = calculatePetugasProgress(detail, activePetugasTab);
-            html += `<td class="text-right font-bold text-[var(--text-secondary)]" style="color: ${getProgressColor(dPct)}">${fmtPct(dPct)}%</td>`;
-            html += `</tr>`;
-          });
-        }
-      });
-
-      if (pageData.length === 0) {
-        html = `<tr><td colspan="15" class="text-center py-4 text-[var(--text-muted)]">Tidak ada data ditemukan.</td></tr>`;
-      }
-
-      tbody.innerHTML = html;
-
-      // Update pagination UI
-      const pageInfo = document.getElementById('petugas-page-info');
-      if (pageInfo) {
-        if (totalRows === 0) {
-          pageInfo.innerText = "Menampilkan 0 data";
-        } else {
-          pageInfo.innerText = `Menampilkan ${startIndex + 1}-${endIndex} dari ${totalRows} data`;
-        }
-      }
-
-      const btnPrev = document.getElementById('btn-prev-petugas');
-      const btnNext = document.getElementById('btn-next-petugas');
-      if (btnPrev) btnPrev.disabled = currentPetugasPage === 1 || totalRows === 0;
-      if (btnNext) btnNext.disabled = currentPetugasPage === totalPages || totalRows === 0;
-
-      const pageNumbersContainer = document.getElementById('petugas-page-numbers');
-      if (pageNumbersContainer) {
-        let pageHTML = "";
-        if (totalPages > 0) {
-          let startPage = Math.max(1, currentPetugasPage - 2);
-          let endPage = Math.min(totalPages, currentPetugasPage + 2);
-
-          if (startPage > 1) {
-            pageHTML += `<button onclick="setPetugasPage(1)" class="px-3 py-1 text-sm rounded transition-colors ${currentPetugasPage === 1 ? 'bg-[var(--accent-color)] text-black font-bold' : 'hover:bg-[rgba(0,0,0,0.05)] dark:hover:bg-[rgba(255,255,255,0.1)]'}">1</button>`;
-            if (startPage > 2) pageHTML += `<span class="px-1 py-1 text-sm text-[var(--text-muted)]">...</span>`;
-          }
-
-          for (let p = startPage; p <= endPage; p++) {
-            pageHTML += `<button onclick="setPetugasPage(${p})" class="px-3 py-1 text-sm rounded transition-colors ${currentPetugasPage === p ? 'bg-[var(--accent-color)] text-black font-bold shadow-sm' : 'hover:bg-[rgba(0,0,0,0.05)] dark:hover:bg-[rgba(255,255,255,0.1)]'}">${p}</button>`;
-          }
-
-          if (endPage < totalPages) {
-            if (endPage < totalPages - 1) pageHTML += `<span class="px-1 py-1 text-sm text-[var(--text-muted)]">...</span>`;
-            pageHTML += `<button onclick="setPetugasPage(${totalPages})" class="px-3 py-1 text-sm rounded transition-colors ${currentPetugasPage === totalPages ? 'bg-[var(--accent-color)] text-black font-bold' : 'hover:bg-[rgba(0,0,0,0.05)] dark:hover:bg-[rgba(255,255,255,0.1)]'}">${totalPages}</button>`;
-          }
-        }
-        pageNumbersContainer.innerHTML = pageHTML;
-      }
-    }
-
-    function filterPetugas() {
-      currentPetugasPage = 1; // reset page on filter
-      drawPetugasRows();
-    }
-
-    // Toggle detail per wilayah pada tabel petugas
-    function togglePetugasDetail(detailId, parentRow) {
-      const detailRows = document.querySelectorAll('.' + detailId);
-      const chevron = parentRow.querySelector('.petugas-chevron');
-      const isVisible = detailRows.length > 0 && detailRows[0].style.display !== 'none';
-
-      detailRows.forEach(row => {
-        row.style.display = isVisible ? 'none' : 'table-row';
-      });
-
-      if (chevron) {
-        chevron.innerText = isVisible ? '[+]' : '[-]';
-      }
-    }
-
-    function changePetugasPage(delta) {
-      currentPetugasPage += delta;
-      drawPetugasRows();
-    }
-
-    function setPetugasPage(page) {
-      currentPetugasPage = page;
-      drawPetugasRows();
-    }
-
-
     // ====== STRATEGI 3: LocalStorage Caching di Browser ======
     const DASHBOARD_CACHE_KEY = 'dashboardDataCache:v2';
+
+    const ALL_SUBMIT_FIELDS = [
+      "SUBMITTED BY Pencacah", "APPROVED BY Pengawas", "SUBMITTED RESPONDENT",
+      "EDITED BY Pengawas", "EDITED BY Admin Kabupaten", "COMPLETED BY Admin Kabupaten",
+      "REJECTED BY Pengawas", "REJECTED BY Admin Kabupaten", "REVOKED BY Pengawas",
+      "TOTAL_SUBMITTED_BY_PENCACAH", "TOTAL_APPROVED_BY_PENGAWAS", "TOTAL_SUBMITTED_RESPONDENT",
+      "TOTAL_EDITED_BY_PENGAWAS", "TOTAL_EDITED_BY_ADMIN_KABUPATEN", "TOTAL_COMPLETED_BY_ADMIN_KABUPATEN",
+      "TOTAL_REJECTED_BY_PENGAWAS", "TOTAL_REJECTED_BY_ADMIN_KABUPATEN", "TOTAL_REVOKED_BY_PENGAWAS",
+      "TOTAL_REVOKED_BY_ADMIN_KABUPATEN", "Submit", "SUBMIT"
+    ];
 
     // Fungsi utama yang memproses data JSON (baik dari cache maupun dari fetch)
     function processAndRenderData(data) {
@@ -2101,29 +1534,44 @@
       const umkmKecSheet = data["Sensus Ekonomi 2026"];
       const ubKecSheet = data["Sensus Ekonomi 2026 - UB"];
       const masterKecSheet = data["master-kec"];
-      const masterSubSlsSheet = data["master-subsls"];
-      const petugasSheet = data["Sensus Ekonomi 2026 - Rekap Petugas"];
-      const snapshotPetugasSheet = data["Snapshot - Petugas"];
-
-      // Dihide sementara
-      // if (petugasSheet) {
-      //   renderPetugasTable(petugasSheet, snapshotPetugasSheet, masterKecSheet, masterSubSlsSheet);
-      // }
-
-
 
       if (!umkmKecSheet || !ubKecSheet) {
         console.warn("Data kecamatan (Sensus Ekonomi 2026 / Sensus Ekonomi 2026 - UB) tidak ditemukan di payload Apps Script.");
         return;
       }
 
-      // Buat Index (Map) untuk O(1) lookup
+      // Buat Index (Map) untuk O(1) lookup dengan dukungan agregasi Sub-SLS
       const mapByWilayah = (sheet) => {
         const map = new Map();
-        if (sheet) {
+        if (sheet && Array.isArray(sheet)) {
           sheet.forEach(row => {
-            const wil = String(row.Wilayah || row.wilayah || row.kode || "").trim();
-            if (wil) map.set(wil, row);
+            let wil = String(row.Wilayah || row.wilayah || row.kode || "").trim();
+            if (!wil) {
+              const subsls = String(row.KODE_SUB_SLS || row.kode_sub_sls || "").trim();
+              if (subsls && subsls.length >= 7) wil = subsls.substring(0, 7);
+              else if (row.KODE_KAB && row.KODE_KEC) {
+                const kab = String(row.KODE_KAB).padStart(2, '0');
+                const kec = String(row.KODE_KEC).padStart(3, '0');
+                wil = `13${kab}${kec}`;
+              }
+            }
+            if (!wil) return;
+
+            if (map.has(wil)) {
+              const existing = map.get(wil);
+              existing.OPEN = (Number(existing.OPEN || 0) + Number(row.OPEN || row.TOTAL_OPEN || 0));
+              existing.DRAFT = (Number(existing.DRAFT || 0) + Number(row.DRAFT || row.TOTAL_DRAFT || 0));
+              ALL_SUBMIT_FIELDS.forEach(f => {
+                existing[f] = (Number(existing[f] || 0) + Number(row[f] || 0));
+              });
+            } else {
+              map.set(wil, {
+                ...row,
+                Wilayah: wil,
+                OPEN: Number(row.OPEN || row.TOTAL_OPEN || 0),
+                DRAFT: Number(row.DRAFT || row.TOTAL_DRAFT || 0)
+              });
+            }
           });
         }
         return map;
@@ -2174,7 +1622,7 @@
         w.ubOpen = 0; w.ubDraft = 0; w.ubSubmit = 0; w.ubTotal = 0;
         w.harianUmkm = 0; w.harianUb = 0;
         w.progress = 0;
-        w.kecamatans = w.kecamatans ? [] : [];
+        w.kecamatans = [];
       });
 
       // Proses Data Kecamatan
@@ -2192,16 +1640,14 @@
 
         // 2. Collect from UMKM
         if (umkmKecSheet) {
-          umkmKecSheet.forEach(row => {
-            const idKec = String(row.Wilayah || row.wilayah || "").trim();
+          umkmKecMap.forEach((_, idKec) => {
             if (idKec && !allKecMap.has(idKec)) allKecMap.set(idKec, "-");
           });
         }
 
         // 3. Collect from UB
         if (ubKecSheet) {
-          ubKecSheet.forEach(row => {
-            const idKec = String(row.Wilayah || row.wilayah || "").trim();
+          ubKecMap.forEach((_, idKec) => {
             if (idKec && !allKecMap.has(idKec)) allKecMap.set(idKec, "-");
           });
         }
@@ -2210,7 +1656,6 @@
         if (targetSheet) {
           targetSheet.forEach(row => {
             const idKec = String(row.Wilayah || row.wilayah || row.kode || "").trim();
-            // only add if it looks like a Kecamatan code (e.g. 7 digits)
             if (idKec && idKec.length > 4 && !allKecMap.has(idKec)) {
               allKecMap.set(idKec, row["Nama Wilayah"] || row.nama || "-");
             }
@@ -2248,16 +1693,11 @@
             if (umkmKecSheet) {
               const umkmRow = umkmKecMap.get(idKec);
               if (umkmRow) {
-                kData.umkmOpen = Number(umkmRow.OPEN || 0);
-                kData.umkmDraft = Number(umkmRow.DRAFT || 0);
+                kData.umkmOpen = Number(umkmRow.OPEN || umkmRow.TOTAL_OPEN || 0);
+                kData.umkmDraft = Number(umkmRow.DRAFT || umkmRow.TOTAL_DRAFT || 0);
 
-                const submitFields = [
-                  "SUBMITTED BY Pencacah", "APPROVED BY Pengawas", "SUBMITTED RESPONDENT",
-                  "EDITED BY Pengawas", "EDITED BY Admin Kabupaten", "COMPLETED BY Admin Kabupaten",
-                  "REJECTED BY Pengawas", "REJECTED BY Admin Kabupaten", "REVOKED BY Pengawas"
-                ];
                 let submit = 0;
-                submitFields.forEach(f => { submit += Number(umkmRow[f] || 0); });
+                ALL_SUBMIT_FIELDS.forEach(f => { submit += Number(umkmRow[f] || 0); });
                 kData.umkmSubmit = submit;
                 kData.umkmTotal = kData.umkmOpen + kData.umkmDraft + kData.umkmSubmit;
               }
@@ -2267,7 +1707,9 @@
             let umkmKemarin = 0;
             const snapUmkm = snapUmkmMap.get(idKec);
             if (snapUmkm) {
-              umkmKemarin = Number(snapUmkm["Submit"] || snapUmkm["Submit Kemarin"] || snapUmkm["submit kemarin"] || snapUmkm["Submit_Kemarin"] || 0);
+              let sKemarin = 0;
+              ALL_SUBMIT_FIELDS.forEach(f => { sKemarin += Number(snapUmkm[f] || 0); });
+              umkmKemarin = sKemarin;
             }
             kData.harianUmkm = Math.max(0, kData.umkmSubmit - umkmKemarin);
 
@@ -2275,16 +1717,11 @@
             if (ubKecSheet) {
               const ubRow = ubKecMap.get(idKec);
               if (ubRow) {
-                kData.ubOpen = Number(ubRow.OPEN || 0);
-                kData.ubDraft = Number(ubRow.DRAFT || 0);
+                kData.ubOpen = Number(ubRow.OPEN || ubRow.TOTAL_OPEN || 0);
+                kData.ubDraft = Number(ubRow.DRAFT || ubRow.TOTAL_DRAFT || 0);
 
-                const submitFields = [
-                  "SUBMITTED BY Pencacah", "APPROVED BY Pengawas", "SUBMITTED RESPONDENT",
-                  "EDITED BY Pengawas", "EDITED BY Admin Kabupaten", "COMPLETED BY Admin Kabupaten",
-                  "REJECTED BY Pengawas", "REJECTED BY Admin Kabupaten", "REVOKED BY Pengawas"
-                ];
                 let submit = 0;
-                submitFields.forEach(f => { submit += Number(ubRow[f] || 0); });
+                ALL_SUBMIT_FIELDS.forEach(f => { submit += Number(ubRow[f] || 0); });
                 kData.ubSubmit = submit;
                 kData.ubTotal = kData.ubOpen + kData.ubDraft + kData.ubSubmit;
               }
@@ -2294,11 +1731,13 @@
             let ubKemarin = 0;
             const snapUb = snapUbMap.get(idKec);
             if (snapUb) {
-              ubKemarin = Number(snapUb["Submit"] || snapUb["Submit Kemarin"] || snapUb["submit kemarin"] || snapUb["Submit_Kemarin"] || 0);
+              let sKemarin = 0;
+              ALL_SUBMIT_FIELDS.forEach(f => { sKemarin += Number(snapUb[f] || 0); });
+              ubKemarin = sKemarin;
             }
             kData.harianUb = Math.max(0, kData.ubSubmit - ubKemarin);
 
-            // Progres Kecamatan (asumsikan target = total assignment saat ini)
+            // Progres Kecamatan
             const totalTarget = kData.umkmTotal + kData.ubTotal;
             kData.progress = totalTarget > 0 ? ((kData.umkmSubmit + kData.ubSubmit) / totalTarget) * 100 : 0;
 
@@ -3225,89 +2664,6 @@
       };
       dailyChart = new ApexCharts(document.querySelector("#dailyChart"), dailyOptions);
       dailyChart.render();
-    }
-
-    // Fitur Unduh Excel Rekap Petugas
-    function downloadExcelPetugas() {
-      if (typeof XLSX === 'undefined') {
-        alert("Library Excel belum dimuat. Silakan coba beberapa saat lagi.");
-        return;
-      }
-
-      const kabSelect = document.getElementById('filter-kab-petugas');
-      const filterKab = kabSelect ? kabSelect.value : "";
-
-      const prepareDataForExcel = (data, role) => {
-        let filtered = data;
-        if (filterKab) {
-          filtered = data.filter(r => r.Kabupaten === filterKab);
-        }
-
-        filtered.sort((a, b) => {
-          const kabA = a.KabKode || "";
-          const kabB = b.KabKode || "";
-          let kabCmp = kabA.localeCompare(kabB);
-
-          if (kabCmp !== 0) {
-            return petugasSortWilayahOrder === 'asc' ? kabCmp : -kabCmp;
-          }
-
-          if (petugasSortProgressOrder) {
-            const progA = calculatePetugasProgress(a, role);
-            const progB = calculatePetugasProgress(b, role);
-            if (progA < progB) return petugasSortProgressOrder === 'asc' ? -1 : 1;
-            if (progA > progB) return petugasSortProgressOrder === 'asc' ? 1 : -1;
-          }
-
-          const namaA = a.Nama || "";
-          const namaB = b.Nama || "";
-          return namaA.localeCompare(namaB);
-        });
-
-        return filtered.map(row => {
-          let excelRow = {
-            "Kode Kabupaten": row.KabKode,
-            "Nama Kabupaten": row.Kabupaten,
-          };
-          if (role === 'pengawas') {
-            excelRow["Nama Pengawas"] = row.Nama;
-          } else {
-            excelRow["Nama Pencacah"] = row.Nama;
-          }
-
-          petugasStatusArray.forEach(st => {
-            excelRow[st] = Number(row[st] || 0);
-          });
-
-          excelRow["% Progres Akumulatif"] = parseFloat(calculatePetugasProgress(row, role).toFixed(2));
-          return excelRow;
-        });
-      };
-
-      const dataPencacahExcel = prepareDataForExcel(petugasDataPencacah, 'pencacah');
-      const dataPengawasExcel = prepareDataForExcel(petugasDataPengawas, 'pengawas');
-
-      const wb = XLSX.utils.book_new();
-
-      if (dataPencacahExcel.length > 0) {
-        const wsPencacah = XLSX.utils.json_to_sheet(dataPencacahExcel);
-        XLSX.utils.book_append_sheet(wb, wsPencacah, "Pencacah");
-      } else {
-        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet([{ "Pesan": "Tidak ada data pencacah untuk kabupaten ini" }]), "Pencacah");
-      }
-
-      if (dataPengawasExcel.length > 0) {
-        const wsPengawas = XLSX.utils.json_to_sheet(dataPengawasExcel);
-        XLSX.utils.book_append_sheet(wb, wsPengawas, "Pengawas");
-      } else {
-        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet([{ "Pesan": "Tidak ada data pengawas untuk kabupaten ini" }]), "Pengawas");
-      }
-
-      let filename = "Rekap_Petugas";
-      if (filterKab) filename += "_" + filterKab.replace(/\s+/g, '_');
-      filename += ".xlsx";
-
-      XLSX.writeFile(wb, filename);
     }
   </script>
 </body>

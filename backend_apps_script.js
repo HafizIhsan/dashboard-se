@@ -1,6 +1,8 @@
 // ============================================================
-// KONFIGURASI
+// KONFIGURASI & BACKEND APPS SCRIPT DASHBOARD SE2026
+// BPS PROVINSI SUMATERA BARAT
 // ============================================================
+
 // Kolom yang Dihitung secara eksplisit sebagai SUBMIT
 const SUBMIT_FIELDS = [
   "SUBMITTED BY Pencacah",
@@ -12,132 +14,59 @@ const SUBMIT_FIELDS = [
   "REJECTED BY Pengawas",
   "REJECTED BY Admin Kabupaten",
   "REVOKED BY Pengawas",
+  "TOTAL_SUBMITTED_BY_PENCACAH",
+  "TOTAL_APPROVED_BY_PENGAWAS",
+  "TOTAL_SUBMITTED_RESPONDENT",
+  "TOTAL_EDITED_BY_PENGAWAS",
+  "TOTAL_EDITED_BY_ADMIN_KABUPATEN",
+  "TOTAL_COMPLETED_BY_ADMIN_KABUPATEN",
+  "TOTAL_REJECTED_BY_PENGAWAS",
+  "TOTAL_REJECTED_BY_ADMIN_KABUPATEN",
+  "TOTAL_REVOKED_BY_PENGAWAS",
+  "TOTAL_REVOKED_BY_ADMIN_KABUPATEN"
 ];
+
+/**
+ * Helper: Ekstrak kode Kecamatan (7 digit, misal: 1301011) dari baris data
+ */
+function extractKecCode(row) {
+  var subsls = String(getValCI(row, "KODE_SUB_SLS") || getValCI(row, "kode_sub_sls") || "").trim();
+  if (subsls && subsls.length >= 7) return subsls.substring(0, 7);
+  
+  var wil = String(getValCI(row, "Wilayah") || getValCI(row, "wilayah") || getValCI(row, "kode") || "").trim();
+  if (wil && wil.length >= 7) return wil.substring(0, 7);
+  if (wil && wil.length === 4) return wil; // Level Kabupaten jika ada
+  
+  var prov = String(getValCI(row, "KODE_PROV") || "13").trim();
+  var kab = String(getValCI(row, "KODE_KAB") || "").trim();
+  var kec = String(getValCI(row, "KODE_KEC") || "").trim();
+  if (kab && kec) {
+    if (kab.length === 1) kab = "0" + kab;
+    while (kec.length < 3) kec = "0" + kec;
+    return (prov || "13") + kab + kec;
+  }
+  return wil || "";
+}
+
+/**
+ * Helper: Ekstrak metrik OPEN, DRAFT, SUBMIT dari suatu baris data
+ */
+function extractRowMetrics(row) {
+  var open = Number(getValCI(row, "TOTAL_OPEN") || getValCI(row, "OPEN") || getValCI(row, "Open") || 0);
+  var draft = Number(getValCI(row, "TOTAL_DRAFT") || getValCI(row, "DRAFT") || getValCI(row, "Draft") || 0);
+  
+  var submit = 0;
+  SUBMIT_FIELDS.forEach(function(col) {
+    var v = Number(getValCI(row, col) || 0);
+    if (!isNaN(v)) submit += v;
+  });
+  
+  return { open: open, draft: draft, submit: submit };
+}
 
 // ============================================================
 // FUNGSI UTAMA: Hitung Kenaikan Harian (Jalankan via Trigger)
-function recordDailyProgressPetugas() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-
-  let today;
-  let lastEditTimestamp;
-  try {
-    const file = DriveApp.getFileById(ss.getId());
-    const lastUpdated = file.getLastUpdated();
-    today = Utilities.formatDate(lastUpdated, "Asia/Jakarta", "yyyy-MM-dd");
-    lastEditTimestamp = Utilities.formatDate(
-      lastUpdated,
-      "Asia/Jakarta",
-      "yyyy-MM-dd HH:mm:ss",
-    );
-  } catch (e) {
-    const now = new Date();
-    today = Utilities.formatDate(now, "Asia/Jakarta", "yyyy-MM-dd");
-    lastEditTimestamp = Utilities.formatDate(
-      now,
-      "Asia/Jakarta",
-      "yyyy-MM-dd HH:mm:ss",
-    );
-  }
-
-  const source = getSheetByNameCI(ss, "Sensus Ekonomi 2026 - Rekap Petugas");
-  if (!source) {
-    Logger.log("❌ Sheet tidak ditemukan: Sensus Ekonomi 2026 - Rekap Petugas");
-    return;
-  }
-
-  let snapshot = getSheetByNameCI(ss, "Snapshot - Petugas");
-  if (!snapshot) {
-    snapshot = ss.insertSheet("Snapshot - Petugas");
-  }
-
-  const sourceData = source.getDataRange().getValues();
-  if (sourceData.length < 2) return;
-
-  const headers = sourceData[0];
-  const newHeaders = ["Tanggal"].concat(headers);
-
-  let snapshotData = snapshot.getDataRange().getValues();
-  if (snapshotData.length === 0 || snapshotData[0].length === 0) {
-    snapshotData = [newHeaders];
-  } else if (snapshotData[0].join(",") !== newHeaders.join(",")) {
-    // Jika header berubah, gunakan header baru
-    snapshotData[0] = newHeaders;
-  }
-
-  // Filter baris yang usianya <= 5 hari & bukan hari ini (hari ini akan ditambahkan ulang dari source)
-  const fiveDaysAgo = new Date();
-  fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
-  fiveDaysAgo.setHours(0, 0, 0, 0);
-
-  const filteredData = [snapshotData[0]]; // Masukkan header
-
-  for (let i = 1; i < snapshotData.length; i++) {
-    const rowDate = snapshotData[i][0];
-    if (!rowDate) continue;
-
-    let rowDateObj;
-    if (rowDate instanceof Date) {
-      rowDateObj = rowDate;
-    } else {
-      // Asumsi format 'yyyy-MM-dd HH:mm:ss'
-      const dateStr = String(rowDate).substring(0, 10);
-      rowDateObj = new Date(dateStr);
-    }
-
-    if (rowDateObj >= fiveDaysAgo) {
-      const rowDateStr = Utilities.formatDate(
-        rowDateObj,
-        "Asia/Jakarta",
-        "yyyy-MM-dd",
-      );
-      if (rowDateStr !== today) {
-        filteredData.push(snapshotData[i]);
-      }
-    }
-  }
-
-  // Siapkan baris hari ini dari source
-  const rowsToWrite = [];
-  for (let i = 1; i < sourceData.length; i++) {
-    const row = ["'" + lastEditTimestamp].concat(sourceData[i]);
-    // Format wilayah menjadi string
-    for (let c = 0; c < row.length; c++) {
-      if (
-        newHeaders[c].toLowerCase() === "wilayah" ||
-        newHeaders[c].toLowerCase() === "regioncode"
-      ) {
-        row[c] = "'" + row[c];
-      }
-    }
-    rowsToWrite.push(row);
-  }
-
-  const finalData = filteredData.concat(rowsToWrite);
-
-  if (finalData.length > 0) {
-    // Bersihkan sheet snapshot terlebih dahulu
-    snapshot.clear();
-
-    // Set format kolom wilayah sebagai teks sebelum mengisi nilai
-    const wilayahIdx = newHeaders.findIndex(
-      (h) => h.toLowerCase() === "wilayah" || h.toLowerCase() === "regioncode",
-    );
-    if (wilayahIdx > -1) {
-      snapshot
-        .getRange(1, wilayahIdx + 1, snapshot.getMaxRows(), 1)
-        .setNumberFormat("@");
-    }
-
-    // Tulis kembali seluruh data
-    snapshot
-      .getRange(1, 1, finalData.length, finalData[0].length)
-      .setValues(finalData);
-  }
-
-  Logger.log("✅ Snapshot harian Petugas berhasil dicatat (retensi 5 hari).");
-}
-
+// ============================================================
 function recordDailyProgress() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
 
@@ -162,7 +91,7 @@ function recordDailyProgress() {
     );
   }
 
-  // --- UMKM (Sekarang baca langsung dari Sensus Ekonomi 2026) ---
+  // --- UMKM (Mendukung data Kecamatan maupun Sub-SLS) ---
   const umkmChanged = calculateDaily(ss, {
     sourceSheet: "Sensus Ekonomi 2026",
     snapshotSheet: "snapshot-kemarin-umkm",
@@ -170,9 +99,7 @@ function recordDailyProgress() {
     timestamp: lastEditTimestamp,
   });
 
-  // --- UB (Sekarang baca langsung dari Sensus Ekonomi 2026 - UB) ---
-  // recordDailyProgressPetugas();
-
+  // --- UB (Mendukung data Kecamatan maupun Sub-SLS) ---
   const ubChanged = calculateDaily(ss, {
     sourceSheet: "Sensus Ekonomi 2026 - UB",
     snapshotSheet: "snapshot-kemarin-ub",
@@ -181,7 +108,7 @@ function recordDailyProgress() {
   });
 
   Logger.log(
-    "✅ Kenaikan harian level KECAMATAN berhasil dihitung untuk tanggal: " +
+    "✅ Kenaikan harian level KECAMATAN/WILAYAH berhasil dihitung untuk tanggal: " +
       lastEditTimestamp,
   );
 
@@ -194,7 +121,6 @@ function recordDailyProgress() {
 }
 
 function calculateDaily(ss, config) {
-  // [MODIFIED] Menggunakan getSheetByNameCI agar aman dari perbedaan huruf besar/kecil & spasi
   const source = getSheetByNameCI(ss, config.sourceSheet);
   const snapshot = getSheetByNameCI(ss, config.snapshotSheet);
 
@@ -203,10 +129,10 @@ function calculateDaily(ss, config) {
     return;
   }
 
-  // 1. Baca data sumber kecamatan
+  // 1. Baca data sumber (Kecamatan / Sub SLS)
   const sourceData = getSheetAsObjects(source);
 
-  // 2. Baca snapshot kemarin (cari data dengan tanggal terbaru SEBELUM hari ini)
+  // 2. Baca snapshot kemarin
   const snapshotData = getSheetAsObjects(snapshot);
 
   function getDateString(rawVal) {
@@ -221,7 +147,6 @@ function calculateDaily(ss, config) {
   let hasTodaySnapshot = false;
 
   snapshotData.forEach((row) => {
-    // [MODIFIED] Menggunakan getValCI agar pembacaan kolom Tanggal kebal perbedaan huruf/spasi
     let rowDate = getDateString(getValCI(row, "Tanggal"));
     if (rowDate === config.today) {
       hasTodaySnapshot = true;
@@ -235,7 +160,6 @@ function calculateDaily(ss, config) {
   let firstRowToday = -1;
 
   snapshotData.forEach((row, idx) => {
-    // [MODIFIED] Menggunakan getValCI untuk pembacaan kolom snapshot
     let rowDate = getDateString(getValCI(row, "Tanggal"));
     let kode = String(getValCI(row, "Wilayah") || "").trim();
     let vals = {
@@ -246,51 +170,35 @@ function calculateDaily(ss, config) {
       draft: Number(getValCI(row, "Draft") || 0),
     };
 
-    // Baca baris jika tanggalnya cocok dengan latestPastDate (atau kosong untuk kompatibilitas data lama)
     if (!rowDate || rowDate === latestPastDate) {
       latestPastMap[kode] = vals;
     }
 
-    // Baca baris jika tanggalnya adalah hari ini (untuk update/overwrite)
     if (rowDate === config.today) {
       currentTodaySnapshotMap[kode] = vals;
-      if (firstRowToday === -1) firstRowToday = idx + 2; // +2 karena 0-index dan 1 baris header
+      if (firstRowToday === -1) firstRowToday = idx + 2;
     }
   });
 
-  // 3. Hitung submit, open, draft hari ini per kecamatan
+  // 3. Agregasi submit, open, draft hari ini per kecamatan (jika baris berupa Sub SLS)
   const todayMap = {};
-  const wilayahNames = {}; // Untuk menyimpan nama kecamatannya
 
   sourceData.forEach((row) => {
-    // [MODIFIED] Menggunakan getValCI untuk kebal casing kolom Wilayah dan nama kecamatan
-    const kode = String(getValCI(row, "Wilayah") || "").trim();
+    const kode = extractKecCode(row);
     if (!kode) return;
 
-    // Simpan nama wilayah untuk dipakai di laporan
-    wilayahNames[kode] =
-      getValCI(row, "Nama Wilayah") ||
-      getValCI(row, "Kecamatan") ||
-      getValCI(row, "Nama") ||
-      getValCI(row, "nama") ||
-      getValCI(row, "NMKEC") ||
-      "-";
+    if (!todayMap[kode]) {
+      todayMap[kode] = { submit: 0, open: 0, draft: 0 };
+    }
 
-    let totalSubmit = 0;
-    SUBMIT_FIELDS.forEach((field) => {
-      totalSubmit += Number(getValCI(row, field) || 0);
-    });
-
-    todayMap[kode] = {
-      submit: totalSubmit,
-      open: Number(getValCI(row, "OPEN") || getValCI(row, "Open") || 0),
-      draft: Number(getValCI(row, "DRAFT") || getValCI(row, "Draft") || 0),
-    };
+    const metrics = extractRowMetrics(row);
+    todayMap[kode].submit += metrics.submit;
+    todayMap[kode].open += metrics.open;
+    todayMap[kode].draft += metrics.draft;
   });
 
-  const allKodes = Object.keys(todayMap); // Ambil semua kode unik kecamatan yang ada di data
+  const allKodes = Object.keys(todayMap);
 
-  // Cek apakah ada perubahan data sama sekali (dibandingkan dengan snapshot terakhir yang tercatat)
   let hasChanges = false;
   const mapToCompare = hasTodaySnapshot
     ? currentTodaySnapshotMap
@@ -320,10 +228,7 @@ function calculateDaily(ss, config) {
     return false;
   }
 
-  // 4. Hitung kenaikan = today - kemarin (selalu bandingkan dengan latestPastDate)
-  // (Penulisan ke sheet progress-harian-* sudah dihapus karena data dikalkulasi di frontend)
-
-  // 5. Update snapshot history = submit, open, draft hari ini
+  // 4. Update snapshot history
   const snapshotHeaders = ["Tanggal", "Wilayah", "Submit", "Open", "Draft"];
   const snapshotRows = allKodes.map((kode) => {
     const vals = todayMap[kode];
@@ -338,7 +243,6 @@ function calculateDaily(ss, config) {
 
   if (snapshotRows.length > 0) {
     if (firstRowToday !== -1) {
-      // Overwrite data hari ini agar tidak menjadi double
       const lastRow = snapshot.getLastRow();
       const numRowsToClear = lastRow - firstRowToday + 1;
       if (numRowsToClear > 0) {
@@ -350,7 +254,6 @@ function calculateDaily(ss, config) {
         .getRange(firstRowToday, 1, snapshotRows.length, snapshotHeaders.length)
         .setValues(snapshotRows);
     } else {
-      // Tambahkan data baru
       const lastRow = snapshot.getLastRow();
       snapshot
         .getRange(lastRow + 1, 1, snapshotRows.length, snapshotHeaders.length)
@@ -383,8 +286,6 @@ function getSheetAsObjects(sheet) {
 // doGet: Web App endpoint (Dibaca oleh Dashboard)
 // ============================================================
 function doGet() {
-  // ====== STRATEGI 1: CacheService ======
-  // Coba ambil data dari cache terlebih dahulu (sangat cepat, ~50ms vs ~3-5 detik)
   var cache = CacheService.getScriptCache();
   var cachedData = cache.get("dashboardPayload");
 
@@ -394,7 +295,6 @@ function doGet() {
     );
   }
 
-  // Cache kosong/kedaluwarsa → baca dari Spreadsheet seperti biasa
   const ss = SpreadsheetApp.getActiveSpreadsheet();
 
   let lastUpdatedTime;
@@ -409,7 +309,6 @@ function doGet() {
     lastUpdatedTime = new Date().toISOString();
   }
 
-  // NOTE: progress-assignment-umkm dan progress-assignment-ub sudah DIHAPUS dari beban kirim!
   const sheetNames = [
     "target-wilayah",
     "snapshot-kemarin-umkm",
@@ -420,9 +319,7 @@ function doGet() {
     "master-subsls",
     "Master SLS",
     "Rekap Prelist SubSLS",
-    "History - Rekap Prelist SubSLS",
-    // "Sensus Ekonomi 2026 - Rekap Petugas",
-    // "Snapshot - Petugas"
+    "History - Rekap Prelist SubSLS"
   ];
 
   const result = {
@@ -430,20 +327,74 @@ function doGet() {
   };
 
   sheetNames.forEach((name) => {
-    // [MODIFIED] Menggunakan getSheetByNameCI agar aman dari perbedaan huruf besar/kecil & spasi
     const sheet = getSheetByNameCI(ss, name);
     if (sheet) {
       const data = sheet.getDataRange().getValues();
+      if (data.length < 2) {
+        result[name] = [];
+        return;
+      }
       const headers = data[0];
-      const rows = [];
 
+      // Penanganan khusus sheet Sensus Ekonomi 2026 / UB jika berisi data Sub-SLS
+      if (name === "Sensus Ekonomi 2026" || name === "Sensus Ekonomi 2026 - UB") {
+        var isSubSlsLevel = headers.some(function(h) {
+          var norm = String(h).toLowerCase().replace(/[\s_-]/g, "");
+          return norm === "kodesubsls" || norm === "kodekec" || norm === "kodedesa" || norm === "totalsubmittedbypencacah";
+        });
+
+        if (isSubSlsLevel) {
+          var kecMap = {};
+          for (var i = 1; i < data.length; i++) {
+            var rowObj = {};
+            headers.forEach(function(h, j) { rowObj[h] = data[i][j]; });
+            var idkec = extractKecCode(rowObj);
+            if (!idkec) continue;
+
+            if (!kecMap[idkec]) {
+              kecMap[idkec] = {
+                Wilayah: idkec,
+                OPEN: 0,
+                DRAFT: 0,
+                "SUBMITTED BY Pencacah": 0,
+                "APPROVED BY Pengawas": 0,
+                "SUBMITTED RESPONDENT": 0,
+                "EDITED BY Pengawas": 0,
+                "EDITED BY Admin Kabupaten": 0,
+                "COMPLETED BY Admin Kabupaten": 0,
+                "REJECTED BY Pengawas": 0,
+                "REJECTED BY Admin Kabupaten": 0,
+                "REVOKED BY Pengawas": 0,
+                "REVOKED BY Admin Kabupaten": 0
+              };
+            }
+
+            kecMap[idkec].OPEN += Number(getValCI(rowObj, "TOTAL_OPEN") || getValCI(rowObj, "OPEN") || 0);
+            kecMap[idkec].DRAFT += Number(getValCI(rowObj, "TOTAL_DRAFT") || getValCI(rowObj, "DRAFT") || 0);
+            kecMap[idkec]["SUBMITTED BY Pencacah"] += Number(getValCI(rowObj, "TOTAL_SUBMITTED_BY_PENCACAH") || getValCI(rowObj, "SUBMITTED BY Pencacah") || 0);
+            kecMap[idkec]["APPROVED BY Pengawas"] += Number(getValCI(rowObj, "TOTAL_APPROVED_BY_PENGAWAS") || getValCI(rowObj, "APPROVED BY Pengawas") || 0);
+            kecMap[idkec]["SUBMITTED RESPONDENT"] += Number(getValCI(rowObj, "TOTAL_SUBMITTED_RESPONDENT") || getValCI(rowObj, "SUBMITTED RESPONDENT") || 0);
+            kecMap[idkec]["EDITED BY Pengawas"] += Number(getValCI(rowObj, "TOTAL_EDITED_BY_PENGAWAS") || getValCI(rowObj, "EDITED BY Pengawas") || 0);
+            kecMap[idkec]["EDITED BY Admin Kabupaten"] += Number(getValCI(rowObj, "TOTAL_EDITED_BY_ADMIN_KABUPATEN") || getValCI(rowObj, "EDITED BY Admin Kabupaten") || 0);
+            kecMap[idkec]["COMPLETED BY Admin Kabupaten"] += Number(getValCI(rowObj, "TOTAL_COMPLETED_BY_ADMIN_KABUPATEN") || getValCI(rowObj, "COMPLETED BY Admin Kabupaten") || 0);
+            kecMap[idkec]["REJECTED BY Pengawas"] += Number(getValCI(rowObj, "TOTAL_REJECTED_BY_PENGAWAS") || getValCI(rowObj, "REJECTED BY Pengawas") || 0);
+            kecMap[idkec]["REJECTED BY Admin Kabupaten"] += Number(getValCI(rowObj, "TOTAL_REJECTED_BY_ADMIN_KABUPATEN") || getValCI(rowObj, "REJECTED BY Admin Kabupaten") || 0);
+            kecMap[idkec]["REVOKED BY Pengawas"] += Number(getValCI(rowObj, "TOTAL_REVOKED_BY_PENGAWAS") || getValCI(rowObj, "REVOKED BY Pengawas") || 0);
+            kecMap[idkec]["REVOKED BY Admin Kabupaten"] += Number(getValCI(rowObj, "TOTAL_REVOKED_BY_ADMIN_KABUPATEN") || getValCI(rowObj, "REVOKED BY Admin Kabupaten") || 0);
+          }
+          result[name] = Object.values(kecMap);
+          return;
+        }
+      }
+
+      // Pemrosesan reguler
+      const rows = [];
       for (let i = 1; i < data.length; i++) {
         const row = {};
         headers.forEach((h, j) => {
           row[h] = data[i][j];
         });
 
-        // [MODIFIED] Map data agar kunci propertinya persis seperti yang diharapkan oleh index.html
         var mappedRow = {};
         if (name === "target-wilayah") {
           mappedRow["Wilayah"] =
@@ -478,9 +429,9 @@ function doGet() {
           mappedRow["Wilayah"] =
             getValCI(row, "Wilayah") || getValCI(row, "kode");
           mappedRow["OPEN"] =
-            getValCI(row, "OPEN") || getValCI(row, "Open") || 0;
+            getValCI(row, "OPEN") || getValCI(row, "TOTAL_OPEN") || getValCI(row, "Open") || 0;
           mappedRow["DRAFT"] =
-            getValCI(row, "DRAFT") || getValCI(row, "Draft") || 0;
+            getValCI(row, "DRAFT") || getValCI(row, "TOTAL_DRAFT") || getValCI(row, "Draft") || 0;
           SUBMIT_FIELDS.forEach(function (field) {
             mappedRow[field] = getValCI(row, field) || 0;
           });
@@ -520,181 +471,115 @@ function doGet() {
 
         rows.push(mappedRow);
       }
-
-      if (name === "History - Rekap Prelist SubSLS") {
-        var currentPayloadDate = String(lastUpdatedTime || "").substring(0, 10);
-        var baselineDates = rows.map(function (item) {
-          return String(item["Tanggal Baseline"] || "").substring(0, 10);
-        }).filter(function (date) {
-          return date && (!currentPayloadDate || date < currentPayloadDate);
-        }).sort().reverse();
-        var selectedBaselineDate = baselineDates.length ? baselineDates[0] : "";
-        result[name] = rows.filter(function (item) {
-          return String(item["Tanggal Baseline"] || "").substring(0, 10) === selectedBaselineDate;
-        });
-      } else if (name === "Rekap Prelist SE2026 - SubSLS") {
-        result["Rekap Prelist SubSLS"] = rows;
-      } else {
-        result[name] = rows;
-      }
+      result[name] = rows;
     }
   });
 
-  // Simpan hasil ke cache selama 10 menit (600 detik)
-  // Catatan: CacheService maks 100KB per key. Jika payload > 100KB, cache akan gagal (silent fail).
-  var jsonString = JSON.stringify(result);
+  const outputString = JSON.stringify(result);
+
   try {
-    cache.put("dashboardPayload", jsonString, 600);
-  } catch (cacheErr) {
-    Logger.log(
-      "⚠️ Cache gagal disimpan (kemungkinan payload > 100KB): " +
-        cacheErr.toString(),
-    );
+    cache.put("dashboardPayload", outputString, 21600);
+  } catch (e) {
+    Logger.log("Gagal menyimpan ke cache: " + e.toString());
   }
 
-  // Return JSON ke web dashboard
-  return ContentService.createTextOutput(jsonString).setMimeType(
+  return ContentService.createTextOutput(outputString).setMimeType(
     ContentService.MimeType.JSON,
   );
 }
 
 // ============================================================
-// --- KODE UNTUK UPLOAD CSV ---
+// HELPER: Snapshot Baseline Harian Rekap Prelist SubSLS
 // ============================================================
-
-function onOpen() {
-  var ui = SpreadsheetApp.getUi();
-  ui.createMenu("Dashboard SE")
-    .addItem("Upload CSV Data Kecamatan", "openUploadDialog")
-    //.addItem('Hitung Kenaikan Harian Manual', 'confirmRecordDailyProgress')
-    .addItem("Setel Jadwal Otomatis (Setiap Malam)", "createDailyTrigger")
-    .addToUi();
-}
-
-function createDailyTrigger() {
-  var ui = SpreadsheetApp.getUi();
-  try {
-    const triggers = ScriptApp.getProjectTriggers();
-    for (let i = 0; i < triggers.length; i++) {
-      if (["recordDailyProgress", "recordPrelistBaselineAtMidnight"].indexOf(triggers[i].getHandlerFunction()) !== -1) {
-        ScriptApp.deleteTrigger(triggers[i]);
-      }
-    }
-
-    ScriptApp.newTrigger("recordDailyProgress")
-      .timeBased()
-      .atHour(23)
-      .everyDays(1)
-      .create();
-
-    ScriptApp.newTrigger("recordPrelistBaselineAtMidnight")
-      .timeBased()
-      .atHour(23)
-      .everyDays(1)
-      .create();
-
-    ui.alert(
-      "Sukses",
-      "Jadwal otomatis berhasil dibuat! Snapshot akan direkam otomatis setiap malam (antara pukul 23:00 - 24:00).",
-      ui.ButtonSet.OK,
-    );
-  } catch (e) {
-    ui.alert(
-      "Error",
-      "Gagal membuat jadwal otomatis. Pastikan Anda memiliki izin yang cukup. Error: " +
-        e.message,
-      ui.ButtonSet.OK,
-    );
+function recordPrelistBaseline(sheetName) {
+  if (sheetName !== "Rekap Prelist SubSLS" && sheetName !== "Rekap Prelist SE2026 - SubSLS") {
+    return "Skipped: baseline hanya dicatat untuk Rekap Prelist SubSLS.";
   }
-}
 
-function confirmRecordDailyProgress() {
-  var ui = SpreadsheetApp.getUi();
-  var response = ui.alert(
-    "Konfirmasi",
-    "Apakah Anda yakin ingin menghitung dan mencatat kenaikan harian sekarang?",
-    ui.ButtonSet.YES_NO,
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sourceSheet = getSheetByNameCI(ss, sheetName);
+  if (!sourceSheet) return "Error: Sheet sumber prelist tidak ditemukan.";
+
+  const historySheetName = "History - Rekap Prelist SubSLS";
+  let historySheet = getSheetByNameCI(ss, historySheetName);
+  if (!historySheet) {
+    historySheet = ss.insertSheet(historySheetName);
+  }
+
+  const sourceData = sourceSheet.getDataRange().getValues();
+  if (sourceData.length < 2) {
+    return "Error: Data sumber prelist kosong.";
+  }
+
+  const sourceHeaders = sourceData[0];
+  const historyHeaders = ["Tanggal Baseline"].concat(sourceHeaders);
+
+  const timestamp = Utilities.formatDate(
+    new Date(),
+    "Asia/Jakarta",
+    "yyyy-MM-dd HH:mm:ss",
+  );
+  const todayDate = Utilities.formatDate(
+    new Date(),
+    "Asia/Jakarta",
+    "yyyy-MM-dd",
   );
 
-  if (response == ui.Button.YES) {
-    var result = recordDailyProgress();
-    var msg =
-      "Penghitungan selesai (Tanggal Data: " + result.timestamp + ").\n\n";
-    msg +=
-      "• UMKM: " +
-      (result.umkm
-        ? "Diperbarui (Ada perubahan)"
-        : "Dilewati (Tidak ada perubahan)") +
-      "\n";
-    msg +=
-      "• UB: " +
-      (result.ub
-        ? "Diperbarui (Ada perubahan)"
-        : "Dilewati (Tidak ada perubahan)");
+  const existingHistory = historySheet.getDataRange().getValues();
+  let retainedRows = [];
 
-    ui.alert("Sukses", msg, ui.ButtonSet.OK);
-  }
-}
-
-function openUploadDialog() {
-    var html = HtmlService.createHtmlOutputFromFile("Upload")
-    .setWidth(540)
-    .setHeight(480)
-    .setTitle("Upload CSV - Data Kecamatan");
-  SpreadsheetApp.getUi().showModalDialog(html, "Upload Data Kecamatan");
-}
-
-// Shortcut menu khusus untuk rekap SQL Lab. Dialog yang sama dipakai agar
-// mekanisme upload batch tetap konsisten; pengguna tinggal memilih target
-// "Rekap Prelist SubSLS" pada dropdown.
-function openPrelistUploadDialog() {
-  openUploadDialog();
-}
-
-/**
- * Proses BATCH upload: terima array of {csvContent, sheetName}.
- * Clear data HANYA SEKALI per sheet di awal, lalu append semua file CSV.
- * Dipanggil dari Upload.html.
- */
-function processMultipleCSV(filesArray) {
-  var results = [];
-
-  // Kelompokkan file berdasarkan sheetName agar clear per sheet hanya 1x
-  var grouped = {};
-  for (var i = 0; i < filesArray.length; i++) {
-    var sheetName = filesArray[i].sheetName;
-    if (!grouped[sheetName]) grouped[sheetName] = [];
-    grouped[sheetName].push(filesArray[i].csvContent);
+  if (existingHistory.length >= 2) {
+    for (let r = 1; r < existingHistory.length; r++) {
+      const rowDate = String(existingHistory[r][0] || "").substring(0, 10);
+      if (rowDate && rowDate !== todayDate) {
+        retainedRows.push(existingHistory[r]);
+      }
+    }
   }
 
+  const newRows = [];
+  for (let s = 1; s < sourceData.length; s++) {
+    newRows.push(["'" + timestamp].concat(sourceData[s]));
+  }
+
+  const finalRows = [historyHeaders].concat(retainedRows, newRows);
+  historySheet.clear();
+  historySheet
+    .getRange(1, 1, finalRows.length, historyHeaders.length)
+    .setValues(finalRows);
+
+  const codeIdx = historyHeaders.findIndex(
+    (h) => String(h).toLowerCase().replace(/[\s_-]/g, "") === "kodesubsls",
+  );
+  if (codeIdx > -1) {
+    historySheet
+      .getRange(2, codeIdx + 1, finalRows.length - 1, 1)
+      .setNumberFormat("@");
+  }
+
+  return "OK: Baseline prelist harian berhasil disimpan (" + newRows.length + " baris).";
+}
+
+// ============================================================
+// HELPER: Mengosongkan data sheet sebelum batch upload
+// ============================================================
+function clearSheetBeforeUpload(sheetName) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-
-  for (var sName in grouped) {
-    // [MODIFIED] Menggunakan getSheetByNameCI agar aman dari perbedaan casing/spasi
-    var sheet = getSheetByNameCI(ss, sName);
-    if (!sheet) {
-      results.push("Error: Sheet dengan nama '" + sName + "' tidak ditemukan!");
-      continue;
-    }
-
-    // CLEAR DATA SEKALI SAJA untuk sheet ini
-    clearSheetData_(sheet);
-
-    // Proses setiap file CSV (mode append, tanpa clear)
-    var csvContents = grouped[sName];
-    for (var f = 0; f < csvContents.length; f++) {
-      var msg = processCSV(csvContents[f], sName, false); // false = jangan clear lagi
-      results.push(msg);
-    }
+  var sheet = getSheetByNameCI(ss, sheetName);
+  if (!sheet && (sheetName === "Rekap Prelist SubSLS" || sheetName === "master-subsls" || sheetName === "Master SLS" || sheetName === "Sensus Ekonomi 2026" || sheetName === "Sensus Ekonomi 2026 - UB")) {
+    sheet = ss.insertSheet(sheetName);
   }
+  if (!sheet) return "Error: Sheet '" + sheetName + "' tidak ditemukan!";
 
-  return results;
+  clearSheetData_(sheet);
+
+  try {
+    CacheService.getScriptCache().remove("dashboardPayload");
+  } catch (e) {}
+
+  return "OK";
 }
 
-/**
- * Helper: Kosongkan seluruh isi data di bawah header (baris 2 ke bawah).
- * Dipanggil sekali sebelum batch upload.
- */
 function clearSheetData_(sheet) {
   var lastRow = sheet.getLastRow();
   var lastCol = sheet.getLastColumn();
@@ -703,136 +588,44 @@ function clearSheetData_(sheet) {
   }
 }
 
-/**
- * Simpan baseline terakhir dan baseline hari sebelumnya untuk rekap Sub SLS.
- * Dipanggil setelah seluruh file upload selesai diproses dari Upload.html.
- */
-function recordPrelistBaseline(sheetName, forceToday) {
-  if (sheetName !== "Rekap Prelist SubSLS") {
-    return "Baseline hanya tersedia untuk sheet Rekap Prelist SubSLS.";
-  }
-
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var source = getSheetByNameCI(ss, sheetName);
-  if (!source || source.getLastRow() < 2) {
-    return "Tidak ada data Sub SLS untuk dijadikan baseline.";
-  }
-
-  var historyName = "History - Rekap Prelist SubSLS";
-  var history = getSheetByNameCI(ss, historyName) || ss.insertSheet(historyName);
-  var sourceRange = source.getDataRange();
-  var sourceValues = sourceRange.getValues();
-  var sourceDisplayValues = sourceRange.getDisplayValues();
-  var sourceHeaders = sourceValues[0];
-  var today = Utilities.formatDate(new Date(), "Asia/Jakarta", "yyyy-MM-dd");
-  var previousDate = Utilities.formatDate(new Date(Date.now() - 86400000), "Asia/Jakarta", "yyyy-MM-dd");
-  var historyValues = history.getLastRow() > 0 ? history.getDataRange().getValues() : [];
-  var output = [["Tanggal Baseline"].concat(sourceHeaders)];
-  var codeIndex = sourceHeaders.indexOf("KODE_SUB_SLS");
-
-  var hasTodayBaseline = historyValues.slice(1).some(function (row) {
-    return String(row[0] || "").substring(0, 10) === today;
-  });
-  if (hasTodayBaseline && !forceToday) {
-    return "Baseline hari ini sudah ada dan tidak diubah.";
-  }
-
-  // Pertahankan hanya baseline kemarin; baseline hari ini diganti dengan upload terbaru.
-  if (historyValues.length > 1) {
-    historyValues.slice(1).forEach(function (row) {
-      var date = String(row[0] || "").substring(0, 10);
-      if (date === previousDate) output.push(row);
-    });
-  }
-  for (var i = 1; i < sourceValues.length; i++) {
-    if (sourceValues[i].some(function (value) { return value !== "" && value !== null; })) {
-      var baselineRow = sourceValues[i].slice();
-      if (codeIndex >= 0) baselineRow[codeIndex] = String(sourceDisplayValues[i][codeIndex] || baselineRow[codeIndex] || "").trim();
-      output.push([today].concat(baselineRow));
-    }
-  }
-
-  if (history.getMaxRows() < output.length) {
-    history.insertRowsAfter(history.getMaxRows(), output.length - history.getMaxRows());
-  }
-  if (history.getMaxColumns() < output[0].length) {
-    history.insertColumnsAfter(history.getMaxColumns(), output[0].length - history.getMaxColumns());
-  }
-  history.clearContents();
-  if (codeIndex >= 0 && output.length > 1) {
-    history.getRange(2, codeIndex + 2, output.length - 1, 1).setNumberFormat("@");
-  }
-  history.getRange(2, 1, output.length - 1, 1).setNumberFormat("@");
-  history.getRange(1, 1, output.length, output[0].length).setValues(output);
-  try {
-    CacheService.getScriptCache().remove("dashboardPayload");
-  } catch (cacheErr) {
-    Logger.log("Gagal menghapus cache dashboard setelah baseline: " + cacheErr);
-  }
-  return "Baseline " + today + " tersimpan (" + (output.length - 1) + " baris).";
-}
-
-function recordPrelistBaselineAtMidnight() {
-  return recordPrelistBaseline("Rekap Prelist SubSLS", true);
-}
-
-/**
- * Fungsi PUBLIK: Dipanggil dari Upload.html SEKALI sebelum loop upload.
- * Mengosongkan seluruh isi data sheet (baris 2 ke bawah), mempertahankan header.
- * @param {string} sheetName - Nama sheet yang akan dikosongkan.
- */
-function clearSheetBeforeUpload(sheetName) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  // [MODIFIED] Menggunakan getSheetByNameCI agar aman dari casing/spasi
-  var sheet = getSheetByNameCI(ss, sheetName);
-  if (!sheet && (sheetName === "Rekap Prelist SubSLS" || sheetName === "master-subsls" || sheetName === "Master SLS")) {
-    sheet = ss.insertSheet(sheetName);
-  }
-  if (!sheet) return "Error: Sheet '" + sheetName + "' tidak ditemukan!";
-  clearSheetData_(sheet);
-  return "OK";
-}
-
-/**
- * Proses satu file CSV ke sheet.
- * @param {string} csvContent - Isi CSV sebagai string.
- * @param {string} sheetName - Nama sheet tujuan.
- * @param {boolean} [shouldClear=true] - Jika true, kosongkan sheet dulu (mode lama/single file).
- *                                        Jika false, append ke baris berikutnya (mode batch).
- */
+// ============================================================
+// PROSES CSV / EXCEL UPLOAD
+// ============================================================
 function processCSV(csvContent, sheetName, shouldClear) {
-  // Default: clear data (backward compatible jika dipanggil langsung dengan 2 argumen)
   if (shouldClear === undefined) shouldClear = true;
 
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var isPrelistSubSls = sheetName === "Rekap Prelist SubSLS" || sheetName === "Rekap Prelist SE2026 - SubSLS";
     var isMasterSubSls = sheetName === "master-subsls" || sheetName === "Master SLS" || sheetName === "Master - SubSLS";
-    // [MODIFIED] Menggunakan getSheetByNameCI agar aman dari casing/spasi
     var sheet = getSheetByNameCI(ss, sheetName);
 
-    if (!sheet)
-      return "Error: Sheet dengan nama '" + sheetName + "' tidak ditemukan!";
+    if (!sheet) {
+      sheet = ss.insertSheet(sheetName);
+    }
 
     var csvData = Utilities.parseCsv(csvContent);
     if (csvData.length <= 1)
       return "Error: CSV kosong atau hanya berisi header.";
 
-    // [MODIFIED] Map ke lowerCase trim agar pencarian kolom kebal terhadap spasi/huruf besar-kecil
     var csvHeaders = csvData[0].map(function (h) {
       return h.trim();
     });
+    
     var wilayahCsvIdx = -1;
+    var validKeyPatterns = ["wilayah", "kode", "kodesubsls", "idsubsls", "kodekab", "kodekec", "kodedesa", "id", "sls", "nmsls", "no"];
     for (var i = 0; i < csvHeaders.length; i++) {
       var normH = csvHeaders[i].toLowerCase().replace(/[\s_-]/g, "");
-      if (normH === "wilayah" || normH === "kode" || (isPrelistSubSls && normH === "kodesubsls") || (isMasterSubSls && (normH === "kodesubsls" || normH === "idsubsls" || normH === "id" || normH === "sls" || normH === "nmsls"))) {
+      if (validKeyPatterns.indexOf(normH) > -1) {
         wilayahCsvIdx = i;
         break;
       }
     }
 
-    if (wilayahCsvIdx === -1)
-      return (isPrelistSubSls || isMasterSubSls) ? "Error: Kolom 'KODE_SUB_SLS' / 'SLS' tidak ditemukan pada CSV." : "Error: Kolom 'Wilayah' tidak ditemukan pada CSV.";
+    if (wilayahCsvIdx === -1) {
+      if (csvHeaders.length > 0) wilayahCsvIdx = 0;
+      else return "Error: File tidak memiliki kolom valid.";
+    }
 
     // Baca header yang sudah ada di sheet
     var lastCol = sheet.getLastColumn();
@@ -844,7 +637,6 @@ function processCSV(csvContent, sheetName, shouldClear) {
     for (var c = 0; c < csvHeaders.length; c++) {
       var headerName = csvHeaders[c].trim();
       if (headerName !== "") {
-        // Cek secara case-insensitive
         var exists = false;
         var normHeaderName = headerName.toLowerCase().replace(/[\s_-]/g, "");
         for (var h = 0; h < sheetHeaders.length; h++) {
@@ -864,26 +656,21 @@ function processCSV(csvContent, sheetName, shouldClear) {
     }
 
     // Tambahkan kolom 'Last Updated' jika belum ada
-    if (!isPrelistSubSls && sheetHeaders.indexOf("Last Updated") === -1) {
+    if (!isPrelistSubSls && !isMasterSubSls && sheetHeaders.indexOf("Last Updated") === -1) {
       sheetHeaders.push("Last Updated");
       newColumnsAdded = true;
     }
 
-    // Jika ada kolom baru, perbarui header di sheet
     if (newColumnsAdded) {
       sheet.getRange(1, 1, 1, sheetHeaders.length).setValues([sheetHeaders]);
     }
 
-    // Clear data HANYA jika shouldClear = true (mode single file / legacy)
     if (shouldClear) {
       clearSheetData_(sheet);
     }
 
-    // Tentukan baris awal untuk menulis data
-    // Jika mode append: tulis setelah data yang sudah ada
     var startRow = shouldClear ? 2 : Math.max(2, sheet.getLastRow() + 1);
 
-    // Dapatkan timestamp waktu sekarang (Asia/Jakarta)
     var timestamp = Utilities.formatDate(
       new Date(),
       "Asia/Jakarta",
@@ -891,7 +678,6 @@ function processCSV(csvContent, sheetName, shouldClear) {
     );
     var rowsToWrite = [];
 
-    // Map setiap baris CSV sesuai urutan kolom pada sheetHeaders
     for (var j = 1; j < csvData.length; j++) {
       var csvRow = csvData[j];
       var wilayahVal = String(csvRow[wilayahCsvIdx]).trim();
@@ -903,7 +689,6 @@ function processCSV(csvContent, sheetName, shouldClear) {
         if (headerName === "Last Updated") {
           newRowData.push("'" + timestamp);
         } else {
-          // [MODIFIED] Cari indeks kolom CSV secara case-insensitive & space-insensitive
           var csvIdx = -1;
           var normHeaderName = headerName.toLowerCase().replace(/[\s_-]/g, "");
           for (var c = 0; c < csvHeaders.length; c++) {
@@ -925,27 +710,18 @@ function processCSV(csvContent, sheetName, shouldClear) {
       rowsToWrite.push(newRowData);
     }
 
-    // KODE_SUB_SLS wajib diformat sebagai teks SEBELUM setValues agar Google
-    // Sheets tidak mengubahnya menjadi angka ilmiah atau membulatkan digit.
-    if (isPrelistSubSls && rowsToWrite.length > 0) {
-      var prelistCodeColumn = -1;
-      for (var prelistHeaderIndex = 0; prelistHeaderIndex < sheetHeaders.length; prelistHeaderIndex++) {
-        if (String(sheetHeaders[prelistHeaderIndex]).toLowerCase().replace(/[\s_-]/g, "") === "kodesubsls") {
-          prelistCodeColumn = prelistHeaderIndex + 1;
-          break;
-        }
-      }
-      if (prelistCodeColumn > 0) {
-        sheet.getRange(startRow, prelistCodeColumn, rowsToWrite.length, 1).setNumberFormat("@");
-      }
-    }
-
-    // Tulis data baru secara BATCHING
+    // Format kolom teks identifier seperti KODE_SUB_SLS
     if (rowsToWrite.length > 0) {
+      sheetHeaders.forEach(function(hName, hIdx) {
+        var normH = String(hName).toLowerCase().replace(/[\s_-]/g, "");
+        if (normH === "kodesubsls" || normH === "kode" || normH === "wilayah" || normH === "idsubsls" || normH === "idkec") {
+          sheet.getRange(startRow, hIdx + 1, rowsToWrite.length, 1).setNumberFormat("@");
+        }
+      });
+
       sheet
         .getRange(startRow, 1, rowsToWrite.length, sheetHeaders.length)
         .setValues(rowsToWrite);
-
     }
 
     try {
@@ -962,7 +738,7 @@ function processCSV(csvContent, sheetName, shouldClear) {
       "].";
     if (shouldClear) pesan += " (Sheet dikosongkan terlebih dahulu).";
     if (newColumnsAdded)
-      pesan += " (Ada penambahan kolom baru / kolom 'Last Updated').";
+      pesan += " (Ada penambahan kolom baru).";
 
     return pesan;
   } catch (error) {
@@ -971,232 +747,8 @@ function processCSV(csvContent, sheetName, shouldClear) {
 }
 
 // ============================================================
-// --- FUNGSI TAMBAHAN UNTUK INTEGRASI SCRAPER OTOMATIS ---
+// HELPER UTILITIES
 // ============================================================
-
-/**
- * Menerima unggahan data otomatis dari Ekstensi Scraper.
- */
-function doPost(e) {
-  try {
-    // ====== INVALIDASI CACHE: Hapus cache doGet agar dashboard dapat data terbaru ======
-    try {
-      CacheService.getScriptCache().remove("dashboardPayload");
-    } catch (cacheErr) {
-      Logger.log("⚠️ Gagal menghapus cache: " + cacheErr.toString());
-    }
-
-    var data = JSON.parse(e.postData.contents);
-    var rawSheetName = data.sheetName || "Sheet1";
-    var scrapeType = data.scrapeType || "progress";
-
-    // 1. Sanitasi nama sheet (Google Sheets melarang karakter: \ / ? * : [ ])
-    var sheetName = sanitizeSheetName(rawSheetName);
-
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = getSheetByNameCI(ss, sheetName);
-
-    // 2. Jika tab dengan nama survey belum ada, buat baru secara otomatis
-    if (!sheet) {
-      sheet = ss.insertSheet(sheetName);
-    }
-
-    // 3. Bersihkan seluruh isi tab tersebut agar diganti dengan data rekap terbaru
-    sheet.clear();
-
-    var rows = data.rows; // Array of { code, name, kabCode, kabName, lastUpdated, stats: { ... } }
-
-    if (!rows || rows.length === 0) {
-      return ContentService.createTextOutput(
-        JSON.stringify({
-          success: true,
-          message: "Tidak ada data rekapitulasi yang diterima.",
-        }),
-      ).setMimeType(ContentService.MimeType.JSON);
-    }
-
-    // 4. Kumpulkan seluruh kolom status secara dinamis dari data scraping
-    var statusKeys = [];
-    var seenKeys = {};
-    for (var i = 0; i < rows.length; i++) {
-      var stats = rows[i].stats;
-      for (var key in stats) {
-        if (!seenKeys[key]) {
-          seenKeys[key] = true;
-          statusKeys.push(key);
-        }
-      }
-    }
-    // Mengatur urutan kolom sesuai permintaan pengguna
-    var predefinedOrder = [
-      "total",
-      "Pengawas",
-      "Pencacah",
-      "OPEN",
-      "DRAFT",
-      "SUBMITTED BY Pencacah",
-      "SUBMITTED RESPONDENT",
-      "REJECTED BY Pengawas",
-      "EDITED BY Pengawas",
-      "REVOKED BY Pengawas",
-      "APPROVED BY Pengawas",
-      "EDITED BY Admin Kabupaten",
-      "REJECTED BY Admin Kabupaten",
-      "REVOKED BY Admin Kabupaten",
-      "COMPLETED BY Admin Kabupaten",
-    ];
-
-    var sortedStatusKeys = [];
-
-    // Masukkan yang ada di predefinedOrder terlebih dahulu
-    for (var k = 0; k < predefinedOrder.length; k++) {
-      var key = predefinedOrder[k];
-      if (seenKeys[key]) {
-        sortedStatusKeys.push(key);
-        seenKeys[key] = false; // Tandai sudah diproses
-      }
-    }
-
-    // Masukkan sisa status (jika ada yang tidak masuk dalam predefined)
-    for (var k = 0; k < statusKeys.length; k++) {
-      var key = statusKeys[k];
-      if (seenKeys[key]) {
-        sortedStatusKeys.push(key);
-      }
-    }
-    statusKeys = sortedStatusKeys;
-
-    // 5. Buat baris Header (Baris 1)
-    var headers = ["Wilayah"];
-    if (scrapeType !== "petugas") {
-      headers.push("Kecamatan");
-    }
-    headers.push("Kabupaten");
-    for (var k = 0; k < statusKeys.length; k++) {
-      headers.push(statusKeys[k]);
-    }
-
-    // 6. Siapkan kumpulan nilai baris
-    var values = [headers];
-    for (var i = 0; i < rows.length; i++) {
-      var item = rows[i];
-      var rowValues = [];
-      rowValues.push(item.code);
-      if (scrapeType !== "petugas") {
-        rowValues.push(item.name);
-      }
-      rowValues.push(item.kabName);
-
-      for (var k = 0; k < statusKeys.length; k++) {
-        var key = statusKeys[k];
-        rowValues.push(item.stats[key] !== undefined ? item.stats[key] : 0);
-      }
-      values.push(rowValues);
-    }
-
-    // 7. Siapkan range di sheet
-    var range = sheet.getRange(1, 1, values.length, headers.length);
-
-    // 8. Rapikan & Format Tipe Data Sel (PENTING: Lakukan ini sebelum setValues)
-    if (values.length > 1) {
-      // Kode Wilayah (Kolom B) diatur sebagai Plain Text agar angka panjang (RegionCode) tidak rusak
-      sheet.getRange(2, 2, values.length - 1, 1).setNumberFormat("@");
-
-      // Jumlah Metrik diatur sebagai Angka biasa dengan ribuan separator
-      sheet
-        .getRange(2, 5, values.length - 1, headers.length - 4)
-        .setNumberFormat("#,##0");
-    }
-
-    // Tulis data ke sheet (Karena sel sudah berformat @, regionCode tidak akan dikonversi ke e+15)
-    range.setValues(values);
-
-    // Kode Sub SLS adalah identifier 16 digit; pertahankan sebagai teks agar
-    // Google Sheets tidak mengubahnya menjadi angka ilmiah atau membulatkan digit.
-    if (sheetName.toLowerCase().includes("prelist") && headers.indexOf("KODE_SUB_SLS") !== -1) {
-      sheet.getRange(2, headers.indexOf("KODE_SUB_SLS") + 1, values.length - 1, 1).setNumberFormat("@");
-    }
-
-    // 9. Berikan border halus (#e2e8f0) ke seluruh tabel data
-    range.setBorder(
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      "#e2e8f0",
-      SpreadsheetApp.BorderStyle.SOLID,
-    );
-
-    // 10. Terapkan styling premium pada Header (Baris 1)
-    var headerRange = sheet.getRange(1, 1, 1, headers.length);
-    headerRange
-      .setBackground("#f79039") // Oranye BPS Premium
-      .setFontColor("#ffffff") // Teks putih
-      .setFontWeight("bold")
-      .setHorizontalAlignment("center")
-      .setVerticalAlignment("middle");
-
-    sheet.setRowHeight(1, 28); // Tinggi baris header longgar
-
-    // 11. Atur Perataan Kolom (Alignment)
-    if (values.length > 1) {
-      // Kolom Tanggal & Wilayah di tengah (Center)
-      sheet
-        .getRange(2, 1, values.length - 1, 2)
-        .setHorizontalAlignment("center");
-      // Kolom Kecamatan & Kabupaten rata kiri (Left)
-      sheet.getRange(2, 3, values.length - 1, 2).setHorizontalAlignment("left");
-      // Kolom angka rata kanan (Right)
-      sheet
-        .getRange(2, 5, values.length - 1, headers.length - 4)
-        .setHorizontalAlignment("right");
-    }
-
-    sheet.setFrozenRows(1); // Bekukan baris header
-
-    // 12. Atur lebar kolom otomatis & berikan padding agar lega
-    sheet.autoResizeColumns(1, headers.length);
-    for (var col = 1; col <= headers.length; col++) {
-      var currentWidth = sheet.getColumnWidth(col);
-      sheet.setColumnWidth(col, currentWidth + 15); // Tambah 15px lebar ekstra
-    }
-
-    // 13. TRIGGER KALKULASI PROGRES HARIAN (Otomatis perbarui dashboard)
-    var calcMsg = "";
-    try {
-    } catch (calcError) {
-      Logger.log("Kalkulasi harian error: " + calcError.toString());
-      calcMsg = " (Kalkulasi harian dilewati: " + calcError.toString() + ").";
-    }
-
-    return ContentService.createTextOutput(
-      JSON.stringify({
-        success: true,
-        message:
-          "Berhasil menulis " +
-          rows.length +
-          " baris data ke tab '" +
-          sheetName +
-          "'" +
-          calcMsg,
-        updatedCount: rows.length,
-      }),
-    ).setMimeType(ContentService.MimeType.JSON);
-  } catch (error) {
-    return ContentService.createTextOutput(
-      JSON.stringify({
-        success: false,
-        error: error.toString(),
-      }),
-    ).setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-/**
- * Helper: Mencari Sheet secara case-insensitive & mengabaikan spasi/simbol.
- */
 function getSheetByNameCI(ss, name) {
   if (!ss || !name) return null;
   var sheets = ss.getSheets();
@@ -1210,9 +762,6 @@ function getSheetByNameCI(ss, name) {
   return null;
 }
 
-/**
- * Helper: Mengambil properti objek secara case-insensitive & mengabaikan spasi/simbol.
- */
 function getValCI(obj, key) {
   if (!obj || !key) return undefined;
   var normKey = String(key)
@@ -1230,9 +779,6 @@ function getValCI(obj, key) {
   return undefined;
 }
 
-/**
- * Helper: Membersihkan nama sheet dari karakter ilegal.
- */
 function sanitizeSheetName(name) {
   if (!name) return "Sheet1";
   var clean = name.replace(/[\\\/\?\*\:\[\]]/g, "");
