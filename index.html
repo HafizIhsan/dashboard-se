@@ -1911,19 +1911,37 @@
       sumData.progress = globalTotalAssignment > 0 ? ((sumData.umkmSubmit + sumData.ubSubmit) / globalTotalAssignment) * 100 : 0;
 
       // Update values in HTML cards
-      document.getElementById('stat-target').innerText = fmtNum(sumData.targetUmkm + sumData.targetUb + sumData.targetKeluarga);
-      document.getElementById('stat-target-umkm').innerText = fmtNum(sumData.targetUmkm);
-      document.getElementById('stat-target-ub').innerText = fmtNum(sumData.targetUb);
+      if (document.getElementById('stat-target')) {
+        document.getElementById('stat-target').innerText = fmtNum(sumData.targetUmkm + sumData.targetUb + sumData.targetKeluarga);
+      }
+      if (document.getElementById('stat-target-umkm')) {
+        document.getElementById('stat-target-umkm').innerText = fmtNum(sumData.targetUmkm);
+      }
+      if (document.getElementById('stat-target-ub')) {
+        document.getElementById('stat-target-ub').innerText = fmtNum(sumData.targetUb);
+      }
       if (document.getElementById('stat-target-keluarga')) {
         document.getElementById('stat-target-keluarga').innerText = fmtNum(sumData.targetKeluarga);
       }
 
-      document.getElementById('stat-assigned').innerText = fmtNum(sumData.umkmTotal + sumData.ubTotal);
-      document.getElementById('stat-open').innerText = fmtNum(sumData.umkmOpen + sumData.ubOpen);
-      document.getElementById('stat-draft').innerText = fmtNum(sumData.umkmDraft + sumData.ubDraft);
-      document.getElementById('stat-submit').innerText = fmtNum(sumData.umkmSubmit + sumData.ubSubmit);
-      document.getElementById('stat-umkm-total').innerText = fmtNum(sumData.umkmTotal);
-      document.getElementById('stat-ub-total').innerText = fmtNum(sumData.ubTotal);
+      if (document.getElementById('stat-assigned')) {
+        document.getElementById('stat-assigned').innerText = fmtNum(sumData.umkmTotal + sumData.ubTotal);
+      }
+      if (document.getElementById('stat-open')) {
+        document.getElementById('stat-open').innerText = fmtNum(sumData.umkmOpen + sumData.ubOpen);
+      }
+      if (document.getElementById('stat-draft')) {
+        document.getElementById('stat-draft').innerText = fmtNum(sumData.umkmDraft + sumData.ubDraft);
+      }
+      if (document.getElementById('stat-submit')) {
+        document.getElementById('stat-submit').innerText = fmtNum(sumData.umkmSubmit + sumData.ubSubmit);
+      }
+      if (document.getElementById('stat-umkm-total')) {
+        document.getElementById('stat-umkm-total').innerText = fmtNum(sumData.umkmTotal);
+      }
+      if (document.getElementById('stat-ub-total')) {
+        document.getElementById('stat-ub-total').innerText = fmtNum(sumData.ubTotal);
+      }
 
       // Panggil fungsi update progress card agar mengikuti dropdown
       if (typeof updateProgressCard === 'function') {
@@ -1931,7 +1949,6 @@
       }
 
       // Update Sync time to Spreadsheet's last edit time from Apps Script
-
       if (data.lastUpdated) {
         const updateTime = new Date(data.lastUpdated);
         const options = {
@@ -1942,9 +1959,11 @@
           minute: '2-digit',
           timeZone: 'Asia/Jakarta'
         };
-        document.getElementById('sync-time').innerText = updateTime.toLocaleDateString('id-ID', options) + ' WIB';
+        const syncEl = document.getElementById('sync-time');
+        if (syncEl) syncEl.innerText = updateTime.toLocaleDateString('id-ID', options) + ' WIB';
       } else {
-        document.getElementById('sync-time').innerText = '-';
+        const syncEl = document.getElementById('sync-time');
+        if (syncEl) syncEl.innerText = '-';
       }
 
       // Update tabel & grafik setelah data diproses
@@ -1954,7 +1973,62 @@
       if (typeof updatePrelistSummaryCard === 'function') updatePrelistSummaryCard();
     }
 
-    // Fetch data dari Apps Script dengan localStorage caching
+    // ====== IndexedDB Cache Helper (Mendukung data besar puluhan MB tanpa batas localStorage) ======
+    const IDB_DB_NAME = 'DashboardSE_DB';
+    const IDB_STORE_NAME = 'cacheStore';
+
+    function openCacheDB() {
+      return new Promise((resolve, reject) => {
+        if (!window.indexedDB) {
+          resolve(null);
+          return;
+        }
+        const request = indexedDB.open(IDB_DB_NAME, 1);
+        request.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(IDB_STORE_NAME)) {
+            db.createObjectStore(IDB_STORE_NAME);
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => resolve(null);
+      });
+    }
+
+    async function setIDBCache(key, val) {
+      try {
+        const db = await openCacheDB();
+        if (!db) return;
+        return new Promise((resolve) => {
+          const tx = db.transaction(IDB_STORE_NAME, 'readwrite');
+          const store = tx.objectStore(IDB_STORE_NAME);
+          store.put(val, key);
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => resolve();
+        });
+      } catch (e) {
+        console.warn('IndexedDB write error:', e);
+      }
+    }
+
+    async function getIDBCache(key) {
+      try {
+        const db = await openCacheDB();
+        if (!db) return null;
+        return new Promise((resolve) => {
+          const tx = db.transaction(IDB_STORE_NAME, 'readonly');
+          const store = tx.objectStore(IDB_STORE_NAME);
+          const req = store.get(key);
+          req.onsuccess = () => resolve(req.result || null);
+          req.onerror = () => resolve(null);
+        });
+      } catch (e) {
+        console.warn('IndexedDB read error:', e);
+        return null;
+      }
+    }
+
+    // Fetch data dari Apps Script dengan IndexedDB caching (instan & tanpa batas 5MB)
     async function loadDataFromAppsScript() {
       if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "") {
         console.log("Menggunakan data mockup lokal (APPS_SCRIPT_URL kosong).");
@@ -1963,15 +2037,13 @@
 
       // ====== LANGKAH 1: Tampilkan data dari cache lokal secara INSTAN ======
       try {
-        const cachedJson = localStorage.getItem(DASHBOARD_CACHE_KEY);
-        if (cachedJson) {
+        const cachedData = await getIDBCache(DASHBOARD_CACHE_KEY);
+        if (cachedData) {
           console.log("⚡ Menampilkan data dari cache lokal (instan)...");
-          const cachedData = JSON.parse(cachedJson);
           processAndRenderData(cachedData);
         }
       } catch (cacheErr) {
         console.warn("Cache lokal rusak, mengabaikan:", cacheErr);
-        localStorage.removeItem(DASHBOARD_CACHE_KEY);
       }
 
       // ====== LANGKAH 2: Fetch data terbaru dari server di background ======
@@ -1983,19 +2055,14 @@
         if (!response.ok) throw new Error(`Apps Script HTTP ${response.status}`);
         const data = await response.json();
 
-        // Simpan data baru ke localStorage untuk kunjungan berikutnya
-        try {
-          localStorage.setItem(DASHBOARD_CACHE_KEY, JSON.stringify(data));
-        } catch (storageErr) {
-          console.warn("Gagal menyimpan ke localStorage (mungkin penuh):", storageErr);
-        }
+        // Simpan data baru ke IndexedDB untuk kunjungan berikutnya
+        await setIDBCache(DASHBOARD_CACHE_KEY, data);
 
         // Re-render dashboard dengan data terbaru
         processAndRenderData(data);
         console.log("✅ Data terbaru dari server berhasil dimuat.");
       } catch (err) {
         console.error("Gagal memuat data dari Apps Script:", err);
-        // Jika fetch gagal tapi cache tersedia, dashboard tetap menampilkan data lama
       }
     }
 
