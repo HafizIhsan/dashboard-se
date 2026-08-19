@@ -354,6 +354,8 @@ function doGet() {
             if (!kecMap[idkec]) {
               kecMap[idkec] = {
                 Wilayah: idkec,
+                Kecamatan: getValCI(rowObj, "KEC") || getValCI(rowObj, "Kecamatan") || getValCI(rowObj, "Nama Wilayah") || "-",
+                Kabupaten: getValCI(rowObj, "KAB") || getValCI(rowObj, "Kabupaten") || "-",
                 OPEN: 0,
                 DRAFT: 0,
                 "SUBMITTED BY Pencacah": 0,

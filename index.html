@@ -1540,22 +1540,31 @@
         return;
       }
 
-      // Buat Index (Map) untuk O(1) lookup dengan dukungan agregasi Sub-SLS
+      // Buat Index (Map) untuk O(1) lookup dengan dukungan agregasi Sub-SLS (7 digit awal kode sub sls)
       const mapByWilayah = (sheet) => {
         const map = new Map();
         if (sheet && Array.isArray(sheet)) {
           sheet.forEach(row => {
-            let wil = String(row.Wilayah || row.wilayah || row.kode || "").trim();
-            if (!wil) {
-              const subsls = String(row.KODE_SUB_SLS || row.kode_sub_sls || "").trim();
-              if (subsls && subsls.length >= 7) wil = subsls.substring(0, 7);
-              else if (row.KODE_KAB && row.KODE_KEC) {
+            let wil = "";
+            const subsls = String(row.KODE_SUB_SLS || row.kode_sub_sls || "").trim();
+            if (subsls && subsls.length >= 7) {
+              wil = subsls.substring(0, 7);
+            } else {
+              const rawWil = String(row.Wilayah || row.wilayah || row.kode || "").trim();
+              if (rawWil && rawWil.length >= 7) {
+                wil = rawWil.substring(0, 7);
+              } else if (rawWil && rawWil.length === 4) {
+                wil = rawWil;
+              } else if (row.KODE_KAB && row.KODE_KEC) {
+                const prov = String(row.KODE_PROV || "13").trim();
                 const kab = String(row.KODE_KAB).padStart(2, '0');
                 const kec = String(row.KODE_KEC).padStart(3, '0');
-                wil = `13${kab}${kec}`;
+                wil = `${prov}${kab}${kec}`;
               }
             }
             if (!wil) return;
+
+            const kecName = String(row.KEC || row.kec || row.Kecamatan || row.kecamatan || row["Nama Wilayah"] || row.nama || "").trim();
 
             if (map.has(wil)) {
               const existing = map.get(wil);
@@ -1564,10 +1573,14 @@
               ALL_SUBMIT_FIELDS.forEach(f => {
                 existing[f] = (Number(existing[f] || 0) + Number(row[f] || 0));
               });
+              if (kecName && (!existing.Kecamatan || existing.Kecamatan === "-")) {
+                existing.Kecamatan = kecName;
+              }
             } else {
               map.set(wil, {
                 ...row,
                 Wilayah: wil,
+                Kecamatan: kecName || "-",
                 OPEN: Number(row.OPEN || row.TOTAL_OPEN || 0),
                 DRAFT: Number(row.DRAFT || row.TOTAL_DRAFT || 0)
               });
@@ -1625,7 +1638,7 @@
         w.kecamatans = [];
       });
 
-      // Proses Data Kecamatan
+      // Proses Data Kecamatan (7 digit awal kode sub sls) & Agregasi ke Kabupaten (4 digit awal)
       if (masterKecSheet || umkmKecSheet || ubKecSheet) {
         const allKecMap = new Map();
 
@@ -1634,21 +1647,33 @@
           masterKecSheet.forEach(mk => {
             const idKec = String(mk.idkec || mk.IDKEC || mk.id || "").trim();
             const nmKec = mk.nmkec || mk.NMKEC || mk.nama || "-";
-            if (idKec) allKecMap.set(idKec, nmKec);
+            if (idKec && idKec.length >= 7) allKecMap.set(idKec.substring(0, 7), nmKec);
           });
         }
 
-        // 2. Collect from UMKM
+        // 2. Collect from UMKM (7 digit kode & nama kecamatan)
         if (umkmKecSheet) {
-          umkmKecMap.forEach((_, idKec) => {
-            if (idKec && !allKecMap.has(idKec)) allKecMap.set(idKec, "-");
+          umkmKecMap.forEach((row, idKec) => {
+            const nm = row.Kecamatan || row.KEC || "-";
+            if (idKec && idKec.length >= 7) {
+              const k7 = idKec.substring(0, 7);
+              if (!allKecMap.has(k7) || allKecMap.get(k7) === "-") {
+                allKecMap.set(k7, nm !== "-" ? nm : (allKecMap.get(k7) || "-"));
+              }
+            }
           });
         }
 
-        // 3. Collect from UB
+        // 3. Collect from UB (7 digit kode & nama kecamatan)
         if (ubKecSheet) {
-          ubKecMap.forEach((_, idKec) => {
-            if (idKec && !allKecMap.has(idKec)) allKecMap.set(idKec, "-");
+          ubKecMap.forEach((row, idKec) => {
+            const nm = row.Kecamatan || row.KEC || "-";
+            if (idKec && idKec.length >= 7) {
+              const k7 = idKec.substring(0, 7);
+              if (!allKecMap.has(k7) || allKecMap.get(k7) === "-") {
+                allKecMap.set(k7, nm !== "-" ? nm : (allKecMap.get(k7) || "-"));
+              }
+            }
           });
         }
 
@@ -1656,8 +1681,11 @@
         if (targetSheet) {
           targetSheet.forEach(row => {
             const idKec = String(row.Wilayah || row.wilayah || row.kode || "").trim();
-            if (idKec && idKec.length > 4 && !allKecMap.has(idKec)) {
-              allKecMap.set(idKec, row["Nama Wilayah"] || row.nama || "-");
+            if (idKec && idKec.length >= 7) {
+              const k7 = idKec.substring(0, 7);
+              if (!allKecMap.has(k7)) {
+                allKecMap.set(k7, row["Nama Wilayah"] || row.nama || "-");
+              }
             }
           });
         }
