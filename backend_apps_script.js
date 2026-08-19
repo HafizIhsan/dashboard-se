@@ -401,6 +401,48 @@ function doGet() {
         }
       }
 
+      // Penanganan khusus sheet snapshot jika berisi data Sub-SLS
+      if (name === "snapshot-kemarin-umkm" || name === "snapshot-kemarin-ub") {
+        var isSubSlsLevel = headers.some(function(h) {
+          var norm = String(h).toLowerCase().replace(/[\s_-]/g, "");
+          return norm === "kodesubsls" || norm === "kodekec" || norm === "kodedesa";
+        });
+
+        if (isSubSlsLevel) {
+          var snapKecMap = {};
+          for (var i = 1; i < data.length; i++) {
+            var rowObj = {};
+            headers.forEach(function(h, j) { rowObj[h] = data[i][j]; });
+            var idkec = extractKecCode(rowObj);
+            var tgl = String(getValCI(rowObj, "Tanggal") || "").trim();
+            if (!idkec) continue;
+            var key = tgl ? tgl + "_" + idkec : idkec;
+
+            if (!snapKecMap[key]) {
+              snapKecMap[key] = {
+                Wilayah: idkec,
+                Tanggal: tgl,
+                Submit: 0,
+                Open: 0,
+                Draft: 0
+              };
+            }
+            snapKecMap[key].Open += Number(getValCI(rowObj, "Open") || getValCI(rowObj, "TOTAL_OPEN") || 0);
+            snapKecMap[key].Draft += Number(getValCI(rowObj, "Draft") || getValCI(rowObj, "TOTAL_DRAFT") || 0);
+            var s = Number(getValCI(rowObj, "Submit") || getValCI(rowObj, "Submit Kemarin") || 0);
+            if (!s) {
+              SUBMIT_FIELDS.forEach(function(col) {
+                var v = Number(getValCI(rowObj, col) || 0);
+                if (!isNaN(v)) s += v;
+              });
+            }
+            snapKecMap[key].Submit += s;
+          }
+          result[name] = Object.values(snapKecMap);
+          return;
+        }
+      }
+
       // Pemrosesan reguler
       const rows = [];
       for (let i = 1; i < data.length; i++) {

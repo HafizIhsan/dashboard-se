@@ -1977,7 +1977,7 @@
       // ====== LANGKAH 2: Fetch data terbaru dari server di background ======
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        const timeoutId = setTimeout(() => controller.abort(), 120000); // 120 detik timeout
         const response = await fetch(APPS_SCRIPT_URL, { signal: controller.signal, cache: 'no-store' });
         clearTimeout(timeoutId);
         if (!response.ok) throw new Error(`Apps Script HTTP ${response.status}`);
