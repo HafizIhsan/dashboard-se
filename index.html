@@ -243,15 +243,18 @@
         <div class="grid grid-cols-3 gap-2 mt-4 border-t border-[var(--border-color)] pt-3 text-xs w-full">
           <div>
             <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">Open</span>
-            <span id="stat-open" class="font-bold text-[var(--text-secondary)] text-sm mt-0.5 block leading-tight">0</span>
+            <span id="stat-open"
+              class="font-bold text-[var(--text-secondary)] text-sm mt-0.5 block leading-tight">0</span>
           </div>
           <div class="border-l border-[var(--border-color)] pl-3">
             <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">Draft</span>
-            <span id="stat-draft" class="font-bold text-[var(--warning-color)] text-sm mt-0.5 block leading-tight">0</span>
+            <span id="stat-draft"
+              class="font-bold text-[var(--warning-color)] text-sm mt-0.5 block leading-tight">0</span>
           </div>
           <div class="border-l border-[var(--border-color)] pl-3">
             <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">Submit</span>
-            <span id="stat-submit" class="font-bold text-[var(--success-color)] text-sm mt-0.5 block leading-tight">0</span>
+            <span id="stat-submit"
+              class="font-bold text-[var(--success-color)] text-sm mt-0.5 block leading-tight">0</span>
           </div>
         </div>
       </div>
@@ -278,7 +281,8 @@
           </div>
           <div class="text-[var(--text-muted)]">
             <svg class="w-6 h-6 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
           </div>
         </div>
@@ -286,7 +290,8 @@
           <div class="progress-bar-container w-full">
             <div class="progress-bar-fill" style="width: 0%"></div>
           </div>
-          <div class="flex justify-between items-center mt-2 text-[9px] text-[var(--text-muted)] uppercase tracking-wider">
+          <div
+            class="flex justify-between items-center mt-2 text-[9px] text-[var(--text-muted)] uppercase tracking-wider">
             <span>Realisasi</span>
             <span>Target 100%</span>
           </div>
@@ -295,43 +300,43 @@
 
     </section>
 
-  <!-- ===== CHARTS SECTION ===== -->
-  <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    <!-- ===== CHARTS SECTION ===== -->
+    <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
-    <!-- Chart 1: Donut -->
-    <div class="plinth-card p-6 flex flex-col">
-      <div>
-        <h3 class="text-sm font-bold tracking-tight italic">Breakdown Status</h3>
-        <p class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mt-0.5">Sebaran Status Assignment</p>
-      </div>
-      <div class="my-6 flex justify-center">
-        <div id="donutChart" class="w-full"></div>
-      </div>
-    </div>
-
-    <!-- Chart 2: Cumulative Progress Rank -->
-    <div class="plinth-card p-6 flex flex-col justify-between">
-      <div class="flex justify-between items-start gap-4">
+      <!-- Chart 1: Donut -->
+      <div class="plinth-card p-6 flex flex-col">
         <div>
-          <h3 class="text-sm font-bold tracking-tight">Progres Akumulatif %</h3>
-          <p class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mt-0.5">19 Kabupaten/Kota</p>
+          <h3 class="text-sm font-bold tracking-tight italic">Breakdown Status</h3>
+          <p class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mt-0.5">Sebaran Status Assignment</p>
         </div>
-        <div class="flex-shrink-0">
-          <select id="progress-mode-chart"
-            class="bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[10px] rounded px-1.5 py-1 outline-none text-[var(--text-secondary)] font-medium"
-            onchange="syncProgressMode('progress-mode-chart')">
-            <option value="fasih" class="bg-[var(--bg-secondary)]">Berdasarkan Assignment Fasih</option>
-            <option value="prelist" class="bg-[var(--bg-secondary)]">Berdasarkan Prelist Awal</option>
-          </select>
+        <div class="my-6 flex justify-center">
+          <div id="donutChart" class="w-full"></div>
         </div>
       </div>
-      <div class="my-6">
-        <div id="progressRankChart"></div>
-      </div>
-    </div>
 
-    <!-- Chart 3: Cumulative Submit Vol Rank (Di-comment sesuai permintaan) -->
-    <!--
+      <!-- Chart 2: Cumulative Progress Rank -->
+      <div class="plinth-card p-6 flex flex-col justify-between">
+        <div class="flex justify-between items-start gap-4">
+          <div>
+            <h3 class="text-sm font-bold tracking-tight">Progres Akumulatif %</h3>
+            <p class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mt-0.5">19 Kabupaten/Kota</p>
+          </div>
+          <div class="flex-shrink-0">
+            <select id="progress-mode-chart"
+              class="bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[10px] rounded px-1.5 py-1 outline-none text-[var(--text-secondary)] font-medium"
+              onchange="syncProgressMode('progress-mode-chart')">
+              <option value="fasih" class="bg-[var(--bg-secondary)]">Berdasarkan Assignment Fasih</option>
+              <option value="prelist" class="bg-[var(--bg-secondary)]">Berdasarkan Prelist Awal</option>
+            </select>
+          </div>
+        </div>
+        <div class="my-6">
+          <div id="progressRankChart"></div>
+        </div>
+      </div>
+
+      <!-- Chart 3: Cumulative Submit Vol Rank (Di-comment sesuai permintaan) -->
+      <!--
       <div class="plinth-card p-6 flex flex-col justify-between">
         <div>
           <h3 class="text-sm font-bold tracking-tight">Ranking Submit Akumulatif</h3>
@@ -344,374 +349,385 @@
       </div>
       -->
 
-    <!-- Chart 4: Daily Progress Rank -->
-    <div class="plinth-card p-6 flex flex-col justify-between">
-      <div>
-        <div class="flex items-center justify-between gap-2">
-          <h3 class="text-sm font-bold tracking-tight">Progres Harian</h3>
-          <select id="progress-mode-daily"
-            class="bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[10px] rounded px-1.5 py-1 outline-none text-[var(--text-secondary)] font-medium"
-            onchange="syncProgressMode('progress-mode-daily')">
-            <option value="fasih" class="bg-[var(--bg-secondary)]">Berdasarkan Assignment Fasih</option>
-            <option value="prelist" class="bg-[var(--bg-secondary)]">Berdasarkan Prelist Awal</option>
-          </select>
-        </div>
-        <p id="daily-chart-subtitle" class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mt-0.5">
-          Kenaikan Submit Hari Ini</p>
-      </div>
-      <div class="my-6">
-        <div id="dailyChart"></div>
-      </div>
-    </div>
-
-  </section>
-
-  <!-- ===== TABLE SECTION ===== -->
-  <section class="plinth-card">
-
-    <!-- Table Header & Controls -->
-    <div
-      class="p-6 border-b border-[var(--border-color)] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-      <div>
-        <h2 class="text-base font-bold tracking-tight text-[var(--text-primary)]">PROGRES WILAYAH AKUMULATIF</h2>
-        <p class="text-xs text-[var(--text-muted)] mt-0.5">
-          Data pemantauan progres harian di tingkat Kabupaten/Kota.
-        </p>
-      </div>
-      <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-        <!-- Search Input -->
-        <div class="relative w-full sm:w-64 flex flex-col justify-end">
-          <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
-          <div class="relative w-full">
-            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg class="h-4 w-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </span>
-            <input type="text" id="search-wilayah" onkeyup="filterWilayah()" placeholder="Cari wilayah..."
-              class="impeccable-input pl-9 w-full text-sm h-[34px]" />
+      <!-- Chart 4: Daily Progress Rank -->
+      <div class="plinth-card p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-2">
+            <h3 class="text-sm font-bold tracking-tight">Progres Harian</h3>
+            <select id="progress-mode-daily"
+              class="bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[10px] rounded px-1.5 py-1 outline-none text-[var(--text-secondary)] font-medium"
+              onchange="syncProgressMode('progress-mode-daily')">
+              <option value="fasih" class="bg-[var(--bg-secondary)]">Berdasarkan Assignment Fasih</option>
+              <option value="prelist" class="bg-[var(--bg-secondary)]">Berdasarkan Prelist Awal</option>
+            </select>
           </div>
+          <p id="daily-chart-subtitle" class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mt-0.5">
+            Kenaikan Submit Hari Ini</p>
         </div>
-        <!-- Progress Mode Select -->
-        <div class="relative w-full sm:w-auto flex flex-col justify-end">
-          <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1 font-bold">Penghitungan %
-            progres:</span>
-          <select id="progress-mode-table"
-            class="bg-[var(--bg-secondary)] border border-[var(--border-color)] text-sm rounded px-2 outline-none text-[var(--text-secondary)] font-medium w-full h-[34px]"
-            onchange="syncProgressMode('progress-mode-table')">
-            <option value="fasih" class="bg-[var(--bg-secondary)]">Berdasarkan Assignment Fasih</option>
-            <option value="prelist" class="bg-[var(--bg-secondary)]">Berdasarkan Prelist Awal</option>
-          </select>
-        </div>
-        <!-- Export Button -->
-        <div class="flex flex-col justify-end w-full sm:w-auto">
-          <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
-          <button onclick="exportCSV()" class="impeccable-btn flex items-center justify-center gap-2 h-[34px]">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Unduh CSV</span>
-          </button>
+        <div class="my-6">
+          <div id="dailyChart"></div>
         </div>
       </div>
-    </div>
 
-    <!-- Table Wrapper -->
-    <div class="overflow-auto max-h-[90vh]">
-      <table class="impeccable-table text-left" id="dashboard-table">
-        <thead class="sticky top-0 z-20 shadow-sm">
-          <tr>
-            <th rowspan="2" class="cursor-pointer pl-6 select-none whitespace-nowrap" onclick="sortTable('wilayah')">
-              Wilayah <span id="sort-indicator-wilayah">↕</span>
-            </th>
-            <th colspan="4" class="text-center bg-[rgba(212,178,122,0.02)]">Target Prelist Awal</th>
-            <th id="th-umkm-group" colspan="5" class="text-center bg-[rgba(163,201,168,0.02)]">[Sensus Ekonomi 2026
-              (UMKM)]</th>
-            <th id="th-ub-group" colspan="5" class="text-center bg-[rgba(229,185,116,0.02)]">[Sensus Ekonomi 2026 (UB)]
-            </th>
-            <th rowspan="2" class="text-right cursor-pointer align-middle select-none whitespace-nowrap"
-              onclick="sortTable('progress')">%
-              Progres<br>Akumulatif <span id="sort-indicator-progress">↕</span></th>
-          </tr>
-          <tr class="text-[8px] md:text-[9px] whitespace-nowrap">
-            <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)] cursor-pointer select-none"
-              onclick="sortTable('targetUmkm')">UMKM <span id="sort-indicator-targetUmkm">↕</span></th>
-            <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)] cursor-pointer select-none"
-              onclick="sortTable('targetUb')">UB <span id="sort-indicator-targetUb">↕</span></th>
-            <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)] cursor-pointer select-none"
-              onclick="sortTable('targetKeluarga')">Keluarga <span id="sort-indicator-targetKeluarga">↕</span></th>
-            <th
-              class="text-right bg-[rgba(212,178,122,0.02)] border-r border-[var(--border-color)] text-[var(--text-secondary)] font-bold cursor-pointer select-none"
-              onclick="sortTable('targetTotal')">Total <span id="sort-indicator-targetTotal">↕</span></th>
+    </section>
 
-            <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
-              onclick="sortTable('umkmOpen')">Open <span id="sort-indicator-umkmOpen">↕</span></th>
-            <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
-              onclick="sortTable('umkmDraft')">Draft <span id="sort-indicator-umkmDraft">↕</span></th>
-            <th class="text-right bg-[rgba(163,201,168,0.02)] text-[var(--success-color)] cursor-pointer select-none"
-              onclick="sortTable('umkmSubmit')">Submit <span id="sort-indicator-umkmSubmit">↕</span></th>
-            <th id="th-umkm-total" class="text-right bg-[rgba(163,201,168,0.02)] font-bold cursor-pointer select-none"
-              onclick="sortTable('umkmTotal')">Total <span id="sort-indicator-umkmTotal">↕</span></th>
-            <th id="th-umkm-pct"
-              class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] font-bold text-[var(--accent-color)] cursor-pointer select-none"
-              onclick="sortTable('umkmPct')">% <span id="sort-indicator-umkmPct">↕</span></th>
+    <!-- ===== TABLE SECTION ===== -->
+    <section class="plinth-card">
 
-            <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none" onclick="sortTable('ubOpen')">
-              Open <span id="sort-indicator-ubOpen">↕</span></th>
-            <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
-              onclick="sortTable('ubDraft')">Draft <span id="sort-indicator-ubDraft">↕</span></th>
-            <th class="text-right bg-[rgba(229,185,116,0.02)] text-[var(--success-color)] cursor-pointer select-none"
-              onclick="sortTable('ubSubmit')">Submit <span id="sort-indicator-ubSubmit">↕</span></th>
-            <th id="th-ub-total" class="text-right bg-[rgba(229,185,116,0.02)] font-bold cursor-pointer select-none"
-              onclick="sortTable('ubTotal')">Total <span id="sort-indicator-ubTotal">↕</span></th>
-            <th id="th-ub-pct"
-              class="text-right bg-[rgba(229,185,116,0.02)] border-r border-[var(--border-color)] font-bold text-[var(--accent-color)] cursor-pointer select-none"
-              onclick="sortTable('ubPct')">% <span id="sort-indicator-ubPct">↕</span></th>
-          </tr>
-        </thead>
-        <tbody id="table-body">
-          <!-- Table content populated by JS -->
-        </tbody>
-      </table>
-    </div>
-
-  </section>
-
-
-  <!-- ===== TABLE PRELIST SUB SLS SECTION ===== -->
-  <section class="plinth-card mt-6" id="section-prelist-subsls">
-
-    <!-- Table Header & Controls -->
-    <div
-      class="p-6 border-b border-[var(--border-color)] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-      <div>
-        <h2 class="text-base font-bold tracking-tight text-[var(--text-primary)]">REKAPITULASI PRELIST & ASSIGNMENT
-          BARU PER SUB SLS</h2>
-        <p class="text-xs text-[var(--text-muted)] mt-0.5">
-          Data dari SQL Lab Fasih — diurutkan per Kode Sub SLS.
-        </p>
-      </div>
-      <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-        <!-- Filter Kabupaten (Custom Dropdown) -->
-        <div class="relative w-full sm:w-72 flex flex-col justify-end">
-          <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1 font-bold">Kabupaten:</span>
-          <div class="relative w-full" id="prelist-kab-dropdown-container">
-            <button type="button" id="prelist-kab-btn" onclick="togglePrelistKabDropdown(event)"
-              class="impeccable-input w-full text-xs h-[34px] flex items-center justify-between px-3 cursor-pointer bg-[var(--bg-card)] border border-[var(--border-color)] rounded text-[var(--text-primary)] font-medium text-left">
-              <span id="prelist-kab-label" class="truncate pr-2">Semua Kabupaten/Kota</span>
-              <svg class="w-4 h-4 opacity-60 shrink-0 transition-transform duration-200" id="prelist-kab-arrow"
-                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            <input type="hidden" id="filter-kab-prelist" value="" />
-
-            <!-- Dropdown Menu: Lebar 100% sama dengan tombol, scrollbar aktif -->
-            <div id="prelist-kab-menu"
-              class="hidden absolute z-50 left-0 right-0 mt-1 w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-md shadow-2xl max-h-60 overflow-y-auto py-1 text-xs divide-y divide-[var(--border-color)]/20"
-              style="scrollbar-color: var(--border-color) transparent; scrollbar-width: thin;">
-              <!-- Diisi dinamis -->
+      <!-- Table Header & Controls -->
+      <div
+        class="p-6 border-b border-[var(--border-color)] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 class="text-base font-bold tracking-tight text-[var(--text-primary)]">PROGRES WILAYAH AKUMULATIF</h2>
+          <p class="text-xs text-[var(--text-muted)] mt-0.5">
+            Data pemantauan progres harian di tingkat Kabupaten/Kota.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+          <!-- Search Input -->
+          <div class="relative w-full sm:w-64 flex flex-col justify-end">
+            <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
+            <div class="relative w-full">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-4 w-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </span>
+              <input type="text" id="search-wilayah" onkeyup="filterWilayah()" placeholder="Cari wilayah..."
+                class="impeccable-input pl-9 w-full text-sm h-[34px]" />
             </div>
           </div>
-        </div>
-        <!-- Search Input -->
-        <div class="relative w-full sm:w-64 flex flex-col justify-end">
-          <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
-          <div class="relative w-full">
-            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg class="h-4 w-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <!-- Progress Mode Select -->
+          <div class="relative w-full sm:w-auto flex flex-col justify-end">
+            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1 font-bold">Penghitungan %
+              progres:</span>
+            <select id="progress-mode-table"
+              class="bg-[var(--bg-secondary)] border border-[var(--border-color)] text-sm rounded px-2 outline-none text-[var(--text-secondary)] font-medium w-full h-[34px]"
+              onchange="syncProgressMode('progress-mode-table')">
+              <option value="fasih" class="bg-[var(--bg-secondary)]">Berdasarkan Assignment Fasih</option>
+              <option value="prelist" class="bg-[var(--bg-secondary)]">Berdasarkan Prelist Awal</option>
+            </select>
+          </div>
+          <!-- Export Button -->
+          <div class="flex flex-col justify-end w-full sm:w-auto">
+            <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
+            <button onclick="exportCSV()" class="impeccable-btn flex items-center justify-center gap-2 h-[34px]">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-            </span>
-            <input type="text" id="search-prelist" oninput="filterPrelistSubSls()"
-              placeholder="Cari nama SLS atau kode..." class="impeccable-input pl-9 w-full text-sm h-[34px]" />
+              <span>Unduh CSV</span>
+            </button>
           </div>
         </div>
-        <!-- Export Button -->
-        <div class="flex flex-col justify-end w-full sm:w-auto">
-          <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
-          <button onclick="exportPrelistCSV()" class="impeccable-btn flex items-center justify-center gap-2 h-[34px]">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Unduh CSV</span>
-          </button>
+      </div>
+
+      <!-- Table Wrapper -->
+      <div class="overflow-auto max-h-[90vh]">
+        <table class="impeccable-table text-left" id="dashboard-table">
+          <thead class="sticky top-0 z-20 shadow-sm">
+            <tr>
+              <th rowspan="2" class="cursor-pointer pl-6 select-none whitespace-nowrap" onclick="sortTable('wilayah')">
+                Wilayah <span id="sort-indicator-wilayah">↕</span>
+              </th>
+              <th colspan="4" class="text-center bg-[rgba(212,178,122,0.02)]">Target Prelist Awal</th>
+              <th id="th-umkm-group" colspan="5" class="text-center bg-[rgba(163,201,168,0.02)]">[Sensus Ekonomi 2026
+                (UMKM)]</th>
+              <th id="th-ub-group" colspan="5" class="text-center bg-[rgba(229,185,116,0.02)]">[Sensus Ekonomi 2026
+                (UB)]
+              </th>
+              <th rowspan="2" class="text-right cursor-pointer align-middle select-none whitespace-nowrap"
+                onclick="sortTable('progress')">%
+                Progres<br>Akumulatif <span id="sort-indicator-progress">↕</span></th>
+            </tr>
+            <tr class="text-[8px] md:text-[9px] whitespace-nowrap">
+              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)] cursor-pointer select-none"
+                onclick="sortTable('targetUmkm')">UMKM <span id="sort-indicator-targetUmkm">↕</span></th>
+              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)] cursor-pointer select-none"
+                onclick="sortTable('targetUb')">UB <span id="sort-indicator-targetUb">↕</span></th>
+              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)] cursor-pointer select-none"
+                onclick="sortTable('targetKeluarga')">Keluarga <span id="sort-indicator-targetKeluarga">↕</span></th>
+              <th
+                class="text-right bg-[rgba(212,178,122,0.02)] border-r border-[var(--border-color)] text-[var(--text-secondary)] font-bold cursor-pointer select-none"
+                onclick="sortTable('targetTotal')">Total <span id="sort-indicator-targetTotal">↕</span></th>
+
+              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
+                onclick="sortTable('umkmOpen')">Open <span id="sort-indicator-umkmOpen">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
+                onclick="sortTable('umkmDraft')">Draft <span id="sort-indicator-umkmDraft">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] text-[var(--success-color)] cursor-pointer select-none"
+                onclick="sortTable('umkmSubmit')">Submit <span id="sort-indicator-umkmSubmit">↕</span></th>
+              <th id="th-umkm-total" class="text-right bg-[rgba(163,201,168,0.02)] font-bold cursor-pointer select-none"
+                onclick="sortTable('umkmTotal')">Total <span id="sort-indicator-umkmTotal">↕</span></th>
+              <th id="th-umkm-pct"
+                class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] font-bold text-[var(--accent-color)] cursor-pointer select-none"
+                onclick="sortTable('umkmPct')">% <span id="sort-indicator-umkmPct">↕</span></th>
+
+              <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
+                onclick="sortTable('ubOpen')">
+                Open <span id="sort-indicator-ubOpen">↕</span></th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
+                onclick="sortTable('ubDraft')">Draft <span id="sort-indicator-ubDraft">↕</span></th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] text-[var(--success-color)] cursor-pointer select-none"
+                onclick="sortTable('ubSubmit')">Submit <span id="sort-indicator-ubSubmit">↕</span></th>
+              <th id="th-ub-total" class="text-right bg-[rgba(229,185,116,0.02)] font-bold cursor-pointer select-none"
+                onclick="sortTable('ubTotal')">Total <span id="sort-indicator-ubTotal">↕</span></th>
+              <th id="th-ub-pct"
+                class="text-right bg-[rgba(229,185,116,0.02)] border-r border-[var(--border-color)] font-bold text-[var(--accent-color)] cursor-pointer select-none"
+                onclick="sortTable('ubPct')">% <span id="sort-indicator-ubPct">↕</span></th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- Table content populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+
+    <!-- ===== TABLE PRELIST SUB SLS SECTION ===== -->
+    <section class="plinth-card mt-6" id="section-prelist-subsls">
+
+      <!-- Table Header & Controls -->
+      <div
+        class="p-6 border-b border-[var(--border-color)] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 class="text-base font-bold tracking-tight text-[var(--text-primary)]">REKAPITULASI PRELIST & ASSIGNMENT
+            BARU PER SUB SLS</h2>
+          <p class="text-xs text-[var(--text-muted)] mt-0.5">
+            Data dari SQL Lab Fasih — diurutkan per Kode Sub SLS.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+          <!-- Filter Kabupaten (Custom Dropdown) -->
+          <div class="relative w-full sm:w-72 flex flex-col justify-end">
+            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1 font-bold">Kabupaten:</span>
+            <div class="relative w-full" id="prelist-kab-dropdown-container">
+              <button type="button" id="prelist-kab-btn" onclick="togglePrelistKabDropdown(event)"
+                class="impeccable-input w-full text-xs h-[34px] flex items-center justify-between px-3 cursor-pointer bg-[var(--bg-card)] border border-[var(--border-color)] rounded text-[var(--text-primary)] font-medium text-left">
+                <span id="prelist-kab-label" class="truncate pr-2">Semua Kabupaten/Kota</span>
+                <svg class="w-4 h-4 opacity-60 shrink-0 transition-transform duration-200" id="prelist-kab-arrow"
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <input type="hidden" id="filter-kab-prelist" value="" />
+
+              <!-- Dropdown Menu: Lebar 100% sama dengan tombol, scrollbar aktif -->
+              <div id="prelist-kab-menu"
+                class="hidden absolute z-50 left-0 right-0 mt-1 w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-md shadow-2xl max-h-60 overflow-y-auto py-1 text-xs divide-y divide-[var(--border-color)]/20"
+                style="scrollbar-color: var(--border-color) transparent; scrollbar-width: thin;">
+                <!-- Diisi dinamis -->
+              </div>
+            </div>
+          </div>
+          <!-- Search Input -->
+          <div class="relative w-full sm:w-64 flex flex-col justify-end">
+            <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
+            <div class="relative w-full">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-4 w-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </span>
+              <input type="text" id="search-prelist" oninput="filterPrelistSubSls()"
+                placeholder="Cari nama SLS atau kode..." class="impeccable-input pl-9 w-full text-sm h-[34px]" />
+            </div>
+          </div>
+          <!-- Export Button -->
+          <div class="flex flex-col justify-end w-full sm:w-auto">
+            <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
+            <button onclick="exportPrelistCSV()" class="impeccable-btn flex items-center justify-center gap-2 h-[34px]">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Unduh CSV</span>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Table Wrapper -->
-    <div class="overflow-auto max-h-[80vh]">
-      <table class="impeccable-table text-left" id="prelist-subsls-table">
-        <colgroup>
-          <col style="width:230px;" />
-          <col style="width:70px;" />
-          <col style="width:90px;" />
-          <col style="width:70px;" />
-          <col style="width:90px;" />
-          <col style="width:70px;" />
-          <col style="width:90px;" />
-          <col style="width:70px;" />
-          <col style="width:90px;" />
-          <col style="width:70px;" />
-          <col style="width:90px;" />
-          <col style="width:70px;" />
-          <col style="width:90px;" />
-          <col style="width:70px;" />
-          <col style="width:90px;" />
-          <col style="width:70px;" />
-          <col style="width:90px;" />
-          <col style="width:70px;" />
-          <col style="width:90px;" />
-        </colgroup>
-        <thead class="sticky top-0 z-20 shadow-sm">
-          <!-- Row 1: Main Category Headers -->
-          <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
-            <th rowspan="3"
-              class="cursor-pointer pl-6 select-none align-middle text-left border-r border-[var(--border-color)] min-w-[220px]"
-              onclick="sortPrelistTable('kode')">SLS / Sub SLS <span id="sort-prelist-kode" class="sort-icon">↕</span>
-            </th>
-            <th colspan="8" class="text-center bg-[rgba(163,201,168,0.06)] border-r border-[var(--border-color)]"
-              style="border-bottom: 2px solid var(--success-color);">Prelist</th>
-            <th colspan="4" class="text-center bg-[rgba(163,201,168,0.12)] border-r border-[var(--border-color)]"
-              style="border-bottom: 2px solid var(--success-color);">General Link</th>
-            <th colspan="6" class="text-center bg-[rgba(229,185,116,0.06)]"
-              style="border-bottom: 2px solid var(--warning-color);">Assignment Baru</th>
-          </tr>
-          <!-- Row 2: Sub-group Headers -->
-          <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
-            <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">
-              Keluarga</th>
-            <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Usaha
-            </th>
-            <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">
-              Lainnya*</th>
-            <th colspan="2"
-              class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">
-              Total</th>
-            <th colspan="2" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">
-              Keluarga</th>
-            <th colspan="2" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Usaha
-            </th>
-            <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">
-              Keluarga</th>
-            <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Usaha
-            </th>
-            <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] font-bold text-[var(--text-primary)]">Total
-            </th>
-          </tr>
-          <!-- Row 3: Leaf Headers -->
-          <tr class="text-[8px] md:text-[9px] whitespace-nowrap">
-            <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
-              onclick="sortPrelistTable('klgPrelistJml')">Jml <span id="sort-prelist-klgPrelistJml"
-                class="sort-icon">↕</span></th>
-            <th
-              class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
-              onclick="sortPrelistTable('klgPrelistPct')">SUB % <span id="sort-prelist-klgPrelistPct"
-                class="sort-icon">↕</span></th>
-            <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
-              onclick="sortPrelistTable('usahaPrelistJml')">Jml <span id="sort-prelist-usahaPrelistJml"
-                class="sort-icon">↕</span></th>
-            <th
-              class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
-              onclick="sortPrelistTable('usahaPrelistPct')">SUB % <span id="sort-prelist-usahaPrelistPct"
-                class="sort-icon">↕</span></th>
-            <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
-              onclick="sortPrelistTable('lainnyaJml')">Jml <span id="sort-prelist-lainnyaJml" class="sort-icon">↕</span>
-            </th>
-            <th
-              class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
-              onclick="sortPrelistTable('lainnyaPct')">SUB % <span id="sort-prelist-lainnyaPct"
-                class="sort-icon">↕</span></th>
-            <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
-              onclick="sortPrelistTable('prelistJml')">Jml <span id="sort-prelist-prelistJml" class="sort-icon">↕</span>
-            </th>
-            <th
-              class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none font-bold"
-              onclick="sortPrelistTable('prelistPct')">SUB % <span id="sort-prelist-prelistPct"
-                class="sort-icon">↕</span></th>
-            <th class="text-right bg-[rgba(163,201,168,0.04)] cursor-pointer select-none"
-              onclick="sortPrelistTable('glKlgJml')">Jml <span id="sort-prelist-glKlgJml" class="sort-icon">↕</span>
-            </th>
-            <th
-              class="text-right bg-[rgba(163,201,168,0.04)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
-              onclick="sortPrelistTable('glKlgPct')">SUB % <span id="sort-prelist-glKlgPct" class="sort-icon">↕</span>
-            </th>
-            <th class="text-right bg-[rgba(163,201,168,0.04)] cursor-pointer select-none"
-              onclick="sortPrelistTable('glUsahaJml')">Jml <span id="sort-prelist-glUsahaJml" class="sort-icon">↕</span>
-            </th>
-            <th
-              class="text-right bg-[rgba(163,201,168,0.04)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
-              onclick="sortPrelistTable('glUsahaPct')">SUB % <span id="sort-prelist-glUsahaPct"
-                class="sort-icon">↕</span></th>
-            <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
-              onclick="sortPrelistTable('klgBaruJml')">Jml <span id="sort-prelist-klgBaruJml" class="sort-icon">↕</span>
-            </th>
-            <th
-              class="text-right bg-[rgba(229,185,116,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
-              onclick="sortPrelistTable('klgBaruPct')">SUB % <span id="sort-prelist-klgBaruPct"
-                class="sort-icon">↕</span></th>
-            <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
-              onclick="sortPrelistTable('usahaBaruJml')">Jml <span id="sort-prelist-usahaBaruJml"
-                class="sort-icon">↕</span></th>
-            <th
-              class="text-right bg-[rgba(229,185,116,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
-              onclick="sortPrelistTable('usahaBaruPct')">SUB % <span id="sort-prelist-usahaBaruPct"
-                class="sort-icon">↕</span></th>
-            <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
-              onclick="sortPrelistTable('assignJml')">Jml <span id="sort-prelist-assignJml" class="sort-icon">↕</span>
-            </th>
-            <th
-              class="text-right bg-[rgba(229,185,116,0.02)] text-[var(--accent-color)] cursor-pointer select-none font-bold"
-              onclick="sortPrelistTable('assignPct')">SUB % <span id="sort-prelist-assignPct" class="sort-icon">↕</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody id="prelist-subsls-body">
-          <!-- Populated by JS -->
-        </tbody>
-      </table>
-    </div>
+      <!-- Table Wrapper -->
+      <div class="overflow-auto max-h-[80vh]">
+        <table class="impeccable-table text-left" id="prelist-subsls-table">
+          <colgroup>
+            <col style="width:230px;" />
+            <col style="width:70px;" />
+            <col style="width:90px;" />
+            <col style="width:70px;" />
+            <col style="width:90px;" />
+            <col style="width:70px;" />
+            <col style="width:90px;" />
+            <col style="width:70px;" />
+            <col style="width:90px;" />
+            <col style="width:70px;" />
+            <col style="width:90px;" />
+            <col style="width:70px;" />
+            <col style="width:90px;" />
+            <col style="width:70px;" />
+            <col style="width:90px;" />
+            <col style="width:70px;" />
+            <col style="width:90px;" />
+            <col style="width:70px;" />
+            <col style="width:90px;" />
+          </colgroup>
+          <thead class="sticky top-0 z-20 shadow-sm">
+            <!-- Row 1: Main Category Headers -->
+            <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
+              <th rowspan="3"
+                class="cursor-pointer pl-6 select-none align-middle text-left border-r border-[var(--border-color)] min-w-[220px]"
+                onclick="sortPrelistTable('kode')">SLS / Sub SLS <span id="sort-prelist-kode" class="sort-icon">↕</span>
+              </th>
+              <th colspan="8" class="text-center bg-[rgba(163,201,168,0.06)] border-r border-[var(--border-color)]"
+                style="border-bottom: 2px solid var(--success-color);">Prelist</th>
+              <th colspan="4" class="text-center bg-[rgba(163,201,168,0.12)] border-r border-[var(--border-color)]"
+                style="border-bottom: 2px solid var(--success-color);">General Link</th>
+              <th colspan="6" class="text-center bg-[rgba(229,185,116,0.06)]"
+                style="border-bottom: 2px solid var(--warning-color);">Assignment Baru</th>
+            </tr>
+            <!-- Row 2: Sub-group Headers -->
+            <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
+              <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">
+                Keluarga</th>
+              <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">
+                Usaha
+              </th>
+              <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">
+                Lainnya*</th>
+              <th colspan="2"
+                class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">
+                Total</th>
+              <th colspan="2" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">
+                Keluarga</th>
+              <th colspan="2" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">
+                Usaha
+              </th>
+              <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">
+                Keluarga</th>
+              <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">
+                Usaha
+              </th>
+              <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] font-bold text-[var(--text-primary)]">Total
+              </th>
+            </tr>
+            <!-- Row 3: Leaf Headers -->
+            <tr class="text-[8px] md:text-[9px] whitespace-nowrap">
+              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
+                onclick="sortPrelistTable('klgPrelistJml')">Jml <span id="sort-prelist-klgPrelistJml"
+                  class="sort-icon">↕</span></th>
+              <th
+                class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
+                onclick="sortPrelistTable('klgPrelistPct')">SUB % <span id="sort-prelist-klgPrelistPct"
+                  class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
+                onclick="sortPrelistTable('usahaPrelistJml')">Jml <span id="sort-prelist-usahaPrelistJml"
+                  class="sort-icon">↕</span></th>
+              <th
+                class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
+                onclick="sortPrelistTable('usahaPrelistPct')">SUB % <span id="sort-prelist-usahaPrelistPct"
+                  class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
+                onclick="sortPrelistTable('lainnyaJml')">Jml <span id="sort-prelist-lainnyaJml"
+                  class="sort-icon">↕</span>
+              </th>
+              <th
+                class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
+                onclick="sortPrelistTable('lainnyaPct')">SUB % <span id="sort-prelist-lainnyaPct"
+                  class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
+                onclick="sortPrelistTable('prelistJml')">Jml <span id="sort-prelist-prelistJml"
+                  class="sort-icon">↕</span>
+              </th>
+              <th
+                class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none font-bold"
+                onclick="sortPrelistTable('prelistPct')">SUB % <span id="sort-prelist-prelistPct"
+                  class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.04)] cursor-pointer select-none"
+                onclick="sortPrelistTable('glKlgJml')">Jml <span id="sort-prelist-glKlgJml" class="sort-icon">↕</span>
+              </th>
+              <th
+                class="text-right bg-[rgba(163,201,168,0.04)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
+                onclick="sortPrelistTable('glKlgPct')">SUB % <span id="sort-prelist-glKlgPct" class="sort-icon">↕</span>
+              </th>
+              <th class="text-right bg-[rgba(163,201,168,0.04)] cursor-pointer select-none"
+                onclick="sortPrelistTable('glUsahaJml')">Jml <span id="sort-prelist-glUsahaJml"
+                  class="sort-icon">↕</span>
+              </th>
+              <th
+                class="text-right bg-[rgba(163,201,168,0.04)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
+                onclick="sortPrelistTable('glUsahaPct')">SUB % <span id="sort-prelist-glUsahaPct"
+                  class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
+                onclick="sortPrelistTable('klgBaruJml')">Jml <span id="sort-prelist-klgBaruJml"
+                  class="sort-icon">↕</span>
+              </th>
+              <th
+                class="text-right bg-[rgba(229,185,116,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
+                onclick="sortPrelistTable('klgBaruPct')">SUB % <span id="sort-prelist-klgBaruPct"
+                  class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
+                onclick="sortPrelistTable('usahaBaruJml')">Jml <span id="sort-prelist-usahaBaruJml"
+                  class="sort-icon">↕</span></th>
+              <th
+                class="text-right bg-[rgba(229,185,116,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
+                onclick="sortPrelistTable('usahaBaruPct')">SUB % <span id="sort-prelist-usahaBaruPct"
+                  class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
+                onclick="sortPrelistTable('assignJml')">Jml <span id="sort-prelist-assignJml" class="sort-icon">↕</span>
+              </th>
+              <th
+                class="text-right bg-[rgba(229,185,116,0.02)] text-[var(--accent-color)] cursor-pointer select-none font-bold"
+                onclick="sortPrelistTable('assignPct')">SUB % <span id="sort-prelist-assignPct"
+                  class="sort-icon">↕</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="prelist-subsls-body">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
 
-    <!-- Footnote -->
-    <div class="px-6 py-3 border-t border-[var(--border-color)]">
-      <p class="text-[10px] text-[var(--text-muted)] italic">
-        <strong>* Lainnya</strong>: Gabungan dari kategori <strong>Non-BKU</strong> dan <strong>Dummy</strong>.
-        &nbsp;|&nbsp; Sumber data: SQL Lab Fasih.
-        &nbsp;|&nbsp; <span id="prelist-baseline-info">Baseline harian belum tersedia.</span>
-        &nbsp;|&nbsp; <strong>Jml</strong> = Jumlah, <strong>SUB %</strong> = Persentase Submit.
-      </p>
-    </div>
+      <!-- Footnote -->
+      <div class="px-6 py-3 border-t border-[var(--border-color)]">
+        <p class="text-[10px] text-[var(--text-muted)] italic">
+          <strong>* Lainnya</strong>: Gabungan dari kategori <strong>Non-BKU</strong> dan <strong>Dummy</strong>.
+          &nbsp;|&nbsp; Sumber data: SQL Lab Fasih.
+          &nbsp;|&nbsp; <span id="prelist-baseline-info">Baseline harian belum tersedia.</span>
+          &nbsp;|&nbsp; <strong>Jml</strong> = Jumlah, <strong>SUB %</strong> = Persentase Submit.
+        </p>
+      </div>
 
-    <!-- Pagination Controls -->
-    <div class="flex flex-col sm:flex-row items-center justify-between p-4 border-t border-[var(--border-color)] gap-3">
-      <div class="flex items-center gap-4 text-sm text-[var(--text-muted)]">
-        <div id="prelist-page-info">Menampilkan 0 data</div>
-        <div class="flex items-center gap-1.5 text-xs">
-          <span class="font-medium text-[var(--text-secondary)]">Tampilkan:</span>
-          <select id="prelist-rows-select" onchange="changePrelistPageSize(this.value)"
-            class="impeccable-input text-xs py-1 px-2 h-[30px] rounded cursor-pointer">
-            <option value="30" selected>30 baris</option>
-            <option value="50">50 baris</option>
-            <option value="100">100 baris</option>
-          </select>
+      <!-- Pagination Controls -->
+      <div
+        class="flex flex-col sm:flex-row items-center justify-between p-4 border-t border-[var(--border-color)] gap-3">
+        <div class="flex items-center gap-4 text-sm text-[var(--text-muted)]">
+          <div id="prelist-page-info">Menampilkan 0 data</div>
+          <div class="flex items-center gap-1.5 text-xs">
+            <span class="font-medium text-[var(--text-secondary)]">Tampilkan:</span>
+            <select id="prelist-rows-select" onchange="changePrelistPageSize(this.value)"
+              class="impeccable-input text-xs py-1 px-2 h-[30px] rounded cursor-pointer">
+              <option value="30" selected>30 baris</option>
+              <option value="50">50 baris</option>
+              <option value="100">100 baris</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex space-x-1 items-center">
+          <button onclick="changePrelistPage(-1)" id="btn-prev-prelist" class="impeccable-btn px-3 py-1 text-sm"
+            disabled>Sebelumnya</button>
+          <div id="prelist-page-numbers" class="flex space-x-1 items-center">
+            <!-- Dynamic page numbers -->
+          </div>
+          <button onclick="changePrelistPage(1)" id="btn-next-prelist" class="impeccable-btn px-3 py-1 text-sm"
+            disabled>Berikutnya</button>
         </div>
       </div>
-      <div class="flex space-x-1 items-center">
-        <button onclick="changePrelistPage(-1)" id="btn-prev-prelist" class="impeccable-btn px-3 py-1 text-sm"
-          disabled>Sebelumnya</button>
-        <div id="prelist-page-numbers" class="flex space-x-1 items-center">
-          <!-- Dynamic page numbers -->
-        </div>
-        <button onclick="changePrelistPage(1)" id="btn-next-prelist" class="impeccable-btn px-3 py-1 text-sm"
-          disabled>Berikutnya</button>
-      </div>
-    </div>
-  </section>
+    </section>
 
   </div>
 
@@ -720,7 +736,7 @@
   <!-- ===== DATA & LOGIC ===== -->
   <script>
     // URL Apps Script Web App Anda (Masukkan URL /exec Anda di sini)
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDrl5LW0Y8gFSbAtbunqBnkCtrrTzSavx3qq_stsO86nhrfNN1iIP27eVWkREos35g8w/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwpU87G2CVkvH8oaKrZeS8RP3Yt2_T2GiFx7l7PeHyKCgLjrJmdxUDf61Oz0cz9b22ggQ/exec";
 
     // Helper format angka Indonesia: titik pemisah ribuan, koma pemisah desimal
     function fmtNum(n) { return Number(n).toLocaleString('id-ID'); }
