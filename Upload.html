@@ -1,140 +1,204 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 15px; }
-    .btn { background: #4caf50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 15px; font-weight: bold;}
-    .btn:hover { background: #45a049; }
-    .btn:disabled { background: #cccccc; cursor: not-allowed; }
-    /* Membatasi tinggi status agar bisa di-scroll jika filenya banyak */
-    #status { margin-top: 15px; font-size: 12px; text-align: left; max-height: 150px; overflow-y: auto; background: #f9f9f9; padding: 10px; border-radius: 4px; border: 1px solid #ddd;}
-    .error { color: red; margin-bottom: 4px;}
-    .success { color: green; margin-bottom: 4px;}
-    .info { color: #333; margin-bottom: 4px; font-style: italic;}
-    .form-group { margin-bottom: 15px; }
-    label { font-weight: bold; font-size: 13px; display: block; margin-bottom: 5px;}
-    select, input { width: 100%; padding: 5px; box-sizing: border-box;}
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload & Pembaruan Data SE2026 | BPS Provinsi Sumatera Barat</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <link rel="stylesheet" href="css/upload.css">
 </head>
 <body>
-  
-  <div class="form-group">
-    <label for="sheetTarget">1. Pilih Data yang Mau Diupdate:</label>
-    <select id="sheetTarget">
-      <option value="Sensus Ekonomi 2026">[Sensus Ekonomi 2026]</option>
-      <option value="Sensus Ekonomi 2026 - UB">[Sensus Ekonomi 2026 - UB]</option>
-    </select>
-  </div>
 
-  <div class="form-group">
-    <label for="csvFile">2. Pilih File CSV (Bisa Lebih Dari 1 File):</label>
-    <!-- Atribut "multiple" ditambahkan agar bisa nge-blok (highlight) banyak file -->
-    <input type="file" id="csvFile" accept=".csv" multiple />
-  </div>
-  
-  <button class="btn" id="uploadBtn" onclick="uploadData()">Upload & Perbarui Data</button>
+  <div class="upload-shell">
+    <div class="badge">BPS SUMBAR • SE2026</div>
+    <h1 class="title">Perbarui Data Dashboard</h1>
+    <p class="subtitle">Pilih target dataset, lalu unggah satu atau beberapa file CSV/Excel untuk sinkronisasi otomatis.</p>
 
-  <div id="status"><i>Log progres upload akan muncul di sini...</i></div>
+    <div class="form-group">
+      <label for="sheetTarget">1. Dataset Target</label>
+      <select id="sheetTarget" class="custom-select">
+        <option value="Sensus Ekonomi 2026">[Sensus Ekonomi 2026] (Fasih UMKM)</option>
+        <option value="Sensus Ekonomi 2026 - UB">[Sensus Ekonomi 2026 - UB] (Fasih Usaha Besar)</option>
+        <option value="Rekap Prelist SubSLS">[Rekap Prelist SubSLS] (SQL Lab Sub SLS)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="csvFile">2. Pilih File (.CSV / .XLSX)</label>
+      <div class="dropzone-box" id="dropzone">
+        <span class="dropzone-icon">📁</span>
+        <div class="dropzone-text">Klik atau seret file ke sini</div>
+        <div class="dropzone-sub">Mendukung multi-file CSV atau Excel (.xlsx, .xls)</div>
+        <input type="file" id="csvFile" accept=".csv,.xlsx,.xls" multiple onchange="handleFileSelect(this)" />
+      </div>
+      <div id="fileSummary" class="file-summary"></div>
+      <div class="hint">✓ Digit kode wilayah/Sub SLS dijamin tetap utuh sebagai teks.</div>
+    </div>
+    
+    <button class="btn" id="uploadBtn" onclick="uploadData()">
+      <span>Upload & Perbarui Data</span>
+    </button>
+
+    <div id="status" class="status-container">
+      <div class="log-info"># Menunggu file untuk diproses...</div>
+    </div>
+  </div>
 
   <script>
+    function handleFileSelect(input) {
+      const summary = document.getElementById('fileSummary');
+      if (input.files && input.files.length > 0) {
+        summary.style.display = 'block';
+        summary.textContent = `✓ ${input.files.length} file dipilih: ${Array.from(input.files).map(f => f.name).join(', ')}`;
+      } else {
+        summary.style.display = 'none';
+        summary.textContent = '';
+      }
+    }
+
+    function appendLog(message, type = 'info') {
+      const statusDiv = document.getElementById('status');
+      const item = document.createElement('div');
+      item.className = `log-item log-${type}`;
+      
+      const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      item.innerHTML = `<span style="opacity:0.5">[${time}]</span> <span>${message}</span>`;
+      
+      statusDiv.appendChild(item);
+      statusDiv.scrollTop = statusDiv.scrollHeight;
+    }
+
     function uploadData() {
-      var fileInput = document.getElementById('csvFile');
-      var sheetTarget = document.getElementById('sheetTarget').value; 
-      var statusDiv = document.getElementById('status');
-      var btn = document.getElementById('uploadBtn');
+      const fileInput = document.getElementById('csvFile');
+      const sheetTarget = document.getElementById('sheetTarget').value; 
+      const statusDiv = document.getElementById('status');
+      const btn = document.getElementById('uploadBtn');
       
       if (!fileInput.files.length) {
-        statusDiv.innerHTML = "<div class='error'>Silakan pilih minimal satu file CSV!</div>";
+        statusDiv.innerHTML = '';
+        appendLog('Silakan pilih minimal satu file CSV atau Excel!', 'error');
         return;
       }
       
       btn.disabled = true;
-      btn.innerText = "Memproses...";
-      statusDiv.innerHTML = ""; 
+      btn.innerHTML = '<span>⏳ Memproses Data...</span>';
+      statusDiv.innerHTML = '';
       
-      var files = fileInput.files;
-      var currentIndex = 0;
-      var successCount = 0;
+      const files = fileInput.files;
+      let currentIndex = 0;
+      let successCount = 0;
 
-      // ============================================================
-      // LANGKAH 1: Clear data SEKALI SAJA di awal, lalu proses file
-      // ============================================================
-      statusDiv.innerHTML += "<div class='info'>Mengosongkan sheet [" + sheetTarget + "]...</div>";
-      statusDiv.scrollTop = statusDiv.scrollHeight;
+      // STEP 1: Clear sheet sekali di awal
+      appendLog(`Mengosongkan sheet target [${sheetTarget}]...`, 'info');
+
+      if (typeof google === 'undefined' || !google.script || !google.script.run) {
+        appendLog('Google Apps Script environment tidak terdeteksi (mode lokal).', 'warning');
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.innerHTML = '<span>Upload & Perbarui Data</span>';
+          appendLog(`Selesai simulasi untuk ${files.length} file.`, 'success');
+        }, 1000);
+        return;
+      }
 
       google.script.run
         .withSuccessHandler(function(clearResult) {
-          if (clearResult !== "OK") {
-            statusDiv.innerHTML += "<div class='error'>" + clearResult + "</div>";
+          if (clearResult !== 'OK') {
+            appendLog(`Gagal reset sheet: ${clearResult}`, 'error');
             btn.disabled = false;
-            btn.innerText = "Upload & Perbarui Data";
+            btn.innerHTML = '<span>Upload & Perbarui Data</span>';
             return;
           }
-          statusDiv.innerHTML += "<div class='success'>✓ Sheet dikosongkan. Mulai upload " + files.length + " file...</div>";
-          statusDiv.scrollTop = statusDiv.scrollHeight;
-
-          // ============================================================
-          // LANGKAH 2: Proses file satu per satu (TANPA clear lagi)
-          // ============================================================
+          appendLog(`✓ Sheet berhasil dikosongkan. Memulai upload ${files.length} file...`, 'success');
           processNextFile();
         })
         .withFailureHandler(function(err) {
-          statusDiv.innerHTML += "<div class='error'>Gagal mengosongkan sheet: " + err.message + "</div>";
+          appendLog(`Koneksi gagal saat reset sheet: ${err.message}`, 'error');
           btn.disabled = false;
-          btn.innerText = "Upload & Perbarui Data";
+          btn.innerHTML = '<span>Upload & Perbarui Data</span>';
         })
         .clearSheetBeforeUpload(sheetTarget);
 
-      // Fungsi rekursif antrean untuk memproses file satu per satu 
-      // agar tidak membebani limit server Google
+      // STEP 2: Proses antrean file
       function processNextFile() {
         if (currentIndex >= files.length) {
           btn.disabled = false;
-          btn.innerText = "Upload & Perbarui Data";
-          statusDiv.innerHTML += "<br><strong>Selesai! " + successCount + " dari " + files.length + " file berhasil diproses ke " + sheetTarget + ".</strong>";
+          btn.innerHTML = '<span>Upload & Perbarui Data</span>';
           
-          // Auto-scroll ke paling bawah
-          statusDiv.scrollTop = statusDiv.scrollHeight;
+          const finishMessage = function(extraMessage) {
+            appendLog(`🎉 Selesai! ${successCount} dari ${files.length} file berhasil diunggah ke [${sheetTarget}].`, 'success');
+            if (extraMessage) appendLog(extraMessage, 'info');
+          };
+
+          if (sheetTarget === 'Rekap Prelist SubSLS' && successCount > 0) {
+            appendLog('Menyimpan rekaman baseline harian...', 'info');
+            google.script.run
+              .withSuccessHandler(finishMessage)
+              .withFailureHandler(function(err) { finishMessage(`Baseline gagal disimpan: ${err.message}`); })
+              .recordPrelistBaseline(sheetTarget);
+          } else {
+            finishMessage();
+          }
           return;
         }
 
-        var file = files[currentIndex];
-        var reader = new FileReader();
+        const file = files[currentIndex];
+        const reader = new FileReader();
         
-        statusDiv.innerHTML += "<div class='info'>Membaca " + file.name + " (" + (currentIndex + 1) + "/" + files.length + ")...</div>";
-        statusDiv.scrollTop = statusDiv.scrollHeight;
+        appendLog(`Membaca ${file.name} (${currentIndex + 1}/${files.length})...`, 'info');
         
         reader.onload = function(e) {
-          var csvContent = e.target.result;
+          let csvContent = e.target.result;
+          if (/\.(xlsx|xls)$/i.test(file.name)) {
+            try {
+              const workbook = XLSX.read(e.target.result, { type: 'array' });
+              const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+              csvContent = XLSX.utils.sheet_to_csv(firstSheet);
+            } catch (excelErr) {
+              appendLog(`➔ ${file.name}: Gagal konversi Excel (${excelErr.message})`, 'error');
+              currentIndex++;
+              processNextFile();
+              return;
+            }
+          }
           
           google.script.run
             .withSuccessHandler(function(response) {
-              if (response.startsWith("Sukses")) {
-                 statusDiv.innerHTML += "<div class='success'>➔ " + file.name + ": OK!</div>";
-                 successCount++;
+              if (response && response.startsWith('Sukses')) {
+                appendLog(`➔ ${file.name}: Berhasil diproses!`, 'success');
+                successCount++;
               } else {
-                 statusDiv.innerHTML += "<div class='error'>➔ " + file.name + ": " + response + "</div>";
+                appendLog(`➔ ${file.name}: ${response}`, 'error');
               }
-              statusDiv.scrollTop = statusDiv.scrollHeight;
               currentIndex++;
-              processNextFile(); // Lanjut ke file berikutnya
+              processNextFile();
             })
             .withFailureHandler(function(err) {
-              statusDiv.innerHTML += "<div class='error'>➔ " + file.name + ": Gagal koneksi (" + err.message + ")</div>";
-              statusDiv.scrollTop = statusDiv.scrollHeight;
+              appendLog(`➔ ${file.name}: Gagal (${err.message})`, 'error');
               currentIndex++;
-              processNextFile(); // Tetap lanjut ke file berikutnya meskipun ada yang gagal
+              processNextFile();
             })
-            .processCSV(csvContent, sheetTarget, false); // false = JANGAN clear, langsung append
+            .processCSV(csvContent, sheetTarget, false);
         };
         
         reader.onerror = function() {
-          statusDiv.innerHTML += "<div class='error'>➔ " + file.name + ": Gagal membaca file lokal.</div>";
+          appendLog(`➔ ${file.name}: Gagal membaca file dari penyimpanan lokal.`, 'error');
           currentIndex++;
           processNextFile();
         };
         
-        reader.readAsText(file);
+        if (/\.(xlsx|xls)$/i.test(file.name)) {
+          reader.readAsArrayBuffer(file);
+        } else {
+          reader.readAsText(file);
+        }
       }
     }
   </script>

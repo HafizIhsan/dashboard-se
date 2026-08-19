@@ -37,321 +37,7 @@
   </script>
 
   <!-- Custom Design Tokens (impeccable.style system) -->
-  <style>
-    /* Styling variables mimicking pbakaus/impeccable (with Orange accent) */
-    :root {
-      --bg-primary: #0a0907;
-      --bg-secondary: #12100d;
-      --bg-tertiary: #191612;
-      --border-color: rgba(249, 115, 22, 0.12);
-      --border-hover: rgba(249, 115, 22, 0.25);
-      --text-primary: #f4f1eb;
-      --text-secondary: #f97316;
-      --text-muted: #8c857b;
-      --accent-color: #f97316;
-      --accent-hover: #ea580c;
-      --accent-subtle: rgba(249, 115, 22, 0.08);
-      --success-color: #a3c9a8;
-      --warning-color: #e5b974;
-      --danger-color: #d17a7a;
-      --font-alumni: "Alumni Sans", sans-serif;
-    }
-
-    html.light {
-      --bg-primary: #f7f4ef;
-      --bg-secondary: #eae5dc;
-      --bg-tertiary: #dfd9ce;
-      --border-color: rgba(234, 88, 12, 0.18);
-      --border-hover: rgba(234, 88, 12, 0.35);
-      --text-primary: #2d2b27;
-      --text-secondary: #c2410c;
-      --text-muted: #7d776d;
-      --accent-color: #ea580c;
-      --accent-hover: #c2410c;
-      --accent-subtle: rgba(234, 88, 12, 0.08);
-      --success-color: #558564;
-      --warning-color: #c98e30;
-      --danger-color: #b24c4c;
-    }
-
-    * {
-      font-family: 'Albert Sans', sans-serif;
-      box-sizing: border-box;
-      transition: background-color 0.25s ease, border-color 0.25s ease;
-    }
-
-    body {
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    /* Grain overlay for paper-like high-end look */
-    .grain-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.022'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 9999;
-    }
-
-    /* Impeccable Card (Plinth design) */
-    .plinth-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      border-radius: 4px;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .plinth-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .plinth-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--border-hover);
-      box-shadow: 0 8px 30px rgba(212, 178, 122, 0.05);
-    }
-
-    .plinth-card:hover::before {
-      opacity: 0.5;
-    }
-
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--bg-primary);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--border-color);
-      border-radius: 3px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--text-muted);
-    }
-
-    /* Elegant Stylized Metrics */
-    .metric-value {
-      font-family: var(--font-alumni);
-      font-size: 3.5rem;
-      line-height: 0.9;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-
-    /* Stylized badges */
-    .badge-status {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      padding: 2px 8px;
-      border-radius: 2px;
-      border: 1px solid var(--border-color);
-      background: var(--bg-tertiary);
-    }
-
-    /* Custom Table Styling */
-    .impeccable-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-    }
-
-    .impeccable-table th {
-      background: var(--bg-tertiary);
-      color: var(--text-secondary);
-      border-bottom: 1px solid var(--border-color);
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 12px 5px;
-      white-space: nowrap;
-    }
-
-    .impeccable-table td {
-      padding: 10px 5px;
-      border-bottom: 1px solid var(--border-color);
-      font-size: 0.85rem;
-      color: var(--text-primary);
-      transition: background-color 0.15s;
-    }
-
-    .impeccable-table tr:hover td {
-      background-color: var(--accent-subtle);
-    }
-
-    .impeccable-table tr.active-row td {
-      background-color: rgba(212, 178, 122, 0.15);
-    }
-
-    .drill-inner {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border-color);
-      padding: 16px;
-      margin: 8px 16px 16px;
-      border-radius: 4px;
-    }
-
-    /* Expand button transitions */
-    .expand-icon {
-      display: inline-block;
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      color: var(--accent-color);
-    }
-
-    .expanded .expand-icon {
-      transform: rotate(90deg);
-    }
-
-    /* Custom dynamic progress bar */
-    .progress-bar-container {
-      height: 3px;
-      background: var(--border-color);
-      border-radius: 2px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      background: var(--accent-color);
-      border-radius: 2px;
-      transition: width 1s ease-in-out;
-    }
-
-    /* Input controls */
-    .impeccable-input {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      color: var(--text-primary);
-      border-radius: 4px;
-      padding: 6px 12px;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .impeccable-input:focus {
-      border-color: var(--accent-color);
-      box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.15);
-    }
-
-    .impeccable-btn {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      color: var(--text-secondary);
-      border-radius: 4px;
-      padding: 6px 14px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      transition: all 0.2s;
-      cursor: pointer;
-    }
-
-    .impeccable-btn:hover {
-      border-color: var(--accent-color);
-      color: var(--text-primary);
-      background: var(--accent-subtle);
-    }
-
-    .impeccable-btn-active {
-      border-color: var(--accent-color);
-      color: var(--bg-primary);
-      background: var(--accent-color);
-    }
-
-    .impeccable-btn-active:hover {
-      background: var(--accent-hover);
-      color: var(--bg-primary);
-    }
-
-    /* Animation effects */
-    @keyframes pulse-orange {
-
-      0%,
-      100% {
-        transform: scale(1);
-        opacity: 1;
-        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4);
-      }
-
-      50% {
-        transform: scale(1.2);
-        opacity: 0.7;
-        box-shadow: 0 0 8px 2px rgba(249, 115, 22, 0.2);
-      }
-    }
-
-    /* Loading Overlay & Spinner */
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--bg-primary);
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 0.4s ease, visibility 0.4s;
-    }
-
-    .loading-overlay.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .spinner {
-      width: 48px;
-      height: 48px;
-      border: 3px solid var(--border-color);
-      border-radius: 50%;
-      border-top-color: var(--accent-color);
-      animation: spin 1s ease-in-out infinite;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .loading-text {
-      margin-top: 16px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      font-family: 'Albert Sans', sans-serif;
-    }
-  </style>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body class="min-h-screen relative p-4 md:p-8 font-sans selection:bg-neutral-800 selection:text-amber-200">
@@ -436,14 +122,14 @@
     </header>
 
     <!-- ===== STAT CARDS ===== -->
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
 
-      <!-- Card 1: Prelist -->
-      <div class="plinth-card p-6 flex flex-col justify-between min-h-[170px]">
+      <!-- Card 1: Prelist Awal (Target) -->
+      <div class="plinth-card p-6 flex flex-col justify-between min-h-[175px]">
         <div class="flex justify-between items-start">
           <div>
-            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">PRELIST AWAL</span>
-            <div id="stat-target" class="metric-value text-[var(--text-primary)] mt-2">0</div>
+            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">TARGET PRELIST AWAL</span>
+            <div id="stat-target" class="metric-value text-[var(--text-primary)] mt-1.5">0</div>
           </div>
           <div class="text-[var(--text-muted)]">
             <svg class="w-6 h-6 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -452,28 +138,64 @@
             </svg>
           </div>
         </div>
-        <div class="flex justify-between mt-6 border-t border-[var(--border-color)] pt-3 text-xs w-full">
-          <div class="flex-1">
-            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">UMKM</span>
-            <span id="stat-target-umkm" class="font-bold text-[var(--text-secondary)]">0</span>
+        <div class="grid grid-cols-3 gap-2 mt-4 border-t border-[var(--border-color)] pt-3 text-xs w-full">
+          <div>
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">UMKM</span>
+            <span id="stat-target-umkm" class="font-bold text-[var(--text-secondary)] text-sm mt-0.5 block leading-tight">0</span>
           </div>
-          <div class="flex-1 border-l border-[var(--border-color)] pl-4">
-            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">UB</span>
-            <span id="stat-target-ub" class="font-bold text-[var(--text-secondary)]">0</span>
+          <div class="border-l border-[var(--border-color)] pl-3">
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">UB</span>
+            <span id="stat-target-ub" class="font-bold text-[var(--text-secondary)] text-sm mt-0.5 block leading-tight">0</span>
           </div>
-          <div class="flex-1 border-l border-[var(--border-color)] pl-4">
-            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block">KELUARGA</span>
-            <span id="stat-target-keluarga" class="font-bold text-[var(--text-secondary)]">0</span>
+          <div class="border-l border-[var(--border-color)] pl-3">
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">KELUARGA</span>
+            <span id="stat-target-keluarga" class="font-bold text-[var(--text-secondary)] text-sm mt-0.5 block leading-tight">0</span>
           </div>
         </div>
       </div>
 
-      <!-- Card 2: Assignment -->
-      <div class="plinth-card p-6 flex flex-col justify-between min-h-[170px]">
+      <!-- Card 2: Rekap Prelist Sub SLS (Baru) -->
+      <div class="plinth-card p-6 flex flex-col justify-between min-h-[175px]">
         <div class="flex justify-between items-start">
           <div>
-            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">ASSIGNMENT
-              FASIH</span>
+            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">REKAP PRELIST SUB SLS</span>
+            <div class="flex items-baseline gap-2 mt-1.5 flex-wrap">
+              <span id="stat-prelist-total" class="metric-value text-[var(--text-primary)]">0</span>
+              <span id="stat-prelist-total-pct" class="text-sm font-bold ml-0.5" style="color:var(--text-secondary)">0,00%</span>
+              <span id="stat-prelist-daily-change" class="text-[10px] font-bold" style="color:var(--success-color)">• 0,00%</span>
+            </div>
+          </div>
+          <div class="text-[var(--text-muted)]">
+            <svg class="w-6 h-6 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-2 mt-4 border-t border-[var(--border-color)] pt-3 text-xs w-full">
+          <div>
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">KELUARGA</span>
+            <span id="stat-prelist-klg-total" class="font-bold text-[var(--text-secondary)] text-sm mt-0.5 block leading-tight">0</span>
+            <span id="stat-prelist-klg-pct" class="text-[11px] font-semibold mt-0.5 block leading-tight" style="color:var(--text-muted)">(0,00%)</span>
+          </div>
+          <div class="border-l border-[var(--border-color)] pl-3">
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">USAHA</span>
+            <span id="stat-prelist-usaha-total" class="font-bold text-[var(--text-secondary)] text-sm mt-0.5 block leading-tight">0</span>
+            <span id="stat-prelist-usaha-pct" class="text-[11px] font-semibold mt-0.5 block leading-tight" style="color:var(--text-muted)">(0,00%)</span>
+          </div>
+          <div class="border-l border-[var(--border-color)] pl-3">
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">LAINNYA*</span>
+            <span id="stat-prelist-lainnya-total" class="font-bold text-[var(--text-secondary)] text-sm mt-0.5 block leading-tight">0</span>
+            <span id="stat-prelist-lainnya-pct" class="text-[11px] font-semibold mt-0.5 block leading-tight" style="color:var(--text-muted)">(0,00%)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Assignment Fasih -->
+      <div class="plinth-card p-6 flex flex-col justify-between min-h-[175px]">
+        <div class="flex justify-between items-start">
+          <div>
+            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">ASSIGNMENT FASIH</span>
             <div id="stat-assigned" class="metric-value text-[var(--text-primary)] mt-2">0</div>
           </div>
           <div class="text-[var(--text-muted)]">
@@ -489,7 +211,7 @@
                 <use xlink:href="#D" fill="#7fffff" />
                 <use xlink:href="#D" fill="#0ff" />
                 <path
-                  d="M1035.31 1.463c-19.31 1.827-43.09 9.126-59.867 18.376-8.633 4.759-16.006 9.359-18.632 11.624-1.375 1.186-3.625 2.859-5 3.717-7.611 4.752-28.804 27.191-36.175 38.304-3.074 4.635-11.825 19.478-11.825 20.058 0 .215-1.337 3.312-2.972 6.88s-3.283 7.743-3.663 9.275-1.968 5.641-3.528 9.13-2.837 7.014-2.837 7.833-1.383 4.64-3.073 8.491-3.686 8.877-4.435 11.168-3.131 8.89-5.292 14.665l-5.745 15.5-11.399 30.5-7.017 19-6.483 17.5c-2.771 7.111-5.998 15.835-11.654 31.5l-7.563 20.5-10.824 29-4.241 11.5-10.978 30.235c-.493 1.639-14.301 1.749-251.159 2l-250.637.265-12.5 2.349c-19.592 3.683-44.873 12.94-54.966 20.127-1.564 1.113-3.115 2.024-3.449 2.024-.764 0-9.386 6.009-16.585 11.558-7.104 5.476-18.696 17.257-26.059 26.483-11.358 14.233-20.65 30.945-26.942 48.459-3.341 9.3-3.859 11.171-6.656 24-3.394 15.574-4.341 42.12-1.997 56 2.449 14.504 5.337 26.647 7.572 31.833 1.145 2.658 2.082 5.274 2.082 5.813 0 1.174 9.159 19.89 12.162 24.854 3.083 5.095 9.956 15.181 11.924 17.5 3.094 3.643 15.167 16.878 22.847 25.047l15.067 16.044 22 23.401 21 22.326 13 13.716 33.496 35.501 21 22.45 15.004 15.89 25 26.527 16 16.952 19 20.115 21.152 22.453 11.87 12.828 3.719 4.25H3004.53l2.05-5.75 11.97-32.25 5.76-15.5 7.97-21.5 7.04-19 12.44-33.5 7.03-19 5.97-16.242 12.59-33.758 6.47-17.5 6.52-17.5 7.49-20 5.96-16 12.88-35 12.6-34 13.79-37 5.76-15.5 6.47-17.5 7.24-19.5 6.31-17 6.46-17.5 13-35 7.06-19 6.49-17.5 6.5-17.5 5.98-16 5.94-16 7.01-19 12.7-34.5c1.05-3.025 2.34-6.4 2.87-7.5.54-1.1 2.27-5.6 3.86-10l6.58-18c12.75-34.483 15.64-45.621 17.57-67.584 3.62-41.262-13.04-90.163-41.54-121.886-9.4-10.475-28.28-27.18-32.51-28.77-.82-.311-2.17-1.126-3-1.811-1.33-1.103-5.08-3.236-15.5-8.81-16.25-8.693-39.19-14.92-61.06-16.576-21.72-1.644-2064.48-1.237-2081.94.415z"
+                  d="M1035.31 1.463c-19.31 1.827-43.09 9.126-59.867 18.376-8.633 4.759-16.006 9.359-18.632 11.624-1.375 1.186-3.625 2.859-5 3.717-7.611 4.752-28.804 27.191-36.175 38.304-3.074 4.635-11.825 19.478-11.825 20.058 0 .215-1.337 3.312-2.972 6.88s-3.283 7.743-3.663 9.275-1.968 5.641-3.528 9.13-2.837 7.014-2.837 7.833-1.383 4.64-3.073 8.491-3.686 8.877-4.435 11.168-3.131 8.89-5.292 14.665l-5.745 15.5-11.399 30.5-7.017 19-6.483 17.5c-2.771 7.111-5.998 15.835-11.654 31.5l-7.563 20.5-10.824 29-4.241 11.5-10.978 30.235c-.493 1.639-14.301 1.749-251.159 2l-250.637.265-12.5 2.349c-19.592 3.683-44.873 12.94-54.966 20.127-1.564 1.113-3.115 2.024-3.449 2.024-.764 0-9.386 6.009-16.585 11.558-7.104 5.476-18.696 17.257-26.059 26.483-11.358 14.233-20.65 30.945-26.942 48.459-3.341 9.3-3.859 11.171-6.656 24-3.394 15.574-4.341 42.12-1.997 56 2.449 14.504 5.337 26.647 7.572 31.833 1.145 2.658 2.082 5.274 2.082 5.813 0 1.174 9.159 19.89 12.162 24.854 3.083 5.095 9.956 15.181 11.924 17.5 3.094 3.643 15.167 16.878 22.847 25.047l15.067 16.044 22 23.401 21 22.326 13 13.716 33.496 35.501 21 22.45 15.004 15.89 25 26.527 16 16.952 19 20.115 21.152 22.453 11.87 12.828 3.719 4.25H3004.53l2.05-5.75 11.97-32.25 5.76-15.5 7.97-21.5 7.04-19 12.44-33.5 7.03-19 5.97-16.242 12.59-33.758 6.47-17.5 6.52-17.5 7.49-20 5.96-16 12.88-35 12.6-34 13.79-37 5.76-15.5 6.47-17.5 7.24-19.5 6.31-17 6.46-17.5 13-35 7.06-19 6.49-17.5 6.5-17.5 5.98-16 5.94-16 7.01-19 12.7-34.5c1.05-3.025 2.34-6.25 2.87-7.5.54-1.1 2.27-5.6 3.86-10l6.58-18c12.75-34.483 15.64-45.621 17.57-67.584 3.62-41.262-13.04-90.163-41.54-121.886-9.4-10.475-28.28-27.18-32.51-28.77-.82-.311-2.17-1.126-3-1.811-1.33-1.103-5.08-3.236-15.5-8.81-16.25-8.693-39.19-14.92-61.06-16.576-21.72-1.644-2064.48-1.237-2081.94.415z"
                   fill="#22d3ee" />
               </g>
               <defs>
@@ -531,8 +253,8 @@
         </div>
       </div>
 
-      <!-- Card 3: Progress -->
-      <div class="plinth-card p-6 flex flex-col justify-between min-h-[170px]">
+      <!-- Card 4: Progress -->
+      <div class="plinth-card p-6 flex flex-col justify-between min-h-[175px]">
         <div class="flex justify-between items-start">
           <div>
             <div class="flex items-center gap-2">
@@ -573,7 +295,7 @@
     </section>
 
     <!-- ===== CHARTS SECTION ===== -->
-    <section class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+    <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
       <!-- Chart 1: Donut -->
       <div class="plinth-card p-6 flex flex-col">
@@ -757,6 +479,161 @@
     </section>
 
 
+    <!-- ===== TABLE PRELIST SUB SLS SECTION ===== -->
+    <section class="plinth-card mt-6" id="section-prelist-subsls">
+
+      <!-- Table Header & Controls -->
+      <div
+        class="p-6 border-b border-[var(--border-color)] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 class="text-base font-bold tracking-tight text-[var(--text-primary)]">REKAPITULASI PRELIST & ASSIGNMENT
+            BARU PER SUB SLS</h2>
+          <p class="text-xs text-[var(--text-muted)] mt-0.5">
+            Data dari SQL Lab Fasih — diurutkan per Kode Sub SLS.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+          <!-- Filter Kabupaten -->
+          <div class="relative w-full sm:w-60 flex flex-col justify-end">
+            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1 font-bold">Kabupaten:</span>
+            <select id="filter-kab-prelist" onchange="filterPrelistSubSls()"
+              class="impeccable-input w-full text-sm h-[34px]">
+              <option value="">Semua Kabupaten/Kota</option>
+            </select>
+          </div>
+          <!-- Search Input -->
+          <div class="relative w-full sm:w-64 flex flex-col justify-end">
+            <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
+            <div class="relative w-full">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-4 w-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </span>
+              <input type="text" id="search-prelist" oninput="filterPrelistSubSls()" placeholder="Cari kode sub SLS..."
+                class="impeccable-input pl-9 w-full text-sm h-[34px]" />
+            </div>
+          </div>
+          <!-- Export Button -->
+          <div class="flex flex-col justify-end w-full sm:w-auto">
+            <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
+            <button onclick="exportPrelistCSV()" class="impeccable-btn flex items-center justify-center gap-2 h-[34px]">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Unduh CSV</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Wrapper -->
+      <div class="overflow-auto max-h-[80vh]">
+        <table class="impeccable-table text-left" id="prelist-subsls-table">
+          <colgroup>
+            <col style="width:210px;" />
+            <col style="width:70px;" /><col style="width:90px;" />
+            <col style="width:70px;" /><col style="width:90px;" />
+            <col style="width:70px;" /><col style="width:90px;" />
+            <col style="width:70px;" /><col style="width:90px;" />
+            <col style="width:70px;" /><col style="width:90px;" />
+            <col style="width:70px;" /><col style="width:90px;" />
+            <col style="width:70px;" /><col style="width:90px;" />
+            <col style="width:70px;" /><col style="width:90px;" />
+            <col style="width:70px;" /><col style="width:90px;" />
+          </colgroup>
+          <thead class="sticky top-0 z-20 shadow-sm">
+            <!-- Row 1: Main Category Headers -->
+            <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
+              <th rowspan="3" class="cursor-pointer pl-6 select-none align-middle text-left border-r border-[var(--border-color)]"
+                onclick="sortPrelistTable('kode')">Kode Sub SLS <span id="sort-prelist-kode" class="sort-icon">↕</span>
+              </th>
+              <th colspan="8" class="text-center bg-[rgba(163,201,168,0.06)] border-r border-[var(--border-color)]"
+                style="border-bottom: 2px solid var(--success-color);">Prelist</th>
+              <th colspan="4" class="text-center bg-[rgba(163,201,168,0.12)] border-r border-[var(--border-color)]"
+                style="border-bottom: 2px solid var(--success-color);">General Link</th>
+              <th colspan="6" class="text-center bg-[rgba(229,185,116,0.06)]"
+                style="border-bottom: 2px solid var(--warning-color);">Assignment Baru</th>
+            </tr>
+            <!-- Row 2: Sub-group Headers -->
+            <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
+              <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Keluarga</th>
+              <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Usaha</th>
+              <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Lainnya*</th>
+              <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">Total</th>
+              <th colspan="2" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Keluarga</th>
+              <th colspan="2" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Usaha</th>
+              <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Keluarga</th>
+              <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Usaha</th>
+              <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] font-bold text-[var(--text-primary)]">Total</th>
+            </tr>
+            <!-- Row 3: Leaf Headers -->
+            <tr class="text-[8px] md:text-[9px] whitespace-nowrap">
+              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none" onclick="sortPrelistTable('klgPrelistJml')">Jml <span id="sort-prelist-klgPrelistJml" class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none" onclick="sortPrelistTable('klgPrelistPct')">SUB % <span id="sort-prelist-klgPrelistPct" class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none" onclick="sortPrelistTable('usahaPrelistJml')">Jml <span id="sort-prelist-usahaPrelistJml" class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none" onclick="sortPrelistTable('usahaPrelistPct')">SUB % <span id="sort-prelist-usahaPrelistPct" class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none" onclick="sortPrelistTable('lainnyaJml')">Jml <span id="sort-prelist-lainnyaJml" class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none" onclick="sortPrelistTable('lainnyaPct')">SUB % <span id="sort-prelist-lainnyaPct" class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none" onclick="sortPrelistTable('prelistJml')">Jml <span id="sort-prelist-prelistJml" class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none font-bold" onclick="sortPrelistTable('prelistPct')">SUB % <span id="sort-prelist-prelistPct" class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.04)] cursor-pointer select-none" onclick="sortPrelistTable('glKlgJml')">Jml <span id="sort-prelist-glKlgJml" class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.04)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none" onclick="sortPrelistTable('glKlgPct')">SUB % <span id="sort-prelist-glKlgPct" class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.04)] cursor-pointer select-none" onclick="sortPrelistTable('glUsahaJml')">Jml <span id="sort-prelist-glUsahaJml" class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.04)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none" onclick="sortPrelistTable('glUsahaPct')">SUB % <span id="sort-prelist-glUsahaPct" class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none" onclick="sortPrelistTable('klgBaruJml')">Jml <span id="sort-prelist-klgBaruJml" class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none" onclick="sortPrelistTable('klgBaruPct')">SUB % <span id="sort-prelist-klgBaruPct" class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none" onclick="sortPrelistTable('usahaBaruJml')">Jml <span id="sort-prelist-usahaBaruJml" class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none" onclick="sortPrelistTable('usahaBaruPct')">SUB % <span id="sort-prelist-usahaBaruPct" class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none" onclick="sortPrelistTable('assignJml')">Jml <span id="sort-prelist-assignJml" class="sort-icon">↕</span></th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] text-[var(--accent-color)] cursor-pointer select-none font-bold" onclick="sortPrelistTable('assignPct')">SUB % <span id="sort-prelist-assignPct" class="sort-icon">↕</span></th>
+            </tr>
+          </thead>
+          <tbody id="prelist-subsls-body">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footnote -->
+      <div class="px-6 py-3 border-t border-[var(--border-color)]">
+        <p class="text-[10px] text-[var(--text-muted)] italic">
+          <strong>* Lainnya</strong>: Gabungan dari kategori <strong>Non-BKU</strong> dan <strong>Dummy</strong>.
+          &nbsp;|&nbsp; Sumber data: SQL Lab Fasih.
+          &nbsp;|&nbsp; <span id="prelist-baseline-info">Baseline harian belum tersedia.</span>
+          &nbsp;|&nbsp; <strong>Jml</strong> = Jumlah, <strong>SUB %</strong> = Persentase Submit.
+        </p>
+      </div>
+
+      <!-- Pagination Controls -->
+      <div class="flex flex-col sm:flex-row items-center justify-between p-4 border-t border-[var(--border-color)] gap-3">
+        <div class="flex items-center gap-4 text-sm text-[var(--text-muted)]">
+          <div id="prelist-page-info">Menampilkan 0 data</div>
+          <div class="flex items-center gap-1.5 text-xs">
+            <span class="font-medium text-[var(--text-secondary)]">Tampilkan:</span>
+            <select id="prelist-rows-select" onchange="changePrelistPageSize(this.value)"
+              class="impeccable-input text-xs py-1 px-2 h-[30px] rounded cursor-pointer">
+              <option value="30" selected>30 baris</option>
+              <option value="50">50 baris</option>
+              <option value="100">100 baris</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex space-x-1 items-center">
+          <button onclick="changePrelistPage(-1)" id="btn-prev-prelist"
+            class="impeccable-btn px-3 py-1 text-sm" disabled>Sebelumnya</button>
+          <div id="prelist-page-numbers" class="flex space-x-1 items-center">
+            <!-- Dynamic page numbers -->
+          </div>
+          <button onclick="changePrelistPage(1)" id="btn-next-prelist"
+            class="impeccable-btn px-3 py-1 text-sm" disabled>Berikutnya</button>
+        </div>
+      </div>
+    </section>
+
+
     <!-- ===== TABLE PETUGAS SECTION ===== -->
     <!-- Tabel dan pengolahan data di-hide sementara -->
     <section class="plinth-card mt-6" style="display: none;">
@@ -854,7 +731,7 @@
   <!-- ===== DATA & LOGIC ===== -->
   <script>
     // URL Apps Script Web App Anda (Masukkan URL /exec Anda di sini)
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziZ_3YRU7h6LPtzBFJLWXgcwojbCf3ZysNzZz79-cZCP_3JY8uOHdtUbmwn1anDWClrg/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHuJC04Un6GYqUz55ATw22CzZPM7myUSsEYT_ykW28sOSgMtWjXALzCdziZ0WI_Tb4rg/exec";
 
     // Helper format angka Indonesia: titik pemisah ribuan, koma pemisah desimal
     function fmtNum(n) { return Number(n).toLocaleString('id-ID'); }
@@ -880,14 +757,32 @@
     }
 
     function getProgressColor(progress) {
-      return progress < getTargetProgress() ? 'var(--danger-color)' : 'var(--success-color)';
+      if (progress === null || progress === undefined || isNaN(progress)) return 'inherit';
+      const target = getTargetProgress();
+      if (target <= 0) {
+        if (progress > 0) return 'var(--success-color)';
+        return 'var(--text-muted)';
+      }
+      if (progress >= target) return 'var(--success-color)';
+      if (progress >= target * 0.75) return 'var(--warning-color)';
+      return 'var(--danger-color)';
     }
 
     function getDailyColor(pct) {
-      const dailyTarget = 100 / 78; // Target harian minimum (sekitar 1.28%)
+      if (pct === null || pct === undefined || isNaN(pct)) return 'inherit';
+      const dailyTarget = 100 / 78; // Target harian minimum (~1.28%)
       if (pct <= 0) return 'var(--danger-color)';
       if (pct < dailyTarget) return 'var(--warning-color)';
       return 'var(--success-color)';
+    }
+
+    function getDeltaColor(delta) {
+      if (delta === null || delta === undefined || isNaN(delta)) return 'inherit';
+      const dailyTarget = 100 / 78; // ~1.28%
+      if (delta >= dailyTarget) return 'var(--success-color)';
+      if (delta > 0) return 'var(--warning-color)';
+      if (delta === 0) return 'var(--warning-color)';
+      return 'var(--danger-color)';
     }
 
     // Hitung dan tampilkan hari ke-berapa dari total hari pendataan
@@ -1221,6 +1116,390 @@
 
     let petugasSortColumn = 'wilayah';
     let petugasSortOrder = 'asc';
+
+    // ====== REKAP PRELIST & ASSIGNMENT BARU PER SUB SLS ======
+    let prelistSubSlsData = [];
+    let filteredPrelistSubSlsData = [];
+    let currentPrelistPage = 1;
+    let prelistRowsPerPage = 30;
+    let prelistSortColumn = 'kode';
+    let prelistSortOrder = 'asc';
+    let prelistBaselineDate = '';
+    let prelistBaselineByCode = new Map();
+    const prelistPctKeys = ['klgPrelistPct', 'usahaPrelistPct', 'lainnyaPct', 'prelistPct', 'glKlgPct', 'glUsahaPct', 'klgBaruPct', 'usahaBaruPct', 'assignPct'];
+
+    const prelistNumber = (value) => {
+      const number = Number(value);
+      return Number.isFinite(number) ? number : 0;
+    };
+
+    const prelistPercent = (submitted, total) => {
+      const denominator = prelistNumber(total);
+      return denominator > 0 ? (prelistNumber(submitted) / denominator) * 100 : null;
+    };
+
+    function getPrelistSource(data) {
+      return data['Rekap Prelist SubSLS'] || [];
+    }
+
+    function preparePrelistBaseline(data) {
+      prelistBaselineDate = '';
+      prelistBaselineByCode = new Map();
+      const history = data['History - Rekap Prelist SubSLS'] || [];
+      const currentDate = String(data.lastUpdated || '').substring(0, 10);
+      const dates = [...new Set(history.map(row => String(row['Tanggal Baseline'] || '').substring(0, 10)).filter(Boolean))]
+        .filter(date => !currentDate || date < currentDate).sort().reverse();
+      if (!dates.length) return;
+      prelistBaselineDate = dates[0];
+      const baselineRows = history.filter(row => String(row['Tanggal Baseline'] || '').substring(0, 10) === prelistBaselineDate);
+      // Build baseline metrics without comparing them to another baseline.
+      baselineRows.forEach(row => {
+        const code = String(row.KODE_SUB_SLS ?? '').trim();
+        if (code) prelistBaselineByCode.set(code, buildPrelistRow(row));
+      });
+    }
+
+    function buildPrelistRow(row) {
+      const nonBku = prelistNumber(row.JUMLAH_NONBKU_PRELIST);
+      const dummy = prelistNumber(row.JUMLAH_DUMMY);
+      const lainnyaJml = nonBku + dummy;
+      const result = {
+        kode: String(row.KODE_SUB_SLS ?? '').trim(),
+        klgPrelistJml: prelistNumber(row.JUMLAH_KELUARGA_PRELIST),
+        klgPrelistPct: prelistPercent(row.KELUARGA_PRELIST_SUBMIT, row.JUMLAH_KELUARGA_PRELIST),
+        usahaPrelistJml: prelistNumber(row.JUMLAH_USAHA_PRELIST),
+        usahaPrelistPct: prelistPercent(row.USAHA_PRELIST_SUBMIT, row.JUMLAH_USAHA_PRELIST),
+        lainnyaJml,
+        lainnyaPct: prelistPercent(row.NONBKU_PRELIST_SUBMIT, lainnyaJml),
+        prelistJml: prelistNumber(row.JUMLAH_PRELIST),
+        prelistPct: prelistPercent(row.JUMLAH_PRELIST_SELAIN_OPEN_DRAFT, row.JUMLAH_PRELIST),
+        glKlgJml: prelistNumber(row.JUMLAH_KELUARGA_GENERAL_LINK),
+        glKlgPct: prelistPercent(row.KELUARGA_GENERAL_LINK_SUBMIT, row.JUMLAH_KELUARGA_GENERAL_LINK),
+        glUsahaJml: prelistNumber(row.JUMLAH_USAHA_GENERAL_LINK),
+        glUsahaPct: prelistPercent(row.USAHA_GENERAL_LINK_SUBMIT, row.JUMLAH_USAHA_GENERAL_LINK),
+        klgBaruJml: prelistNumber(row.JUMLAH_KELUARGA_BARU),
+        klgBaruPct: prelistPercent(row.KELUARGA_BARU_SUBMIT, row.JUMLAH_KELUARGA_BARU),
+        usahaBaruJml: prelistNumber(row.JUMLAH_USAHA_BARU),
+        usahaBaruPct: prelistPercent(row.USAHA_BARU_SUBMIT, row.JUMLAH_USAHA_BARU),
+        assignJml: prelistNumber(row.JUMLAH_ASSIGNMENT_BARU),
+        assignPct: prelistPercent(prelistNumber(row.KELUARGA_BARU_SUBMIT) + prelistNumber(row.USAHA_BARU_SUBMIT), row.JUMLAH_ASSIGNMENT_BARU)
+      };
+      const baseline = prelistBaselineByCode.get(result.kode);
+      result.delta = {};
+      prelistPctKeys.forEach(key => {
+        result.delta[key] = baseline && result[key] !== null && baseline[key] !== null ? result[key] - baseline[key] : null;
+      });
+      return result;
+    }
+
+    function formatPrelistValue(value, isPercent = false, delta = null) {
+      if (value === null || value === undefined) return '<span class="text-[var(--text-muted)]">-</span>';
+      if (!isPercent) return fmtNum(value);
+      
+      const pctText = fmtPct(value);
+      const color = getProgressColor(value);
+      
+      if (delta === null || delta === undefined) {
+        return `<span class="font-bold" style="color:${color}">${pctText}%</span>`;
+      }
+      
+      const sign = delta > 0 ? '+' : '';
+      const dColor = getDeltaColor(delta);
+      const icon = delta > 0 ? '▲' : delta < 0 ? '▼' : '•';
+      const deltaText = `${icon} ${sign}${fmtPct(delta)}%`;
+      
+      return `<span class="font-bold" style="color:${color}">${pctText}%</span><span class="text-[10px] font-semibold block mt-0.5" style="color:${dColor}" title="Perubahan terhadap baseline ${escapePrelistHtml(prelistBaselineDate)}">${deltaText}</span>`;
+    }
+
+    function prelistSortIcon(key) {
+      const isActive = prelistSortColumn === key;
+      const icon = isActive ? (prelistSortOrder === 'asc' ? '▲' : '▼') : '↕';
+      const activeClass = isActive ? 'sort-active' : '';
+      return `<span id="sort-prelist-${key}" class="sort-icon ${activeClass}" aria-hidden="true">${icon}</span>`;
+    }
+
+    function renderPrelistHeader() {
+      const thead = document.querySelector('#prelist-subsls-table thead');
+      if (!thead) return;
+      const leaf = (key, label, isBorderR = false, isBold = false) => `<th class="text-right cursor-pointer select-none py-2 px-1.5 ${isBold ? 'font-bold' : ''} ${isBorderR ? 'border-r border-[var(--border-color)]' : ''}" onclick="sortPrelistTable('${key}')">${label} ${prelistSortIcon(key)}</th>`;
+      thead.innerHTML = `
+        <!-- Row 1: Main Category Headers -->
+        <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
+          <th rowspan="3" class="cursor-pointer pl-6 select-none align-middle text-left border-r border-[var(--border-color)] min-w-[200px]" onclick="sortPrelistTable('kode')">
+            Kode Sub SLS <span id="sort-prelist-kode" class="sort-icon ${prelistSortColumn === 'kode' ? 'sort-active' : ''}">${prelistSortColumn === 'kode' ? (prelistSortOrder === 'asc' ? '▲' : '▼') : '↕'}</span>
+          </th>
+          <th colspan="8" class="text-center bg-[rgba(163,201,168,0.06)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">Prelist</th>
+          <th colspan="4" class="text-center bg-[rgba(163,201,168,0.12)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">General Link</th>
+          <th colspan="6" class="text-center bg-[rgba(229,185,116,0.06)]" style="border-bottom: 2px solid var(--warning-color);">Assignment Baru</th>
+        </tr>
+        <!-- Row 2: Sub-group Headers -->
+        <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
+          <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Keluarga</th>
+          <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Usaha</th>
+          <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Lainnya*</th>
+          <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">Total</th>
+          <th colspan="2" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Keluarga</th>
+          <th colspan="2" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Usaha</th>
+          <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Keluarga</th>
+          <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Usaha</th>
+          <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] font-bold text-[var(--text-primary)]">Total</th>
+        </tr>
+        <!-- Row 3: Leaf Headers -->
+        <tr class="text-[8px] md:text-[9px] whitespace-nowrap">
+          ${leaf('klgPrelistJml', 'Jml')}${leaf('klgPrelistPct', 'SUB %', true)}
+          ${leaf('usahaPrelistJml', 'Jml')}${leaf('usahaPrelistPct', 'SUB %', true)}
+          ${leaf('lainnyaJml', 'Jml')}${leaf('lainnyaPct', 'SUB %', true)}
+          ${leaf('prelistJml', 'Jml')}${leaf('prelistPct', 'SUB %', true, true)}
+          ${leaf('glKlgJml', 'Jml')}${leaf('glKlgPct', 'SUB %', true)}
+          ${leaf('glUsahaJml', 'Jml')}${leaf('glUsahaPct', 'SUB %', true)}
+          ${leaf('klgBaruJml', 'Jml')}${leaf('klgBaruPct', 'SUB %', true)}
+          ${leaf('usahaBaruJml', 'Jml')}${leaf('usahaBaruPct', 'SUB %', true)}
+          ${leaf('assignJml', 'Jml')}${leaf('assignPct', 'SUB %', false, true)}
+        </tr>`;
+    }
+
+    function escapePrelistHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+    }
+
+    function renderPrelistTable() {
+      renderPrelistHeader();
+      const tbody = document.getElementById('prelist-subsls-body');
+      const pageInfo = document.getElementById('prelist-page-info');
+      if (!tbody) return;
+      const totalRows = filteredPrelistSubSlsData.length;
+      const totalPages = Math.max(1, Math.ceil(totalRows / prelistRowsPerPage));
+      currentPrelistPage = Math.min(Math.max(currentPrelistPage, 1), totalPages);
+      const start = (currentPrelistPage - 1) * prelistRowsPerPage;
+      const pageRows = filteredPrelistSubSlsData.slice(start, start + prelistRowsPerPage);
+
+      let html = '';
+      if (totalRows) {
+        const totalRow = {};
+        const totalKeys = ['klgPrelistJml', 'usahaPrelistJml', 'lainnyaJml', 'prelistJml', 'glKlgJml', 'glUsahaJml', 'klgBaruJml', 'usahaBaruJml', 'assignJml'];
+        totalKeys.forEach(key => { totalRow[key] = filteredPrelistSubSlsData.reduce((sum, row) => sum + row[key], 0); });
+        
+        const pctKeys = [
+          ['klgPrelistPct', 'klgPrelistJml'],
+          ['usahaPrelistPct', 'usahaPrelistJml'],
+          ['lainnyaPct', 'lainnyaJml'],
+          ['prelistPct', 'prelistJml'],
+          ['glKlgPct', 'glKlgJml'],
+          ['glUsahaPct', 'glUsahaJml'],
+          ['klgBaruPct', 'klgBaruJml'],
+          ['usahaBaruPct', 'usahaBaruJml'],
+          ['assignPct', 'assignJml']
+        ];
+        pctKeys.forEach(([pct, amount]) => {
+          const denominator = totalRow[amount];
+          const submitted = filteredPrelistSubSlsData.reduce((sum, row) => sum + (row[pct] === null ? 0 : row[pct] * row[amount] / 100), 0);
+          totalRow[pct] = prelistPercent(submitted, denominator);
+        });
+
+        totalRow.delta = {};
+        if (prelistBaselineByCode && prelistBaselineByCode.size > 0) {
+          pctKeys.forEach(([pct, amount]) => {
+            let baseTotalAmount = 0;
+            let baseTotalSubmitted = 0;
+            filteredPrelistSubSlsData.forEach(row => {
+              const baseRow = prelistBaselineByCode.get(row.kode);
+              if (baseRow) {
+                baseTotalAmount += baseRow[amount] || 0;
+                baseTotalSubmitted += (baseRow[pct] === null ? 0 : baseRow[pct] * (baseRow[amount] || 0) / 100);
+              }
+            });
+            if (baseTotalAmount > 0 && totalRow[pct] !== null) {
+              const basePct = (baseTotalSubmitted / baseTotalAmount) * 100;
+              totalRow.delta[pct] = totalRow[pct] - basePct;
+            } else {
+              totalRow.delta[pct] = null;
+            }
+          });
+        }
+
+        const totalCellJml = (val) => `<td class="text-right py-3.5 px-2.5 text-[var(--text-secondary)] whitespace-nowrap text-xs font-bold">${fmtNum(val)}</td>`;
+        const totalCellPct = (val, delta, isLast = false) => `<td class="text-right py-3.5 px-2.5 whitespace-nowrap text-xs font-bold ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(val, true, delta)}</td>`;
+
+        html += `<tr class="bg-[rgba(212,178,122,0.06)] font-bold border-b border-[var(--border-color)]">
+          <td class="pl-6 py-3.5 whitespace-nowrap text-xs border-r border-[var(--border-color)] text-[var(--text-primary)]">TOTAL TERFILTER</td>
+          ${totalCellJml(totalRow.klgPrelistJml)}${totalCellPct(totalRow.klgPrelistPct, totalRow.delta.klgPrelistPct)}
+          ${totalCellJml(totalRow.usahaPrelistJml)}${totalCellPct(totalRow.usahaPrelistPct, totalRow.delta.usahaPrelistPct)}
+          ${totalCellJml(totalRow.lainnyaJml)}${totalCellPct(totalRow.lainnyaPct, totalRow.delta.lainnyaPct)}
+          ${totalCellJml(totalRow.prelistJml)}${totalCellPct(totalRow.prelistPct, totalRow.delta.prelistPct)}
+          ${totalCellJml(totalRow.glKlgJml)}${totalCellPct(totalRow.glKlgPct, totalRow.delta.glKlgPct)}
+          ${totalCellJml(totalRow.glUsahaJml)}${totalCellPct(totalRow.glUsahaPct, totalRow.delta.glUsahaPct)}
+          ${totalCellJml(totalRow.klgBaruJml)}${totalCellPct(totalRow.klgBaruPct, totalRow.delta.klgBaruPct)}
+          ${totalCellJml(totalRow.usahaBaruJml)}${totalCellPct(totalRow.usahaBaruPct, totalRow.delta.usahaBaruPct)}
+          ${totalCellJml(totalRow.assignJml)}${totalCellPct(totalRow.assignPct, totalRow.delta.assignPct, true)}
+        </tr>`;
+
+        const rowCellJml = (val) => `<td class="text-right py-3 px-2.5 text-[var(--text-muted)] whitespace-nowrap text-xs font-medium">${formatPrelistValue(val, false)}</td>`;
+        const rowCellPct = (val, delta, isLast = false) => `<td class="text-right py-3 px-2.5 whitespace-nowrap text-xs ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(val, true, delta)}</td>`;
+
+        html += pageRows.map((row, index) => {
+          const rowBgClass = index % 2 !== 0 ? 'bg-[rgba(0,0,0,0.04)] dark:bg-[rgba(255,255,255,0.04)]' : '';
+          return `<tr class="border-b border-[var(--border-color)] hover:bg-[rgba(229,185,116,0.08)] transition-colors ${rowBgClass}">
+            <td class="pl-6 py-3 font-mono text-xs whitespace-nowrap text-[var(--text-primary)] border-r border-[var(--border-color)]">${escapePrelistHtml(row.kode)}</td>
+            ${rowCellJml(row.klgPrelistJml)}${rowCellPct(row.klgPrelistPct, row.delta.klgPrelistPct)}
+            ${rowCellJml(row.usahaPrelistJml)}${rowCellPct(row.usahaPrelistPct, row.delta.usahaPrelistPct)}
+            ${rowCellJml(row.lainnyaJml)}${rowCellPct(row.lainnyaPct, row.delta.lainnyaPct)}
+            ${rowCellJml(row.prelistJml)}${rowCellPct(row.prelistPct, row.delta.prelistPct)}
+            ${rowCellJml(row.glKlgJml)}${rowCellPct(row.glKlgPct, row.delta.glKlgPct)}
+            ${rowCellJml(row.glUsahaJml)}${rowCellPct(row.glUsahaPct, row.delta.glUsahaPct)}
+            ${rowCellJml(row.klgBaruJml)}${rowCellPct(row.klgBaruPct, row.delta.klgBaruPct)}
+            ${rowCellJml(row.usahaBaruJml)}${rowCellPct(row.usahaBaruPct, row.delta.usahaBaruPct)}
+            ${rowCellJml(row.assignJml)}${rowCellPct(row.assignPct, row.delta.assignPct, true)}
+          </tr>`;
+        }).join('');
+      } else {
+        html = '<tr><td colspan="19" class="text-center py-8 text-[var(--text-muted)]">Tidak ada data yang sesuai filter.</td></tr>';
+      }
+      tbody.innerHTML = html;
+      pageInfo.textContent = totalRows ? `Menampilkan ${start + 1}-${Math.min(start + prelistRowsPerPage, totalRows)} dari ${totalRows} data` : 'Menampilkan 0 data';
+      const baselineInfo = document.getElementById('prelist-baseline-info');
+      if (baselineInfo) baselineInfo.textContent = prelistBaselineDate ? `Baseline perubahan: ${prelistBaselineDate}` : 'Baseline harian belum tersedia (data pertama).';
+      const rowsSelect = document.getElementById('prelist-rows-select');
+      if (rowsSelect && rowsSelect.value !== String(prelistRowsPerPage)) rowsSelect.value = String(prelistRowsPerPage);
+      document.getElementById('btn-prev-prelist').disabled = currentPrelistPage <= 1;
+      document.getElementById('btn-next-prelist').disabled = currentPrelistPage >= totalPages;
+      const pages = document.getElementById('prelist-page-numbers');
+      pages.innerHTML = Array.from({ length: totalPages }, (_, i) => i + 1).filter(page => totalPages <= 7 || page === 1 || page === totalPages || Math.abs(page - currentPrelistPage) <= 1).map(page => `<button onclick="setPrelistPage(${page})" class="px-2.5 py-1 text-xs rounded font-medium transition-all ${page === currentPrelistPage ? 'bg-[var(--accent-color)] text-white dark:text-black font-bold shadow-sm' : 'impeccable-btn hover:bg-[rgba(249,115,22,0.1)]'}">${page}</button>`).join('');
+    }
+
+    function changePrelistPageSize(val) {
+      prelistRowsPerPage = parseInt(val, 10) || 30;
+      currentPrelistPage = 1;
+      renderPrelistTable();
+    }
+
+    function filterPrelistSubSls() {
+      const term = (document.getElementById('search-prelist')?.value || '').trim().toLowerCase();
+      const kab = document.getElementById('filter-kab-prelist')?.value || '';
+      filteredPrelistSubSlsData = prelistSubSlsData.filter(row => (!term || row.kode.toLowerCase().includes(term)) && (!kab || row.kode.substring(0, 4) === kab));
+      currentPrelistPage = 1;
+      renderPrelistTable();
+    }
+
+    function sortPrelistTable(key) {
+      if (prelistSortColumn === key) {
+        prelistSortOrder = prelistSortOrder === 'asc' ? 'desc' : 'asc';
+      } else {
+        prelistSortColumn = key;
+        prelistSortOrder = 'asc';
+      }
+      filteredPrelistSubSlsData.sort((a, b) => {
+        const av = a[key], bv = b[key];
+        const result = typeof av === 'number' ? (av ?? -Infinity) - (bv ?? -Infinity) : String(av || '').localeCompare(String(bv || ''));
+        return prelistSortOrder === 'asc' ? result : -result;
+      });
+      renderPrelistTable();
+    }
+
+    function changePrelistPage(delta) { currentPrelistPage += delta; renderPrelistTable(); }
+    function setPrelistPage(page) { currentPrelistPage = page; renderPrelistTable(); }
+
+    function exportPrelistCSV() {
+      const headers = ['Kode Sub SLS', 'Keluarga Jml', 'Keluarga %', 'Usaha Jml', 'Usaha %', 'Lainnya Jml', 'Lainnya %', 'Prelist Total Jml', 'Prelist Total %', 'GL Keluarga Jml', 'GL Keluarga %', 'GL Usaha Jml', 'GL Usaha %', 'Keluarga Baru Jml', 'Keluarga Baru %', 'Usaha Baru Jml', 'Usaha Baru %', 'Assignment Baru Total Jml', 'Assignment Baru Total %'];
+      const rows = filteredPrelistSubSlsData.map(row => [row.kode, row.klgPrelistJml, row.klgPrelistPct ?? '', row.usahaPrelistJml, row.usahaPrelistPct ?? '', row.lainnyaJml, row.lainnyaPct ?? '', row.prelistJml, row.prelistPct ?? '', row.glKlgJml, row.glKlgPct ?? '', row.glUsahaJml, row.glUsahaPct ?? '', row.klgBaruJml, row.klgBaruPct ?? '', row.usahaBaruJml, row.usahaBaruPct ?? '', row.assignJml, row.assignPct ?? '']);
+      const csv = [headers, ...rows].map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(',')).join('\r\n');
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `rekap-prelist-subsls-${new Date().toISOString().slice(0, 10)}.csv`; link.click(); URL.revokeObjectURL(link.href);
+    }
+
+    function updatePrelistSummaryCard() {
+      if (!prelistSubSlsData || prelistSubSlsData.length === 0) return;
+      
+      const totalPrelist = prelistSubSlsData.reduce((s, r) => s + r.prelistJml, 0);
+      const totalKlgPrelist = prelistSubSlsData.reduce((s, r) => s + r.klgPrelistJml, 0);
+      const totalUsahaPrelist = prelistSubSlsData.reduce((s, r) => s + r.usahaPrelistJml, 0);
+      const totalLainnyaPrelist = prelistSubSlsData.reduce((s, r) => s + r.lainnyaJml, 0);
+
+      const subPrelist = prelistSubSlsData.reduce((s, r) => s + (r.prelistPct === null ? 0 : r.prelistPct * r.prelistJml / 100), 0);
+      const subKlgPrelist = prelistSubSlsData.reduce((s, r) => s + (r.klgPrelistPct === null ? 0 : r.klgPrelistPct * r.klgPrelistJml / 100), 0);
+      const subUsahaPrelist = prelistSubSlsData.reduce((s, r) => s + (r.usahaPrelistPct === null ? 0 : r.usahaPrelistPct * r.usahaPrelistJml / 100), 0);
+      const subLainnyaPrelist = prelistSubSlsData.reduce((s, r) => s + (r.lainnyaPct === null ? 0 : r.lainnyaPct * r.lainnyaJml / 100), 0);
+
+      const pctPrelist = totalPrelist > 0 ? (subPrelist / totalPrelist) * 100 : 0;
+      const pctKlgPrelist = totalKlgPrelist > 0 ? (subKlgPrelist / totalKlgPrelist) * 100 : 0;
+      const pctUsahaPrelist = totalUsahaPrelist > 0 ? (subUsahaPrelist / totalUsahaPrelist) * 100 : 0;
+      const pctLainnyaPrelist = totalLainnyaPrelist > 0 ? (subLainnyaPrelist / totalLainnyaPrelist) * 100 : 0;
+
+      let deltaPrelistSum = null;
+      if (prelistBaselineByCode && prelistBaselineByCode.size > 0) {
+        let baseTotalPrelist = 0;
+        let baseSubPrelist = 0;
+        prelistBaselineByCode.forEach(baseRow => {
+          baseTotalPrelist += baseRow.prelistJml || 0;
+          baseSubPrelist += (baseRow.prelistPct === null ? 0 : baseRow.prelistPct * baseRow.prelistJml / 100);
+        });
+        if (baseTotalPrelist > 0) {
+          const basePct = (baseSubPrelist / baseTotalPrelist) * 100;
+          deltaPrelistSum = pctPrelist - basePct;
+        }
+      }
+
+      const elStatPrelistTotal = document.getElementById('stat-prelist-total');
+      if (elStatPrelistTotal) elStatPrelistTotal.innerText = fmtNum(totalPrelist);
+
+      const elStatPrelistPct = document.getElementById('stat-prelist-total-pct');
+      if (elStatPrelistPct) {
+        elStatPrelistPct.innerText = `${fmtPct(pctPrelist)}%`;
+        elStatPrelistPct.style.color = getProgressColor(pctPrelist);
+      }
+
+      const elStatPrelistDaily = document.getElementById('stat-prelist-daily-change');
+      if (elStatPrelistDaily) {
+        if (deltaPrelistSum !== null) {
+          const sign = deltaPrelistSum > 0 ? '+' : '';
+          const icon = deltaPrelistSum > 0 ? '▲' : deltaPrelistSum < 0 ? '▼' : '•';
+          elStatPrelistDaily.innerText = `${icon} ${sign}${fmtPct(deltaPrelistSum)}%`;
+          elStatPrelistDaily.style.color = getDeltaColor(deltaPrelistSum);
+          elStatPrelistDaily.title = `Perubahan vs baseline ${prelistBaselineDate}`;
+          elStatPrelistDaily.style.display = 'inline-block';
+        } else {
+          elStatPrelistDaily.style.display = 'none';
+        }
+      }
+
+      const elStatPrelistKlg = document.getElementById('stat-prelist-klg-total');
+      if (elStatPrelistKlg) elStatPrelistKlg.innerText = fmtNum(totalKlgPrelist);
+      const elStatPrelistKlgPct = document.getElementById('stat-prelist-klg-pct');
+      if (elStatPrelistKlgPct) {
+        elStatPrelistKlgPct.innerText = `(${fmtPct(pctKlgPrelist)}%)`;
+        elStatPrelistKlgPct.style.color = getProgressColor(pctKlgPrelist);
+      }
+
+      const elStatPrelistUsaha = document.getElementById('stat-prelist-usaha-total');
+      if (elStatPrelistUsaha) elStatPrelistUsaha.innerText = fmtNum(totalUsahaPrelist);
+      const elStatPrelistUsahaPct = document.getElementById('stat-prelist-usaha-pct');
+      if (elStatPrelistUsahaPct) {
+        elStatPrelistUsahaPct.innerText = `(${fmtPct(pctUsahaPrelist)}%)`;
+        elStatPrelistUsahaPct.style.color = getProgressColor(pctUsahaPrelist);
+      }
+
+      const elStatPrelistLainnya = document.getElementById('stat-prelist-lainnya-total');
+      if (elStatPrelistLainnya) elStatPrelistLainnya.innerText = fmtNum(totalLainnyaPrelist);
+      const elStatPrelistLainnyaPct = document.getElementById('stat-prelist-lainnya-pct');
+      if (elStatPrelistLainnyaPct) {
+        elStatPrelistLainnyaPct.innerText = `(${fmtPct(pctLainnyaPrelist)}%)`;
+        elStatPrelistLainnyaPct.style.color = getProgressColor(pctLainnyaPrelist);
+      }
+    }
+
+    function updatePrelistKabDropdown() {
+      const kabSelect = document.getElementById('filter-kab-prelist');
+      if (!kabSelect) return;
+      const kabCodes = [...new Set(prelistSubSlsData.map(row => row.kode.substring(0, 4)).filter(Boolean))].sort();
+      const selectedKab = kabSelect.value;
+      const optionsHtml = ['<option value="">Semua Kabupaten/Kota</option>'];
+      kabCodes.forEach(code => {
+        const kabObj = Array.isArray(dashboardData) ? dashboardData.find(w => w.kode === code) : null;
+        const name = kabObj ? kabObj.nama : code;
+        optionsHtml.push(`<option value="${code}">[${code}] ${name}</option>`);
+      });
+      kabSelect.innerHTML = optionsHtml.join('');
+      kabSelect.value = kabCodes.includes(selectedKab) ? selectedKab : '';
+    }
 
     function togglePetugasSort(col) {
       if (petugasSortColumn === col) {
@@ -1690,10 +1969,17 @@
 
 
     // ====== STRATEGI 3: LocalStorage Caching di Browser ======
-    const DASHBOARD_CACHE_KEY = 'dashboardDataCache';
+    const DASHBOARD_CACHE_KEY = 'dashboardDataCache:v2';
 
     // Fungsi utama yang memproses data JSON (baik dari cache maupun dari fetch)
     function processAndRenderData(data) {
+      preparePrelistBaseline(data);
+      prelistSubSlsData = getPrelistSource(data).map(buildPrelistRow).filter(row => row.kode).sort((a, b) => a.kode.localeCompare(b.kode));
+      filteredPrelistSubSlsData = [...prelistSubSlsData];
+      currentPrelistPage = 1;
+      renderPrelistTable();
+      updatePrelistSummaryCard();
+
       const targetSheet = data["target-wilayah"];
       const snapshotUmkmSheet = data["snapshot-kemarin-umkm"];
       const snapshotUbSheet = data["snapshot-kemarin-ub"];
@@ -1994,6 +2280,8 @@
       // Update tabel & grafik setelah data diproses
       if (typeof updateTableData === 'function') updateTableData();
       if (typeof renderAllCharts === 'function') renderAllCharts();
+      if (typeof updatePrelistKabDropdown === 'function') updatePrelistKabDropdown();
+      if (typeof updatePrelistSummaryCard === 'function') updatePrelistSummaryCard();
     }
 
     // Fetch data dari Apps Script dengan localStorage caching
@@ -2018,7 +2306,11 @@
 
       // ====== LANGKAH 2: Fetch data terbaru dari server di background ======
       try {
-        const response = await fetch(APPS_SCRIPT_URL);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        const response = await fetch(APPS_SCRIPT_URL, { signal: controller.signal, cache: 'no-store' });
+        clearTimeout(timeoutId);
+        if (!response.ok) throw new Error(`Apps Script HTTP ${response.status}`);
         const data = await response.json();
 
         // Simpan data baru ke localStorage untuk kunjungan berikutnya
@@ -2326,6 +2618,11 @@
         indicator.innerText = isSortAsc ? '▲' : '▼';
       }
 
+      allSortKeys.forEach(k => {
+        const icon = document.getElementById(`sort-indicator-${k}`);
+        if (icon) icon.textContent = k === key ? (isSortAsc ? String.fromCharCode(9650) : String.fromCharCode(9660)) : String.fromCharCode(8597);
+      });
+
       // Sort data array
       const mode = document.getElementById('progress-mode-table') ? document.getElementById('progress-mode-table').value : 'fasih';
       dashboardData.sort((a, b) => {
@@ -2487,9 +2784,11 @@
         danger: isDark ? '#d17a7a' : '#b24c4c',
         neutrals: isDark ? '#3c3a35' : '#eae5dc'
       };
+      const chartResponsive = [{ breakpoint: 1024, options: { chart: { height: 340 }, dataLabels: { offsetX: 32, style: { fontSize: '10px' } } } }, { breakpoint: 768, options: { chart: { height: 300 }, dataLabels: { offsetX: 25, style: { fontSize: '9px' } }, plotOptions: { bar: { barHeight: '55%', borderRadius: 3 } }, grid: { padding: { left: 4, right: 18 } } } }];
 
       // 1. Donut Chart (Superteam Asset Hub style)
       const donutOptions = {
+        responsive: chartResponsive,
         series: [sumData.umkmOpen + sumData.ubOpen, sumData.umkmDraft + sumData.ubDraft, sumData.umkmSubmit + sumData.ubSubmit],
         labels: ['Open', 'Draft', 'Submitted'],
         chart: {
@@ -2551,6 +2850,7 @@
       // 2. Bar Chart: Progress Akumulatif (Superteam Asset Hub style)
       const sortedByProgress = [...dashboardData].sort((a, b) => b.progress - a.progress);
       const progressOptions = {
+        responsive: chartResponsive,
         series: [{
           name: 'Progres %',
           data: sortedByProgress.map(x => parseFloat(x.progress.toFixed(2)))
@@ -2566,8 +2866,8 @@
         plotOptions: {
           bar: {
             horizontal: true,
-            barHeight: '50%',
-            borderRadius: 4,
+            barHeight: '55%',
+            borderRadius: 3,
             dataLabels: { position: 'top' }
           }
         },
@@ -2631,6 +2931,7 @@
       // 3. Bar Chart: Volume Submit (Superteam Asset Hub style)
       const sortedBySubmit = [...dashboardData].sort((a, b) => (b.umkmSubmit + b.ubSubmit) - (a.umkmSubmit + a.ubSubmit));
       const submitOptions = {
+        responsive: chartResponsive,
         series: [{
           name: 'Total Submit',
           data: sortedBySubmit.map(x => x.umkmSubmit + x.ubSubmit)
@@ -2646,8 +2947,8 @@
         plotOptions: {
           bar: {
             horizontal: true,
-            barHeight: '50%',
-            borderRadius: 4,
+            barHeight: '55%',
+            borderRadius: 3,
             dataLabels: { position: 'top' }
           }
         },
@@ -2728,6 +3029,7 @@
         return parseFloat((den > 0 ? (total / den) * 100 : 0).toFixed(2));
       });
       const dailyOptions = {
+        responsive: chartResponsive,
         series: [{
           name: 'Kenaikan Harian',
           data: dailyData
@@ -2743,8 +3045,8 @@
         plotOptions: {
           bar: {
             horizontal: true,
-            barHeight: '50%',
-            borderRadius: 4,
+            barHeight: '55%',
+            borderRadius: 3,
             dataLabels: { position: 'top' }
           }
         },
