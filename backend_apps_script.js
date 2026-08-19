@@ -585,7 +585,8 @@ function clearSheetBeforeUpload(sheetName) {
   }
   if (!sheet) return "Error: Sheet '" + sheetName + "' tidak ditemukan!";
 
-  clearSheetData_(sheet);
+  // Kosongkan seluruh sheet (termasuk baris header lama) agar format file baru masuk rapi dari Kolom A
+  sheet.clearContents();
 
   try {
     CacheService.getScriptCache().remove("dashboardPayload");
@@ -594,147 +595,96 @@ function clearSheetBeforeUpload(sheetName) {
   return "OK";
 }
 
-function clearSheetData_(sheet) {
-  var lastRow = sheet.getLastRow();
-  var lastCol = sheet.getLastColumn();
-  if (lastRow > 1 && lastCol > 0) {
-    sheet.getRange(2, 1, lastRow - 1, lastCol).clearContent();
-  }
-}
-
 // ============================================================
 // PROSES CSV / EXCEL UPLOAD
 // ============================================================
 function processCSV(csvContent, sheetName, shouldClear) {
-  if (shouldClear === undefined) shouldClear = true;
+  if (shouldClear === undefined) shouldClear = false;
 
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var isPrelistSubSls = sheetName === "Rekap Prelist SubSLS" || sheetName === "Rekap Prelist SE2026 - SubSLS";
-    var isMasterSubSls = sheetName === "master-subsls" || sheetName === "Master SLS" || sheetName === "Master - SubSLS";
     var sheet = getSheetByNameCI(ss, sheetName);
 
     if (!sheet) {
       sheet = ss.insertSheet(sheetName);
     }
 
+    if (shouldClear) {
+      sheet.clearContents();
+    }
+
     var csvData = Utilities.parseCsv(csvContent);
     if (csvData.length <= 1)
-      return "Error: CSV kosong atau hanya berisi header.";
+      return "Error: CSV/Excel kosong atau hanya berisi header.";
 
     var csvHeaders = csvData[0].map(function (h) {
-      return h.trim();
+      return String(h).trim();
     });
-    
-    var wilayahCsvIdx = -1;
-    var validKeyPatterns = ["wilayah", "kode", "kodesubsls", "idsubsls", "kodekab", "kodekec", "kodedesa", "id", "sls", "nmsls", "no"];
-    for (var i = 0; i < csvHeaders.length; i++) {
-      var normH = csvHeaders[i].toLowerCase().replace(/[\s_-]/g, "");
-      if (validKeyPatterns.indexOf(normH) > -1) {
-        wilayahCsvIdx = i;
-        break;
-      }
-    }
 
-    if (wilayahCsvIdx === -1) {
-      if (csvHeaders.length > 0) wilayahCsvIdx = 0;
-      else return "Error: File tidak memiliki kolom valid.";
-    }
-
-    // Baca header yang sudah ada di sheet
+    var lastRow = sheet.getLastRow();
     var lastCol = sheet.getLastColumn();
-    var sheetHeaders =
-      lastCol > 0 ? sheet.getRange(1, 1, 1, lastCol).getValues()[0] : [];
 
-    // Cek jika ada kolom baru di CSV yang belum ada di sheet
-    var newColumnsAdded = false;
-    for (var c = 0; c < csvHeaders.length; c++) {
-      var headerName = csvHeaders[c].trim();
-      if (headerName !== "") {
-        var exists = false;
-        var normHeaderName = headerName.toLowerCase().replace(/[\s_-]/g, "");
-        for (var h = 0; h < sheetHeaders.length; h++) {
-          if (
-            sheetHeaders[h].toLowerCase().replace(/[\s_-]/g, "") ===
-            normHeaderName
-          ) {
-            exists = true;
-            break;
-          }
-        }
-        if (!exists) {
-          sheetHeaders.push(headerName);
-          newColumnsAdded = true;
-        }
-      }
+    // JIKA SHEET KOSONG (Header belum ada) -> Tulis Header dari File yang Diunggah
+    if (lastRow === 0 || lastCol === 0) {
+      sheet.getRange(1, 1, 1, csvHeaders.length).setValues([csvHeaders]);
+      lastRow = 1;
+      var currentHeaders = csvHeaders;
+    } else {
+      // Sheet sudah ada header (misal file kedua dst dalam multi-file upload)
+      var currentHeaders = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(function(h) {
+        return String(h).trim();
+      });
     }
 
-    // Tambahkan kolom 'Last Updated' jika belum ada
-    if (!isPrelistSubSls && !isMasterSubSls && sheetHeaders.indexOf("Last Updated") === -1) {
-      sheetHeaders.push("Last Updated");
-      newColumnsAdded = true;
-    }
+    // Normalisasi nama header untuk pencocokan kolom
+    var normCurrentHeaders = currentHeaders.map(function(h) {
+      return h.toLowerCase().replace(/[\s_-]/g, "");
+    });
+    var normCsvHeaders = csvHeaders.map(function(h) {
+      return h.toLowerCase().replace(/[\s_-]/g, "");
+    });
 
-    if (newColumnsAdded) {
-      sheet.getRange(1, 1, 1, sheetHeaders.length).setValues([sheetHeaders]);
-    }
+    // Cek apakah kolom sama persis urutannya
+    var isExactMatch = currentHeaders.length === csvHeaders.length && normCurrentHeaders.every(function(h, idx) {
+      return h === normCsvHeaders[idx];
+    });
 
-    if (shouldClear) {
-      clearSheetData_(sheet);
-    }
-
-    var startRow = shouldClear ? 2 : Math.max(2, sheet.getLastRow() + 1);
-
-    var timestamp = Utilities.formatDate(
-      new Date(),
-      "Asia/Jakarta",
-      "yyyy-MM-dd HH:mm:ss",
-    );
     var rowsToWrite = [];
-
     for (var j = 1; j < csvData.length; j++) {
       var csvRow = csvData[j];
-      var wilayahVal = String(csvRow[wilayahCsvIdx]).trim();
-      if (!wilayahVal) continue;
+      var hasVal = csvRow.some(function(v) { return String(v).trim() !== ""; });
+      if (!hasVal) continue;
 
-      var newRowData = [];
-      for (var col = 0; col < sheetHeaders.length; col++) {
-        var headerName = sheetHeaders[col];
-        if (headerName === "Last Updated") {
-          newRowData.push("'" + timestamp);
-        } else {
-          var csvIdx = -1;
-          var normHeaderName = headerName.toLowerCase().replace(/[\s_-]/g, "");
-          for (var c = 0; c < csvHeaders.length; c++) {
-            if (
-              csvHeaders[c].toLowerCase().replace(/[\s_-]/g, "") ===
-              normHeaderName
-            ) {
-              csvIdx = c;
-              break;
-            }
-          }
+      if (isExactMatch) {
+        rowsToWrite.push(csvRow);
+      } else {
+        var rowMapped = [];
+        for (var col = 0; col < currentHeaders.length; col++) {
+          var targetNorm = normCurrentHeaders[col];
+          var csvIdx = normCsvHeaders.indexOf(targetNorm);
           if (csvIdx > -1) {
-            newRowData.push(csvRow[csvIdx]);
+            rowMapped.push(csvRow[csvIdx]);
           } else {
-            newRowData.push("");
+            rowMapped.push("");
           }
         }
+        rowsToWrite.push(rowMapped);
       }
-      rowsToWrite.push(newRowData);
     }
 
-    // Format kolom teks identifier seperti KODE_SUB_SLS
     if (rowsToWrite.length > 0) {
-      sheetHeaders.forEach(function(hName, hIdx) {
+      var startRow = lastRow + 1;
+
+      // Set format teks pada kolom-kolom kode identifier agar digit 0 di depan tidak terpotong
+      currentHeaders.forEach(function(hName, hIdx) {
         var normH = String(hName).toLowerCase().replace(/[\s_-]/g, "");
-        if (normH === "kodesubsls" || normH === "kode" || normH === "wilayah" || normH === "idsubsls" || normH === "idkec") {
+        if (normH.indexOf("kode") > -1 || normH.indexOf("id") > -1 || normH === "wilayah" || normH === "sls" || normH === "subsls" || normH === "no") {
           sheet.getRange(startRow, hIdx + 1, rowsToWrite.length, 1).setNumberFormat("@");
         }
       });
 
       sheet
-        .getRange(startRow, 1, rowsToWrite.length, sheetHeaders.length)
+        .getRange(startRow, 1, rowsToWrite.length, currentHeaders.length)
         .setValues(rowsToWrite);
     }
 
@@ -744,17 +694,7 @@ function processCSV(csvContent, sheetName, shouldClear) {
       Logger.log("Gagal menghapus cache dashboard setelah upload: " + cacheErr);
     }
 
-    var pesan =
-      "Sukses! " +
-      rowsToWrite.length +
-      " baris data ditambahkan ke [" +
-      sheetName +
-      "].";
-    if (shouldClear) pesan += " (Sheet dikosongkan terlebih dahulu).";
-    if (newColumnsAdded)
-      pesan += " (Ada penambahan kolom baru).";
-
-    return pesan;
+    return "Sukses! " + rowsToWrite.length + " baris data berhasil ditambahkan ke [" + sheetName + "].";
   } catch (error) {
     return "Error memproses data: " + error.toString();
   }
