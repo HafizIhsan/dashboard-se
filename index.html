@@ -493,13 +493,26 @@
           </p>
         </div>
         <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <!-- Filter Kabupaten -->
-          <div class="relative w-full sm:w-60 flex flex-col justify-end">
+          <!-- Filter Kabupaten (Custom Dropdown) -->
+          <div class="relative w-full sm:w-72 flex flex-col justify-end">
             <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1 font-bold">Kabupaten:</span>
-            <select id="filter-kab-prelist" onchange="filterPrelistSubSls()"
-              class="impeccable-input w-full text-sm h-[34px]">
-              <option value="">Semua Kabupaten/Kota</option>
-            </select>
+            <div class="relative w-full" id="prelist-kab-dropdown-container">
+              <button type="button" id="prelist-kab-btn" onclick="togglePrelistKabDropdown(event)"
+                class="impeccable-input w-full text-xs h-[34px] flex items-center justify-between px-3 cursor-pointer bg-[var(--bg-card)] border border-[var(--border-color)] rounded text-[var(--text-primary)] font-medium text-left">
+                <span id="prelist-kab-label" class="truncate pr-2">Semua Kabupaten/Kota</span>
+                <svg class="w-4 h-4 opacity-60 shrink-0 transition-transform duration-200" id="prelist-kab-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <input type="hidden" id="filter-kab-prelist" value="" />
+              
+              <!-- Dropdown Menu: Lebar 100% sama dengan tombol, scrollbar aktif -->
+              <div id="prelist-kab-menu"
+                class="hidden absolute z-50 left-0 right-0 mt-1 w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-md shadow-2xl max-h-60 overflow-y-auto py-1 text-xs divide-y divide-[var(--border-color)]/20"
+                style="scrollbar-color: var(--border-color) transparent; scrollbar-width: thin;">
+                <!-- Diisi dinamis -->
+              </div>
+            </div>
           </div>
           <!-- Search Input -->
           <div class="relative w-full sm:w-64 flex flex-col justify-end">
@@ -511,7 +524,7 @@
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </span>
-              <input type="text" id="search-prelist" oninput="filterPrelistSubSls()" placeholder="Cari kode sub SLS..."
+              <input type="text" id="search-prelist" oninput="filterPrelistSubSls()" placeholder="Cari nama SLS atau kode..."
                 class="impeccable-input pl-9 w-full text-sm h-[34px]" />
             </div>
           </div>
@@ -533,7 +546,7 @@
       <div class="overflow-auto max-h-[80vh]">
         <table class="impeccable-table text-left" id="prelist-subsls-table">
           <colgroup>
-            <col style="width:210px;" />
+            <col style="width:230px;" />
             <col style="width:70px;" /><col style="width:90px;" />
             <col style="width:70px;" /><col style="width:90px;" />
             <col style="width:70px;" /><col style="width:90px;" />
@@ -547,8 +560,8 @@
           <thead class="sticky top-0 z-20 shadow-sm">
             <!-- Row 1: Main Category Headers -->
             <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
-              <th rowspan="3" class="cursor-pointer pl-6 select-none align-middle text-left border-r border-[var(--border-color)]"
-                onclick="sortPrelistTable('kode')">Kode Sub SLS <span id="sort-prelist-kode" class="sort-icon">↕</span>
+              <th rowspan="3" class="cursor-pointer pl-6 select-none align-middle text-left border-r border-[var(--border-color)] min-w-[220px]"
+                onclick="sortPrelistTable('kode')">SLS / Sub SLS <span id="sort-prelist-kode" class="sort-icon">↕</span>
               </th>
               <th colspan="8" class="text-center bg-[rgba(163,201,168,0.06)] border-r border-[var(--border-color)]"
                 style="border-bottom: 2px solid var(--success-color);">Prelist</th>
@@ -1126,6 +1139,7 @@
     let prelistSortOrder = 'asc';
     let prelistBaselineDate = '';
     let prelistBaselineByCode = new Map();
+    let masterSubSlsMap = new Map();
     const prelistPctKeys = ['klgPrelistPct', 'usahaPrelistPct', 'lainnyaPct', 'prelistPct', 'glKlgPct', 'glUsahaPct', 'klgBaruPct', 'usahaBaruPct', 'assignPct'];
 
     const prelistNumber = (value) => {
@@ -1163,8 +1177,11 @@
       const nonBku = prelistNumber(row.JUMLAH_NONBKU_PRELIST);
       const dummy = prelistNumber(row.JUMLAH_DUMMY);
       const lainnyaJml = nonBku + dummy;
+      const kode = String(row.KODE_SUB_SLS ?? row.kode ?? '').trim();
+      const namaSls = masterSubSlsMap.get(kode) || '';
       const result = {
-        kode: String(row.KODE_SUB_SLS ?? '').trim(),
+        kode,
+        namaSls,
         klgPrelistJml: prelistNumber(row.JUMLAH_KELUARGA_PRELIST),
         klgPrelistPct: prelistPercent(row.KELUARGA_PRELIST_SUBMIT, row.JUMLAH_KELUARGA_PRELIST),
         usahaPrelistJml: prelistNumber(row.JUMLAH_USAHA_PRELIST),
@@ -1225,8 +1242,8 @@
       thead.innerHTML = `
         <!-- Row 1: Main Category Headers -->
         <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
-          <th rowspan="3" class="cursor-pointer pl-6 select-none align-middle text-left border-r border-[var(--border-color)] min-w-[200px]" onclick="sortPrelistTable('kode')">
-            Kode Sub SLS <span id="sort-prelist-kode" class="sort-icon ${prelistSortColumn === 'kode' ? 'sort-active' : ''}">${prelistSortColumn === 'kode' ? (prelistSortOrder === 'asc' ? '▲' : '▼') : '↕'}</span>
+          <th rowspan="3" class="cursor-pointer pl-6 select-none align-middle text-left border-r border-[var(--border-color)] min-w-[220px]" onclick="sortPrelistTable('kode')">
+            SLS / Sub SLS <span id="sort-prelist-kode" class="sort-icon ${prelistSortColumn === 'kode' ? 'sort-active' : ''}">${prelistSortColumn === 'kode' ? (prelistSortOrder === 'asc' ? '▲' : '▼') : '↕'}</span>
           </th>
           <th colspan="8" class="text-center bg-[rgba(163,201,168,0.06)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">Prelist</th>
           <th colspan="4" class="text-center bg-[rgba(163,201,168,0.12)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">General Link</th>
@@ -1320,8 +1337,15 @@
         const totalCellJml = (val) => `<td class="text-right py-3.5 px-2.5 text-[var(--text-secondary)] whitespace-nowrap text-xs font-bold">${fmtNum(val)}</td>`;
         const totalCellPct = (val, delta, isLast = false) => `<td class="text-right py-3.5 px-2.5 whitespace-nowrap text-xs font-bold ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(val, true, delta)}</td>`;
 
+        const activeKabCode = selectedKabPrelist || document.getElementById('filter-kab-prelist')?.value || '';
+        let summaryLabel = 'Sumatera Barat';
+        if (activeKabCode) {
+          const matchedKab = Array.isArray(dashboardData) ? dashboardData.find(w => w.kode === activeKabCode) : null;
+          summaryLabel = matchedKab ? matchedKab.nama : `Kabupaten [${activeKabCode}]`;
+        }
+
         html += `<tr class="bg-[rgba(212,178,122,0.06)] font-bold border-b border-[var(--border-color)]">
-          <td class="pl-6 py-3.5 whitespace-nowrap text-xs border-r border-[var(--border-color)] text-[var(--text-primary)]">TOTAL TERFILTER</td>
+          <td class="pl-6 py-3.5 whitespace-nowrap text-xs border-r border-[var(--border-color)] text-[var(--text-primary)] font-bold">${escapePrelistHtml(summaryLabel)}</td>
           ${totalCellJml(totalRow.klgPrelistJml)}${totalCellPct(totalRow.klgPrelistPct, totalRow.delta.klgPrelistPct)}
           ${totalCellJml(totalRow.usahaPrelistJml)}${totalCellPct(totalRow.usahaPrelistPct, totalRow.delta.usahaPrelistPct)}
           ${totalCellJml(totalRow.lainnyaJml)}${totalCellPct(totalRow.lainnyaPct, totalRow.delta.lainnyaPct)}
@@ -1338,8 +1362,13 @@
 
         html += pageRows.map((row, index) => {
           const rowBgClass = index % 2 !== 0 ? 'bg-[rgba(0,0,0,0.04)] dark:bg-[rgba(255,255,255,0.04)]' : '';
+          const slsCellHtml = row.namaSls 
+            ? `<div class="font-semibold text-xs text-[var(--text-primary)] leading-tight tracking-tight">${escapePrelistHtml(row.namaSls)}</div>
+               <div class="font-mono text-[10px] text-[var(--text-muted)] mt-0.5 tracking-wider font-normal">${escapePrelistHtml(row.kode)}</div>`
+            : `<span class="font-mono text-xs text-[var(--text-primary)]">${escapePrelistHtml(row.kode)}</span>`;
+
           return `<tr class="border-b border-[var(--border-color)] hover:bg-[rgba(229,185,116,0.08)] transition-colors ${rowBgClass}">
-            <td class="pl-6 py-3 font-mono text-xs whitespace-nowrap text-[var(--text-primary)] border-r border-[var(--border-color)]">${escapePrelistHtml(row.kode)}</td>
+            <td class="pl-6 py-2.5 whitespace-nowrap border-r border-[var(--border-color)]">${slsCellHtml}</td>
             ${rowCellJml(row.klgPrelistJml)}${rowCellPct(row.klgPrelistPct, row.delta.klgPrelistPct)}
             ${rowCellJml(row.usahaPrelistJml)}${rowCellPct(row.usahaPrelistPct, row.delta.usahaPrelistPct)}
             ${rowCellJml(row.lainnyaJml)}${rowCellPct(row.lainnyaPct, row.delta.lainnyaPct)}
@@ -1374,8 +1403,12 @@
 
     function filterPrelistSubSls() {
       const term = (document.getElementById('search-prelist')?.value || '').trim().toLowerCase();
-      const kab = document.getElementById('filter-kab-prelist')?.value || '';
-      filteredPrelistSubSlsData = prelistSubSlsData.filter(row => (!term || row.kode.toLowerCase().includes(term)) && (!kab || row.kode.substring(0, 4) === kab));
+      const kab = selectedKabPrelist || document.getElementById('filter-kab-prelist')?.value || '';
+      filteredPrelistSubSlsData = prelistSubSlsData.filter(row => {
+        const matchTerm = !term || row.kode.toLowerCase().includes(term) || (row.namaSls && row.namaSls.toLowerCase().includes(term));
+        const matchKab = !kab || row.kode.substring(0, 4) === kab;
+        return matchTerm && matchKab;
+      });
       currentPrelistPage = 1;
       renderPrelistTable();
     }
@@ -1399,8 +1432,8 @@
     function setPrelistPage(page) { currentPrelistPage = page; renderPrelistTable(); }
 
     function exportPrelistCSV() {
-      const headers = ['Kode Sub SLS', 'Keluarga Jml', 'Keluarga %', 'Usaha Jml', 'Usaha %', 'Lainnya Jml', 'Lainnya %', 'Prelist Total Jml', 'Prelist Total %', 'GL Keluarga Jml', 'GL Keluarga %', 'GL Usaha Jml', 'GL Usaha %', 'Keluarga Baru Jml', 'Keluarga Baru %', 'Usaha Baru Jml', 'Usaha Baru %', 'Assignment Baru Total Jml', 'Assignment Baru Total %'];
-      const rows = filteredPrelistSubSlsData.map(row => [row.kode, row.klgPrelistJml, row.klgPrelistPct ?? '', row.usahaPrelistJml, row.usahaPrelistPct ?? '', row.lainnyaJml, row.lainnyaPct ?? '', row.prelistJml, row.prelistPct ?? '', row.glKlgJml, row.glKlgPct ?? '', row.glUsahaJml, row.glUsahaPct ?? '', row.klgBaruJml, row.klgBaruPct ?? '', row.usahaBaruJml, row.usahaBaruPct ?? '', row.assignJml, row.assignPct ?? '']);
+      const headers = ['Kode Sub SLS', 'Nama SLS', 'Keluarga Jml', 'Keluarga %', 'Usaha Jml', 'Usaha %', 'Lainnya Jml', 'Lainnya %', 'Prelist Total Jml', 'Prelist Total %', 'GL Keluarga Jml', 'GL Keluarga %', 'GL Usaha Jml', 'GL Usaha %', 'Keluarga Baru Jml', 'Keluarga Baru %', 'Usaha Baru Jml', 'Usaha Baru %', 'Assignment Baru Total Jml', 'Assignment Baru Total %'];
+      const rows = filteredPrelistSubSlsData.map(row => [row.kode, row.namaSls || '', row.klgPrelistJml, row.klgPrelistPct ?? '', row.usahaPrelistJml, row.usahaPrelistPct ?? '', row.lainnyaJml, row.lainnyaPct ?? '', row.prelistJml, row.prelistPct ?? '', row.glKlgJml, row.glKlgPct ?? '', row.glUsahaJml, row.glUsahaPct ?? '', row.klgBaruJml, row.klgBaruPct ?? '', row.usahaBaruJml, row.usahaBaruPct ?? '', row.assignJml, row.assignPct ?? '']);
       const csv = [headers, ...rows].map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(',')).join('\r\n');
       const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `rekap-prelist-subsls-${new Date().toISOString().slice(0, 10)}.csv`; link.click(); URL.revokeObjectURL(link.href);
@@ -1486,20 +1519,89 @@
       }
     }
 
+    let selectedKabPrelist = '';
+
     function updatePrelistKabDropdown() {
-      const kabSelect = document.getElementById('filter-kab-prelist');
-      if (!kabSelect) return;
+      const menu = document.getElementById('prelist-kab-menu');
+      const labelEl = document.getElementById('prelist-kab-label');
+      const hiddenInput = document.getElementById('filter-kab-prelist');
+      if (!menu) return;
+
       const kabCodes = [...new Set(prelistSubSlsData.map(row => row.kode.substring(0, 4)).filter(Boolean))].sort();
-      const selectedKab = kabSelect.value;
-      const optionsHtml = ['<option value="">Semua Kabupaten/Kota</option>'];
+
+      let menuHtml = `
+        <div onclick="selectPrelistKab('', 'Semua Kabupaten/Kota')"
+          class="px-3 py-2 cursor-pointer transition-colors flex items-center justify-between ${!selectedKabPrelist ? 'bg-[var(--accent-color)]/10 font-bold text-[var(--accent-color)]' : 'hover:bg-[rgba(249,115,22,0.08)] text-[var(--text-primary)]'}">
+          <span>Semua Kabupaten/Kota</span>
+          ${!selectedKabPrelist ? '<span class="text-[10px]">✓</span>' : ''}
+        </div>
+      `;
+
       kabCodes.forEach(code => {
         const kabObj = Array.isArray(dashboardData) ? dashboardData.find(w => w.kode === code) : null;
         const name = kabObj ? kabObj.nama : code;
-        optionsHtml.push(`<option value="${code}">[${code}] ${name}</option>`);
+        const displayName = `[${code}] ${name}`;
+        const isSelected = selectedKabPrelist === code;
+        menuHtml += `
+          <div onclick="selectPrelistKab('${code}', '${displayName.replace(/'/g, "\\'")}')"
+            class="px-3 py-2 cursor-pointer transition-colors flex items-center justify-between ${isSelected ? 'bg-[var(--accent-color)]/10 font-bold text-[var(--accent-color)]' : 'hover:bg-[rgba(249,115,22,0.08)] text-[var(--text-primary)]'}">
+            <span class="truncate pr-2">${displayName}</span>
+            ${isSelected ? '<span class="text-[10px]">✓</span>' : ''}
+          </div>
+        `;
       });
-      kabSelect.innerHTML = optionsHtml.join('');
-      kabSelect.value = kabCodes.includes(selectedKab) ? selectedKab : '';
+
+      menu.innerHTML = menuHtml;
+
+      if (selectedKabPrelist) {
+        const kabObj = Array.isArray(dashboardData) ? dashboardData.find(w => w.kode === selectedKabPrelist) : null;
+        if (labelEl) labelEl.textContent = kabObj ? `[${selectedKabPrelist}] ${kabObj.nama}` : `[${selectedKabPrelist}]`;
+      } else {
+        if (labelEl) labelEl.textContent = 'Semua Kabupaten/Kota';
+      }
+      if (hiddenInput) hiddenInput.value = selectedKabPrelist;
     }
+
+    function togglePrelistKabDropdown(e) {
+      if (e) e.stopPropagation();
+      const menu = document.getElementById('prelist-kab-menu');
+      const arrow = document.getElementById('prelist-kab-arrow');
+      if (!menu) return;
+      const isHidden = menu.classList.contains('hidden');
+      if (isHidden) {
+        menu.classList.remove('hidden');
+        if (arrow) arrow.classList.add('rotate-180');
+      } else {
+        menu.classList.add('hidden');
+        if (arrow) arrow.classList.remove('rotate-180');
+      }
+    }
+
+    function selectPrelistKab(code, label) {
+      selectedKabPrelist = code;
+      const hiddenInput = document.getElementById('filter-kab-prelist');
+      if (hiddenInput) hiddenInput.value = code;
+      const labelEl = document.getElementById('prelist-kab-label');
+      if (labelEl) labelEl.textContent = label;
+
+      const menu = document.getElementById('prelist-kab-menu');
+      const arrow = document.getElementById('prelist-kab-arrow');
+      if (menu) menu.classList.add('hidden');
+      if (arrow) arrow.classList.remove('rotate-180');
+
+      updatePrelistKabDropdown();
+      filterPrelistSubSls();
+    }
+
+    document.addEventListener('click', function(event) {
+      const container = document.getElementById('prelist-kab-dropdown-container');
+      const menu = document.getElementById('prelist-kab-menu');
+      const arrow = document.getElementById('prelist-kab-arrow');
+      if (container && menu && !container.contains(event.target)) {
+        menu.classList.add('hidden');
+        if (arrow) arrow.classList.remove('rotate-180');
+      }
+    });
 
     function togglePetugasSort(col) {
       if (petugasSortColumn === col) {
@@ -1973,10 +2075,23 @@
 
     // Fungsi utama yang memproses data JSON (baik dari cache maupun dari fetch)
     function processAndRenderData(data) {
+      const masterSubSlsRaw = data["master-subsls"] || data["Master SLS"] || [];
+      masterSubSlsMap = new Map();
+      if (Array.isArray(masterSubSlsRaw)) {
+        masterSubSlsRaw.forEach(row => {
+          const code = String(row.idsubsls || row.KODE_SUB_SLS || row.kode || row.wilayah || "").trim();
+          const name = String(row.nmsls || row.SLS || row.nama_sls || row.NAMA_SLS || row.nama || "").trim();
+          if (code && name) {
+            masterSubSlsMap.set(code, name);
+          }
+        });
+      }
+
       preparePrelistBaseline(data);
       prelistSubSlsData = getPrelistSource(data).map(buildPrelistRow).filter(row => row.kode).sort((a, b) => a.kode.localeCompare(b.kode));
       filteredPrelistSubSlsData = [...prelistSubSlsData];
       currentPrelistPage = 1;
+      updatePrelistKabDropdown();
       renderPrelistTable();
       updatePrelistSummaryCard();
 

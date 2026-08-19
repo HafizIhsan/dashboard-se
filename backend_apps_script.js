@@ -418,6 +418,7 @@ function doGet() {
     "Sensus Ekonomi 2026 - UB",
     "master-kec",
     "master-subsls",
+    "Master SLS",
     "Rekap Prelist SubSLS",
     "History - Rekap Prelist SubSLS",
     // "Sensus Ekonomi 2026 - Rekap Petugas",
@@ -486,10 +487,11 @@ function doGet() {
         } else if (name === "master-kec") {
           mappedRow["idkec"] = getValCI(row, "idkec") || getValCI(row, "id");
           mappedRow["nmkec"] = getValCI(row, "nmkec") || getValCI(row, "nama");
-        } else if (name === "master-subsls") {
+        } else if (name === "master-subsls" || name === "Master SLS" || name === "Master - SubSLS") {
           mappedRow["idsubsls"] =
-            getValCI(row, "idsubsls") || getValCI(row, "id");
-          mappedRow["nmsls"] = getValCI(row, "nmsls") || getValCI(row, "nama");
+            getValCI(row, "idsubsls") || getValCI(row, "KODE_SUB_SLS") || getValCI(row, "kode_sub_sls") || getValCI(row, "id_sub_sls") || getValCI(row, "id") || getValCI(row, "kode") || getValCI(row, "wilayah") || "";
+          mappedRow["nmsls"] =
+            getValCI(row, "nmsls") || getValCI(row, "SLS") || getValCI(row, "nama_sls") || getValCI(row, "NAMA_SLS") || getValCI(row, "nama") || "";
         } else if (name === "Rekap Prelist SubSLS" || name === "Rekap Prelist SE2026 - SubSLS") {
           mappedRow["KODE_SUB_SLS"] = getValCI(row, "KODE_SUB_SLS") || "";
           mappedRow["JUMLAH_PRELIST"] = Number(getValCI(row, "JUMLAH_PRELIST") || 0);
@@ -783,7 +785,7 @@ function clearSheetBeforeUpload(sheetName) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   // [MODIFIED] Menggunakan getSheetByNameCI agar aman dari casing/spasi
   var sheet = getSheetByNameCI(ss, sheetName);
-  if (!sheet && sheetName === "Rekap Prelist SubSLS") {
+  if (!sheet && (sheetName === "Rekap Prelist SubSLS" || sheetName === "master-subsls" || sheetName === "Master SLS")) {
     sheet = ss.insertSheet(sheetName);
   }
   if (!sheet) return "Error: Sheet '" + sheetName + "' tidak ditemukan!";
@@ -805,6 +807,7 @@ function processCSV(csvContent, sheetName, shouldClear) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var isPrelistSubSls = sheetName === "Rekap Prelist SubSLS" || sheetName === "Rekap Prelist SE2026 - SubSLS";
+    var isMasterSubSls = sheetName === "master-subsls" || sheetName === "Master SLS" || sheetName === "Master - SubSLS";
     // [MODIFIED] Menggunakan getSheetByNameCI agar aman dari casing/spasi
     var sheet = getSheetByNameCI(ss, sheetName);
 
@@ -822,14 +825,14 @@ function processCSV(csvContent, sheetName, shouldClear) {
     var wilayahCsvIdx = -1;
     for (var i = 0; i < csvHeaders.length; i++) {
       var normH = csvHeaders[i].toLowerCase().replace(/[\s_-]/g, "");
-      if (normH === "wilayah" || normH === "kode" || (isPrelistSubSls && normH === "kodesubsls")) {
+      if (normH === "wilayah" || normH === "kode" || (isPrelistSubSls && normH === "kodesubsls") || (isMasterSubSls && (normH === "kodesubsls" || normH === "idsubsls" || normH === "id" || normH === "sls" || normH === "nmsls"))) {
         wilayahCsvIdx = i;
         break;
       }
     }
 
     if (wilayahCsvIdx === -1)
-      return isPrelistSubSls ? "Error: Kolom 'KODE_SUB_SLS' tidak ditemukan pada CSV." : "Error: Kolom 'Wilayah' tidak ditemukan pada CSV.";
+      return (isPrelistSubSls || isMasterSubSls) ? "Error: Kolom 'KODE_SUB_SLS' / 'SLS' tidak ditemukan pada CSV." : "Error: Kolom 'Wilayah' tidak ditemukan pada CSV.";
 
     // Baca header yang sudah ada di sheet
     var lastCol = sheet.getLastColumn();
