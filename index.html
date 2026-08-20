@@ -45,7 +45,9 @@
   <!-- Loading Spinner Overlay (Clean & Minimal) -->
   <div id="loading-overlay" class="loading-overlay">
     <div class="flex flex-col items-center gap-3.5">
-      <div class="w-9 h-9 border-2 border-[var(--border-color)] border-t-[var(--accent-color)] rounded-full animate-spin"></div>
+      <div
+        class="w-9 h-9 border-2 border-[var(--border-color)] border-t-[var(--accent-color)] rounded-full animate-spin">
+      </div>
       <p class="text-xs text-[var(--text-muted)] font-medium tracking-wide">Memuat data dashboard...</p>
     </div>
   </div>
@@ -199,8 +201,8 @@
               style="color:var(--text-muted)">(0,00%)</span>
           </div>
           <div class="border-l border-[var(--border-color)] pl-3">
-            <span
-              class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">NON BKU</span>
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">NON
+              BKU</span>
             <span id="stat-prelist-lainnya-total"
               class="font-bold text-[var(--text-secondary)] text-sm mt-0.5 block leading-tight">0</span>
             <span id="stat-prelist-lainnya-pct" class="text-[11px] font-semibold mt-0.5 block leading-tight"
@@ -501,20 +503,25 @@
         class="p-6 border-b border-[var(--border-color)] flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
           <div class="flex items-center gap-2.5 flex-wrap">
-            <h2 class="text-base font-bold tracking-tight text-[var(--text-primary)]">REKAPITULASI PRELIST & ASSIGNMENT BARU PER SUB SLS</h2>
-            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30">
+            <h2 class="text-base font-bold tracking-tight text-[var(--text-primary)]">REKAPITULASI PRELIST & ASSIGNMENT
+              BARU PER SUB SLS</h2>
+            <span
+              class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30">
               <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
               Sedang Dalam Penyesuaian
             </span>
           </div>
           <p class="text-xs text-[var(--text-muted)] mt-1">
-            Data dari SQL Lab Fasih — diurutkan per Kode Sub SLS. <span class="text-[var(--warning-color)] font-medium">(Tabel ini masih dalam tahap penyesuaian & verifikasi data)</span>
+            Data dari SQL Lab Fasih — diurutkan per Kode Sub SLS. <span
+              class="text-[var(--warning-color)] font-medium">(Tabel ini masih dalam tahap penyesuaian & verifikasi
+              data)</span>
           </p>
         </div>
         <div class="flex flex-wrap sm:flex-nowrap items-end gap-2.5 w-full lg:w-auto">
           <!-- Filter Kabupaten (Custom Dropdown) -->
           <div class="relative w-full sm:w-56">
-            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1 font-bold block">Kabupaten:</span>
+            <span
+              class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1 font-bold block">Kabupaten:</span>
             <div class="relative w-full" id="prelist-kab-dropdown-container">
               <button type="button" id="prelist-kab-btn" onclick="togglePrelistKabDropdown(event)"
                 class="impeccable-input w-full text-xs h-[34px] flex items-center justify-between px-3 cursor-pointer bg-[var(--bg-card)] border border-[var(--border-color)] rounded text-[var(--text-primary)] font-medium text-left">
@@ -536,7 +543,8 @@
           </div>
           <!-- Search Input -->
           <div class="relative w-full sm:w-56">
-            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1 font-bold block">Pencarian:</span>
+            <span
+              class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1 font-bold block">Pencarian:</span>
             <div class="relative w-full">
               <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
                 <svg class="h-3.5 w-3.5 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -592,7 +600,8 @@
             <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
               <th rowspan="3"
                 class="cursor-pointer pl-6 select-none align-middle text-left border-r border-[var(--border-color)] min-w-[260px]"
-                onclick="sortPrelistTable('kode')">Wilayah / SLS / Sub SLS <span id="sort-prelist-kode" class="sort-icon">↕</span>
+                onclick="sortPrelistTable('kode')">Wilayah / SLS / Sub SLS <span id="sort-prelist-kode"
+                  class="sort-icon">↕</span>
               </th>
               <th colspan="8" class="text-center bg-[rgba(163,201,168,0.06)] border-r border-[var(--border-color)]"
                 style="border-bottom: 2px solid var(--success-color);">Prelist</th>
@@ -734,7 +743,7 @@
   <!-- ===== DATA & LOGIC ===== -->
   <script>
     // URL Apps Script Web App Anda (Masukkan URL /exec Anda di sini)
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby-tWG17WEvhflJycjs8JRUwR5xMJbvWBFd_nW3wN7XAaRsNV7QBl91hcW_0ZYxTAFSmw/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxDiHTVYmwcx7ZbOmiEdiOpeYjxSEvG9gzqZCkqHf-VoSXVOyk5rZ3mjYefLpmZ8YDH8Q/exec";
 
     // Helper format angka Indonesia: titik pemisah ribuan, koma pemisah desimal
     function fmtNum(n) { return Number(n).toLocaleString('id-ID'); }
