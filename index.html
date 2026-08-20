@@ -506,7 +506,8 @@
       <!-- Footnote Table 1 -->
       <div class="px-6 py-3 border-t border-[var(--border-color)]">
         <p class="text-[10px] text-[var(--text-muted)] italic">
-          * Catatan: <strong>Total</strong> adalah <strong>Open + Draft + Submit</strong> (Approved tidak termasuk dalam penjumlahan Total karena status Approved merupakan bagian dari Submit).
+          * Catatan: <strong>Total</strong> adalah <strong>Open + Draft + Submit</strong> (Approved tidak termasuk dalam
+          penjumlahan Total karena status Approved merupakan bagian dari Submit).
         </p>
       </div>
 
@@ -752,7 +753,7 @@
   <!-- ===== DATA & LOGIC ===== -->
   <script>
     // URL Apps Script Web App Anda (Masukkan URL /exec Anda di sini)
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJf7e8CWQwQYpwFeeeRn8CFYn0dWbxpgrlmZNryhpv1zuoquuEiSON8D7n7tDERsa56g/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwf43PHbWGx5bndAb-Bj4qZ6mOnI8XCbT9MYMGvHqWCh2RTz5M141NsVPycmFjO84PqCQ/exec";
 
     // Helper format angka Indonesia: titik pemisah ribuan, koma pemisah desimal
     function fmtNum(n) { return Number(n).toLocaleString('id-ID'); }
@@ -1164,11 +1165,14 @@
       prelistBaselineByCode = new Map();
       const history = data['History - Rekap Prelist SubSLS'] || data['History - Rekap Prelist SE2026 - SubSLS'] || [];
       const currentDate = String(data.lastUpdated || '').substring(0, 10);
-      const dates = [...new Set(history.map(row => String(row['Tanggal Baseline'] || '').substring(0, 10)).filter(Boolean))]
+
+      const parseDate = (d) => String(d || '').trim().replace(/^['"]/, '').substring(0, 10);
+
+      const dates = [...new Set(history.map(row => parseDate(row['Tanggal Baseline'] || row['Tanggal'] || row.Tanggal_Baseline)).filter(Boolean))]
         .filter(date => !currentDate || date < currentDate).sort().reverse();
       if (!dates.length) return;
       prelistBaselineDate = dates[0];
-      const baselineRows = history.filter(row => String(row['Tanggal Baseline'] || '').substring(0, 10) === prelistBaselineDate);
+      const baselineRows = history.filter(row => parseDate(row['Tanggal Baseline'] || row['Tanggal'] || row.Tanggal_Baseline) === prelistBaselineDate);
       baselineRows.forEach(row => {
         const code = String(row.KODE_SUB_SLS ?? row.kode ?? '').trim();
         if (code) prelistBaselineByCode.set(code, buildPrelistRow(row));
@@ -2139,23 +2143,26 @@
 
       const getYesterdaySnapshotDate = (sheet, currentDataDate) => {
         if (!sheet || sheet.length === 0) return "";
-        const dates = [...new Set(sheet.map(row => {
-          const t = row.Tanggal || row.tanggal || "";
-          return typeof t === 'string' ? t.substring(0, 10) : "";
-        }).filter(Boolean))].sort().reverse();
+        const parseDate = (t) => {
+          if (!t) return "";
+          if (typeof t === 'string') return t.trim().replace(/^['"]/, '').substring(0, 10);
+          return "";
+        };
+        const dates = [...new Set(sheet.map(row => parseDate(row.Tanggal || row.tanggal)).filter(Boolean))].sort().reverse();
         if (dates.length === 0) return "";
         if (dates[0] === currentDataDate && dates.length > 1) {
           return dates[1];
         }
-        return dates[0];
+        if (dates[0] !== currentDataDate) {
+          return dates[0];
+        }
+        return ""; // Jika hanya ada data hari ini dan belum ada baseline kemarin
       };
 
       const filterSnapshotByDate = (sheet, targetDate) => {
-        if (!sheet) return [];
-        return sheet.filter(row => {
-          const t = row.Tanggal || row.tanggal || "";
-          return typeof t === 'string' && t.substring(0, 10) === targetDate;
-        });
+        if (!sheet || !targetDate) return [];
+        const parseDate = (t) => String(t || '').trim().replace(/^['"]/, '').substring(0, 10);
+        return sheet.filter(row => parseDate(row.Tanggal || row.tanggal) === targetDate);
       };
 
       const targetUmkmDate = getYesterdaySnapshotDate(snapshotUmkmSheet, dataDateStr);
@@ -2279,13 +2286,17 @@
 
             // Harian UMKM Kecamatan
             let umkmKemarin = 0;
-            const snapUmkm = snapUmkmMap.get(idKec);
-            if (snapUmkm) {
-              let sKemarin = 0;
-              ALL_SUBMIT_FIELDS.forEach(f => { sKemarin += Number(snapUmkm[f] || 0); });
-              umkmKemarin = sKemarin;
+            if (targetUmkmDate) {
+              const snapUmkm = snapUmkmMap.get(idKec);
+              if (snapUmkm) {
+                let sKemarin = 0;
+                ALL_SUBMIT_FIELDS.forEach(f => { sKemarin += Number(snapUmkm[f] || 0); });
+                umkmKemarin = sKemarin;
+              }
+              kData.harianUmkm = Math.max(0, kData.umkmSubmit - umkmKemarin);
+            } else {
+              kData.harianUmkm = 0;
             }
-            kData.harianUmkm = Math.max(0, kData.umkmSubmit - umkmKemarin);
 
             // UB Kecamatan
             if (ubKecSheet) {
@@ -2304,13 +2315,17 @@
 
             // Harian UB Kecamatan
             let ubKemarin = 0;
-            const snapUb = snapUbMap.get(idKec);
-            if (snapUb) {
-              let sKemarin = 0;
-              ALL_SUBMIT_FIELDS.forEach(f => { sKemarin += Number(snapUb[f] || 0); });
-              ubKemarin = sKemarin;
+            if (targetUbDate) {
+              const snapUb = snapUbMap.get(idKec);
+              if (snapUb) {
+                let sKemarin = 0;
+                ALL_SUBMIT_FIELDS.forEach(f => { sKemarin += Number(snapUb[f] || 0); });
+                ubKemarin = sKemarin;
+              }
+              kData.harianUb = Math.max(0, kData.ubSubmit - ubKemarin);
+            } else {
+              kData.harianUb = 0;
             }
-            kData.harianUb = Math.max(0, kData.ubSubmit - ubKemarin);
 
             // Progres Kecamatan
             const totalTarget = kData.umkmTotal + kData.ubTotal;

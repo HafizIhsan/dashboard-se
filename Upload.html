@@ -391,15 +391,7 @@
             if (extraMessage) appendLog(extraMessage, 'info');
           };
 
-          if (sheetTarget === 'Rekap Prelist SubSLS' && successCount > 0) {
-            appendLog('Menyimpan rekaman baseline harian...', 'info');
-            google.script.run
-              .withSuccessHandler(finishMessage)
-              .withFailureHandler(function(err) { finishMessage(`Baseline gagal disimpan: ${err.message}`); })
-              .recordPrelistBaseline(sheetTarget);
-          } else {
-            finishMessage();
-          }
+          finishMessage();
           return;
         }
 

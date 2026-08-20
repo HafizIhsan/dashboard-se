@@ -134,15 +134,19 @@ function recordDailyProgress() {
 
 function calculateDaily(ss, config) {
   const source = getSheetByNameCI(ss, config.sourceSheet);
-  const snapshot = getSheetByNameCI(ss, config.snapshotSheet);
+  let snapshot = getSheetByNameCI(ss, config.snapshotSheet);
 
-  if (!source || !snapshot) {
+  if (!source) {
     Logger.log("❌ Sheet tidak ditemukan: " + config.sourceSheet);
-    return;
+    return false;
+  }
+  if (!snapshot) {
+    snapshot = ss.insertSheet(config.snapshotSheet);
   }
 
   // 1. Baca data sumber (Kecamatan / Sub SLS)
   const sourceData = getSheetAsObjects(source);
+  if (sourceData.length === 0) return false;
 
   // 2. Baca snapshot kemarin
   const snapshotData = getSheetAsObjects(snapshot);
@@ -152,49 +156,35 @@ function calculateDaily(ss, config) {
     if (rawVal instanceof Date) {
       return Utilities.formatDate(rawVal, "Asia/Jakarta", "yyyy-MM-dd");
     }
-    return String(rawVal).trim().substring(0, 10);
+    const s = String(rawVal).trim().replace(/^['"]/, "");
+    return s.substring(0, 10);
   }
 
-  let latestPastDate = "";
-  let hasTodaySnapshot = false;
-
+  // Cari tanggal kemarin (terbaru sebelum hari ini)
+  const distinctPastDates = [];
   snapshotData.forEach((row) => {
     let rowDate = getDateString(getValCI(row, "Tanggal"));
-    if (rowDate === config.today) {
-      hasTodaySnapshot = true;
-    } else if (rowDate && rowDate < config.today && rowDate > latestPastDate) {
-      latestPastDate = rowDate;
+    if (rowDate && rowDate < config.today && distinctPastDates.indexOf(rowDate) === -1) {
+      distinctPastDates.push(rowDate);
     }
   });
+  distinctPastDates.sort().reverse();
+  const latestPastDate = distinctPastDates.length > 0 ? distinctPastDates[0] : "";
 
-  const latestPastMap = {};
-  const currentTodaySnapshotMap = {};
-  let firstRowToday = -1;
-
-  snapshotData.forEach((row, idx) => {
-    let rowDate = getDateString(getValCI(row, "Tanggal"));
-    let kode = String(getValCI(row, "Wilayah") || "").trim();
-    let vals = {
-      submit: Number(
-        getValCI(row, "Submit") || getValCI(row, "Submit Kemarin") || 0,
-      ),
-      open: Number(getValCI(row, "Open") || 0),
-      draft: Number(getValCI(row, "Draft") || 0),
-    };
-
-    if (!rowDate || rowDate === latestPastDate) {
-      latestPastMap[kode] = vals;
+  // Filter baris yang dipertahankan: HANYA tanggal kemarin (latestPastDate) -> Maksimal 2 hari bersama hari ini
+  const retainedSnapshotRows = [];
+  const rawSnapValues = snapshot.getDataRange().getValues();
+  if (rawSnapValues.length >= 2 && latestPastDate) {
+    for (let r = 1; r < rawSnapValues.length; r++) {
+      const rDate = getDateString(rawSnapValues[r][0]);
+      if (rDate === latestPastDate) {
+        retainedSnapshotRows.push(rawSnapValues[r]);
+      }
     }
+  }
 
-    if (rowDate === config.today) {
-      currentTodaySnapshotMap[kode] = vals;
-      if (firstRowToday === -1) firstRowToday = idx + 2;
-    }
-  });
-
-  // 3. Agregasi submit, open, draft hari ini per kecamatan (jika baris berupa Sub SLS)
+  // 3. Agregasi submit, open, draft hari ini per kecamatan (atau per wilayah)
   const todayMap = {};
-
   sourceData.forEach((row) => {
     const kode = extractKecCode(row);
     if (!kode) return;
@@ -210,68 +200,26 @@ function calculateDaily(ss, config) {
   });
 
   const allKodes = Object.keys(todayMap);
+  if (allKodes.length === 0) return false;
 
-  let hasChanges = false;
-  const mapToCompare = hasTodaySnapshot
-    ? currentTodaySnapshotMap
-    : latestPastMap;
-
-  for (let i = 0; i < allKodes.length; i++) {
-    const kode = allKodes[i];
-    const todayVals = todayMap[kode];
-    const compVals = mapToCompare[kode] || { submit: 0, open: 0, draft: 0 };
-
-    if (
-      todayVals.submit !== compVals.submit ||
-      todayVals.open !== compVals.open ||
-      todayVals.draft !== compVals.draft
-    ) {
-      hasChanges = true;
-      break;
-    }
-  }
-
-  if (!hasChanges) {
-    Logger.log(
-      "⏩ Tidak ada perubahan data untuk " +
-        config.sourceSheet +
-        ", proses dilewati.",
-    );
-    return false;
-  }
-
-  // 4. Update snapshot history
+  // 4. Susun baris hari ini
   const snapshotHeaders = ["Tanggal", "Wilayah", "Submit", "Open", "Draft"];
-  const snapshotRows = allKodes.map((kode) => {
+  const newSnapshotRows = allKodes.map((kode) => {
     const vals = todayMap[kode];
-    return ["'" + config.timestamp, kode, vals.submit, vals.open, vals.draft];
+    return ["'" + config.timestamp, "'" + kode, vals.submit, vals.open, vals.draft];
   });
 
-  if (snapshot.getLastRow() === 0) {
-    snapshot
-      .getRange(1, 1, 1, snapshotHeaders.length)
-      .setValues([snapshotHeaders]);
-  }
+  // 5. Tulis data bersih (Header + Retained Yesterday + New Today) -> Total max 2 hari!
+  const finalSnapshotData = [snapshotHeaders].concat(retainedSnapshotRows, newSnapshotRows);
+  snapshot.clear();
+  snapshot
+    .getRange(1, 1, finalSnapshotData.length, snapshotHeaders.length)
+    .setValues(finalSnapshotData);
 
-  if (snapshotRows.length > 0) {
-    if (firstRowToday !== -1) {
-      const lastRow = snapshot.getLastRow();
-      const numRowsToClear = lastRow - firstRowToday + 1;
-      if (numRowsToClear > 0) {
-        snapshot
-          .getRange(firstRowToday, 1, numRowsToClear, snapshotHeaders.length)
-          .clearContent();
-      }
-      snapshot
-        .getRange(firstRowToday, 1, snapshotRows.length, snapshotHeaders.length)
-        .setValues(snapshotRows);
-    } else {
-      const lastRow = snapshot.getLastRow();
-      snapshot
-        .getRange(lastRow + 1, 1, snapshotRows.length, snapshotHeaders.length)
-        .setValues(snapshotRows);
-    }
-  }
+  // Format kolom Wilayah sebagai teks
+  snapshot
+    .getRange(2, 2, finalSnapshotData.length - 1, 1)
+    .setNumberFormat("@");
 
   return true;
 }
@@ -514,8 +462,21 @@ function doGet() {
             String(getValCI(row, "iddesa") || getValCI(row, "kode_desa") || getValCI(row, "KODE_DESA") || getValCI(row, "id") || getValCI(row, "kode") || "").trim();
           mappedRow["nmdesa"] =
             String(getValCI(row, "nmdesa") || getValCI(row, "nama_desa") || getValCI(row, "NAMA_DESA") || getValCI(row, "desa") || getValCI(row, "DESA") || getValCI(row, "nama") || "").trim();
-        } else if (name === "Rekap Prelist SubSLS" || name === "Rekap Prelist SE2026 - SubSLS") {
-          mappedRow["KODE_SUB_SLS"] = getValCI(row, "KODE_SUB_SLS") || "";
+        } else if (
+          name === "Rekap Prelist SubSLS" ||
+          name === "Rekap Prelist SE2026 - SubSLS" ||
+          name === "History - Rekap Prelist SubSLS" ||
+          name === "History - Rekap Prelist SE2026 - SubSLS"
+        ) {
+          if (name.indexOf("History") > -1) {
+            var rawTgl = getValCI(row, "Tanggal Baseline") || getValCI(row, "Tanggal") || getValCI(row, "tanggal") || "";
+            if (rawTgl instanceof Date) {
+              mappedRow["Tanggal Baseline"] = Utilities.formatDate(rawTgl, "Asia/Jakarta", "yyyy-MM-dd HH:mm:ss");
+            } else {
+              mappedRow["Tanggal Baseline"] = String(rawTgl).trim().replace(/^['"]/, "");
+            }
+          }
+          mappedRow["KODE_SUB_SLS"] = String(getValCI(row, "KODE_SUB_SLS") || getValCI(row, "kode_sub_sls") || getValCI(row, "kode") || "").trim();
           mappedRow["JUMLAH_PRELIST"] = Number(getValCI(row, "JUMLAH_PRELIST") || 0);
           mappedRow["JUMLAH_PRELIST_OPEN_DRAFT"] = Number(getValCI(row, "JUMLAH_PRELIST_OPEN_DRAFT") || 0);
           mappedRow["JUMLAH_PRELIST_SELAIN_OPEN_DRAFT"] = Number(getValCI(row, "JUMLAH_PRELIST_SELAIN_OPEN_DRAFT") || 0);
@@ -560,7 +521,7 @@ function doGet() {
 }
 
 // ============================================================
-// HELPER: Snapshot Baseline Harian Rekap Prelist SubSLS
+// HELPER: Snapshot Baseline Harian Rekap Prelist SubSLS (Maksimal 2 Hari)
 // ============================================================
 function recordPrelistBaseline(sheetName) {
   if (sheetName !== "Rekap Prelist SubSLS" && sheetName !== "Rekap Prelist SE2026 - SubSLS") {
@@ -596,14 +557,37 @@ function recordPrelistBaseline(sheetName) {
     "yyyy-MM-dd",
   );
 
+  function parseDateStr(val) {
+    if (!val) return "";
+    if (val instanceof Date) {
+      return Utilities.formatDate(val, "Asia/Jakarta", "yyyy-MM-dd");
+    }
+    const s = String(val).trim().replace(/^['"]/, "");
+    return s.substring(0, 10);
+  }
+
   const existingHistory = historySheet.getDataRange().getValues();
   let retainedRows = [];
 
   if (existingHistory.length >= 2) {
+    // Cari tanggal kemarin (terbaru sebelum hari ini)
+    const distinctDates = [];
     for (let r = 1; r < existingHistory.length; r++) {
-      const rowDate = String(existingHistory[r][0] || "").substring(0, 10);
-      if (rowDate && rowDate !== todayDate) {
-        retainedRows.push(existingHistory[r]);
+      const d = parseDateStr(existingHistory[r][0]);
+      if (d && d < todayDate && distinctDates.indexOf(d) === -1) {
+        distinctDates.push(d);
+      }
+    }
+    distinctDates.sort().reverse();
+    const yesterdayDate = distinctDates.length > 0 ? distinctDates[0] : "";
+
+    // Pertahankan HANYA data kemarin (sehingga bersama hari ini total maksimal 2 hari)
+    if (yesterdayDate) {
+      for (let r = 1; r < existingHistory.length; r++) {
+        const d = parseDateStr(existingHistory[r][0]);
+        if (d === yesterdayDate) {
+          retainedRows.push(existingHistory[r]);
+        }
       }
     }
   }
@@ -628,7 +612,7 @@ function recordPrelistBaseline(sheetName) {
       .setNumberFormat("@");
   }
 
-  return "OK: Baseline prelist harian berhasil disimpan (" + newRows.length + " baris).";
+  return "OK: Baseline prelist harian berhasil disimpan (" + newRows.length + " baris, retensi 2 hari).";
 }
 
 // ============================================================
