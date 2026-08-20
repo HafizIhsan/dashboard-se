@@ -42,13 +42,20 @@
 
 <body class="min-h-screen relative p-4 md:p-8 font-sans selection:bg-neutral-800 selection:text-amber-200">
 
-  <!-- Loading Spinner Overlay (Clean & Minimal) -->
+  <!-- Loading Spinner Overlay (Clean & Minimal with Progress) -->
   <div id="loading-overlay" class="loading-overlay">
-    <div class="flex flex-col items-center gap-3.5">
-      <div
-        class="w-9 h-9 border-2 border-[var(--border-color)] border-t-[var(--accent-color)] rounded-full animate-spin">
+    <div class="flex flex-col items-center gap-3">
+      <!-- Spinner with centered percentage number -->
+      <div class="relative w-12 h-12 flex items-center justify-center">
+        <div class="w-12 h-12 border-2 border-[var(--border-color)] border-t-[var(--accent-color)] rounded-full animate-spin"></div>
+        <span id="loading-pct" class="absolute text-[11px] font-mono font-bold text-[var(--accent-color)]">0%</span>
       </div>
-      <p class="text-xs text-[var(--text-muted)] font-medium tracking-wide">Memuat data dashboard...</p>
+      <!-- Label -->
+      <p id="loading-text" class="text-xs text-[var(--text-muted)] font-medium tracking-wide">Memuat data dashboard...</p>
+      <!-- Slim Mini Progress Bar -->
+      <div class="w-36 h-1 bg-[var(--border-color)]/40 rounded-full overflow-hidden">
+        <div id="loading-bar" class="h-full bg-[var(--accent-color)] rounded-full transition-all duration-200" style="width: 0%;"></div>
+      </div>
     </div>
   </div>
 
@@ -2356,18 +2363,45 @@
       if (typeof updatePrelistSummaryCard === 'function') updatePrelistSummaryCard();
     }
 
-    // ====== Loading Overlay Controller (Clean & Minimal) ======
+    // ====== Loading Overlay Controller (Clean & Minimal with Progress) ======
+    let loadingProgressTimer = null;
+    let currentLoadingPct = 0;
+
+    function setLoadingProgress(pct, text) {
+      currentLoadingPct = Math.min(100, Math.max(0, pct));
+      const pctEl = document.getElementById('loading-pct');
+      const barEl = document.getElementById('loading-bar');
+      const textEl = document.getElementById('loading-text');
+      if (pctEl) pctEl.textContent = `${Math.round(currentLoadingPct)}%`;
+      if (barEl) barEl.style.width = `${currentLoadingPct}%`;
+      if (text && textEl) textEl.textContent = text;
+    }
+
     function startLoadingProgress() {
       const overlay = document.getElementById('loading-overlay');
       if (overlay) overlay.classList.remove('hidden');
+      setLoadingProgress(5, 'Menghubungkan ke server...');
+
+      if (loadingProgressTimer) clearInterval(loadingProgressTimer);
+      loadingProgressTimer = setInterval(() => {
+        if (currentLoadingPct < 88) {
+          const increment = Math.random() * 7 + 3;
+          setLoadingProgress(currentLoadingPct + increment, currentLoadingPct > 40 ? 'Mengunduh data dashboard...' : 'Menghubungkan ke server...');
+        }
+      }, 200);
     }
 
     function finishLoadingProgress() {
+      if (loadingProgressTimer) {
+        clearInterval(loadingProgressTimer);
+        loadingProgressTimer = null;
+      }
+      setLoadingProgress(100, 'Selesai');
       const overlay = document.getElementById('loading-overlay');
       if (overlay) {
         setTimeout(() => {
           overlay.classList.add('hidden');
-        }, 150);
+        }, 200);
       }
     }
 
