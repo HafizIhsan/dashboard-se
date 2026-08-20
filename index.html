@@ -458,10 +458,10 @@
                 onclick="sortTable('umkmOpen')">Open <span id="sort-indicator-umkmOpen">↕</span></th>
               <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
                 onclick="sortTable('umkmDraft')">Draft <span id="sort-indicator-umkmDraft">↕</span></th>
-              <th class="text-right bg-[rgba(163,201,168,0.02)] text-[var(--accent-color)] cursor-pointer select-none"
-                onclick="sortTable('umkmApproved')">Approved <span id="sort-indicator-umkmApproved">↕</span></th>
               <th class="text-right bg-[rgba(163,201,168,0.02)] text-[var(--success-color)] cursor-pointer select-none"
                 onclick="sortTable('umkmSubmit')">Submit <span id="sort-indicator-umkmSubmit">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] text-[var(--accent-color)] cursor-pointer select-none"
+                onclick="sortTable('umkmApproved')">Approved <span id="sort-indicator-umkmApproved">↕</span></th>
               <th id="th-umkm-total" class="text-right bg-[rgba(163,201,168,0.02)] font-bold cursor-pointer select-none"
                 onclick="sortTable('umkmTotal')">Total <span id="sort-indicator-umkmTotal">↕</span></th>
               <th id="th-umkm-pct"
@@ -473,10 +473,10 @@
                 Open <span id="sort-indicator-ubOpen">↕</span></th>
               <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
                 onclick="sortTable('ubDraft')">Draft <span id="sort-indicator-ubDraft">↕</span></th>
-              <th class="text-right bg-[rgba(229,185,116,0.02)] text-[var(--accent-color)] cursor-pointer select-none"
-                onclick="sortTable('ubApproved')">Approved <span id="sort-indicator-ubApproved">↕</span></th>
               <th class="text-right bg-[rgba(229,185,116,0.02)] text-[var(--success-color)] cursor-pointer select-none"
                 onclick="sortTable('ubSubmit')">Submit <span id="sort-indicator-ubSubmit">↕</span></th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] text-[var(--accent-color)] cursor-pointer select-none"
+                onclick="sortTable('ubApproved')">Approved <span id="sort-indicator-ubApproved">↕</span></th>
               <th id="th-ub-total" class="text-right bg-[rgba(229,185,116,0.02)] font-bold cursor-pointer select-none"
                 onclick="sortTable('ubTotal')">Total <span id="sort-indicator-ubTotal">↕</span></th>
               <th id="th-ub-pct"
@@ -2615,15 +2615,15 @@
         
         <td class="text-right text-neutral-400">${fmtNum(sumData.umkmOpen)}</td>
         <td class="text-right text-[var(--warning-color)]">${fmtNum(sumData.umkmDraft)}</td>
-        <td class="text-right text-[var(--accent-color)] font-semibold">${fmtNum(sumData.umkmApproved || 0)}</td>
         <td class="text-right text-[var(--success-color)]">${fmtNum(sumData.umkmSubmit)}</td>
+        <td class="text-right text-[var(--accent-color)] font-semibold">${fmtNum(sumData.umkmApproved || 0)}</td>
         <td class="text-right text-[var(--text-primary)] ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(sumData.umkmTotal)}</td>
         ${showPct ? `<td class="text-right border-r border-[var(--border-color)] font-bold" style="color: ${getProgressColor(provUmkmProgress)}">${fmtPct(provUmkmProgress)}% <span class="text-[10px] font-semibold block mt-0.5" style="color: ${getDailyColor(provUmkmDailyPct)}">(+${fmtPct(provUmkmDailyPct)}%)</span></td>` : ''}
         
         <td class="text-right text-neutral-400">${fmtNum(sumData.ubOpen)}</td>
         <td class="text-right text-[var(--warning-color)]">${fmtNum(sumData.ubDraft)}</td>
-        <td class="text-right text-[var(--accent-color)] font-semibold">${fmtNum(sumData.ubApproved || 0)}</td>
         <td class="text-right text-[var(--success-color)]">${fmtNum(sumData.ubSubmit)}</td>
+        <td class="text-right text-[var(--accent-color)] font-semibold">${fmtNum(sumData.ubApproved || 0)}</td>
         <td class="text-right text-[var(--text-primary)] ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(sumData.ubTotal)}</td>
         ${showPct ? `<td class="text-right border-r border-[var(--border-color)] font-bold" style="color: ${getProgressColor(provUbProgress)}">${fmtPct(provUbProgress)}% <span class="text-[10px] font-semibold block mt-0.5" style="color: ${getDailyColor(provUbDailyPct)}">(+${fmtPct(provUbDailyPct)}%)</span></td>` : ''}
         
@@ -2663,15 +2663,15 @@
           
           <td class="text-right text-[var(--text-muted)]">${fmtNum(w.umkmOpen)}</td>
           <td class="text-right text-[var(--warning-color)]">${fmtNum(w.umkmDraft)}</td>
-          <td class="text-right text-[var(--accent-color)] font-semibold">${fmtNum(w.umkmApproved || 0)}</td>
           <td class="text-right text-[var(--success-color)]">${fmtNum(w.umkmSubmit)}</td>
+          <td class="text-right text-[var(--accent-color)] font-semibold">${fmtNum(w.umkmApproved || 0)}</td>
           <td class="text-right font-semibold ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(w.umkmTotal)}</td>
           ${showPct ? `<td class="text-right border-r border-[var(--border-color)] font-bold" style="color: ${getProgressColor(wUmkmProgress)}">${fmtPct(wUmkmProgress)}% <span class="text-[10px] font-semibold block mt-0.5" style="color: ${getDailyColor(wUmkmDailyPct)}">(+${fmtPct(wUmkmDailyPct)}%)</span></td>` : ''}
           
           <td class="text-right text-[var(--text-muted)]">${fmtNum(w.ubOpen)}</td>
           <td class="text-right text-[var(--warning-color)]">${fmtNum(w.ubDraft)}</td>
-          <td class="text-right text-[var(--accent-color)] font-semibold">${fmtNum(w.ubApproved || 0)}</td>
           <td class="text-right text-[var(--success-color)]">${fmtNum(w.ubSubmit)}</td>
+          <td class="text-right text-[var(--accent-color)] font-semibold">${fmtNum(w.ubApproved || 0)}</td>
           <td class="text-right font-semibold ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(w.ubTotal)}</td>
           ${showPct ? `<td class="text-right border-r border-[var(--border-color)] font-bold" style="color: ${getProgressColor(wUbProgress)}">${fmtPct(wUbProgress)}% <span class="text-[10px] font-semibold block mt-0.5" style="color: ${getDailyColor(wUbDailyPct)}">(+${fmtPct(wUbDailyPct)}%)</span></td>` : ''}
           
@@ -2702,15 +2702,15 @@
               
               <td class="text-right py-2 pr-2 pl-4 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.umkmOpen)}</td>
               <td class="text-right py-2 px-2 text-[var(--warning-color)] text-[13px]">${fmtNum(kec.umkmDraft)}</td>
-              <td class="text-right py-2 px-2 text-[var(--accent-color)] text-[13px] font-semibold">${fmtNum(kec.umkmApproved || 0)}</td>
               <td class="text-right py-2 px-2 text-[var(--success-color)] text-[13px]">${fmtNum(kec.umkmSubmit)}</td>
+              <td class="text-right py-2 px-2 text-[var(--accent-color)] text-[13px] font-semibold">${fmtNum(kec.umkmApproved || 0)}</td>
               <td class="text-right py-2 px-2 font-semibold text-[13px] ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(kec.umkmTotal)}</td>
               ${showPct ? `<td class="text-right py-2 px-2 border-r border-[var(--border-color)] font-bold text-[13px] text-[var(--accent-color)]">${fmtPct(kUmkmProgress)}%</td>` : ''}
               
               <td class="text-right py-2 pr-2 pl-4 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.ubOpen)}</td>
               <td class="text-right py-2 px-2 text-[var(--warning-color)] text-[13px]">${fmtNum(kec.ubDraft)}</td>
-              <td class="text-right py-2 px-2 text-[var(--accent-color)] text-[13px] font-semibold">${fmtNum(kec.ubApproved || 0)}</td>
               <td class="text-right py-2 px-2 text-[var(--success-color)] text-[13px]">${fmtNum(kec.ubSubmit)}</td>
+              <td class="text-right py-2 px-2 text-[var(--accent-color)] text-[13px] font-semibold">${fmtNum(kec.ubApproved || 0)}</td>
               <td class="text-right py-2 px-2 font-semibold text-[13px] ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(kec.ubTotal)}</td>
               ${showPct ? `<td class="text-right py-2 px-2 border-r border-[var(--border-color)] font-bold text-[13px] text-[var(--accent-color)]">${fmtPct(kUbProgress)}%</td>` : ''}
               
@@ -2904,7 +2904,7 @@
       const mode = document.getElementById('progress-mode-table') ? document.getElementById('progress-mode-table').value : 'fasih';
 
       // Define CSV header
-      let csv = 'Kode,Wilayah,Prelist Awal-UMKM,Prelist Awal-UB,Prelist Awal-Keluarga,Total Prelist Awal,[SE2026] Open,[SE2026] Draft,[SE2026] Approved,[SE2026] Submit,[SE2026] Total,[SE2026] %,[SE2026-UB] Open,[SE2026-UB] Draft,[SE2026-UB] Approved,[SE2026-UB] Submit,[SE2026-UB] Total,[SE2026-UB] %,% Progres Akumulatif\n';
+      let csv = 'Kode,Wilayah,Prelist Awal-UMKM,Prelist Awal-UB,Prelist Awal-Keluarga,Total Prelist Awal,[SE2026] Open,[SE2026] Draft,[SE2026] Submit,[SE2026] Approved,[SE2026] Total,[SE2026] %,[SE2026-UB] Open,[SE2026-UB] Draft,[SE2026-UB] Submit,[SE2026-UB] Approved,[SE2026-UB] Total,[SE2026-UB] %,% Progres Akumulatif\n';
 
       const escape = (str) => `"${String(str).replace(/"/g, '""')}"`;
 
@@ -2925,7 +2925,7 @@
         const tKel = d.targetKeluarga || 0;
         const tTot = tUmkm + tUb + tKel;
 
-        return `${kode},${escape(nama)},${tUmkm},${tUb},${tKel},${tTot},${d.umkmOpen},${d.umkmDraft},${d.umkmApproved || 0},${d.umkmSubmit},${d.umkmTotal},${mode === 'fasih' ? umkmProgress.toFixed(2) : '-'},${d.ubOpen},${d.ubDraft},${d.ubApproved || 0},${d.ubSubmit},${d.ubTotal},${mode === 'fasih' ? ubProgress.toFixed(2) : '-'},${overallProgress.toFixed(2)}\n`;
+        return `${kode},${escape(nama)},${tUmkm},${tUb},${tKel},${tTot},${d.umkmOpen},${d.umkmDraft},${d.umkmSubmit},${d.umkmApproved || 0},${d.umkmTotal},${mode === 'fasih' ? umkmProgress.toFixed(2) : '-'},${d.ubOpen},${d.ubDraft},${d.ubSubmit},${d.ubApproved || 0},${d.ubTotal},${mode === 'fasih' ? ubProgress.toFixed(2) : '-'},${overallProgress.toFixed(2)}\n`;
       };
 
       // Province row
