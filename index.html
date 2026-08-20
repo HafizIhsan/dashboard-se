@@ -200,7 +200,7 @@
           </div>
           <div class="border-l border-[var(--border-color)] pl-3">
             <span
-              class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">LAINNYA*</span>
+              class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">NON BKU</span>
             <span id="stat-prelist-lainnya-total"
               class="font-bold text-[var(--text-secondary)] text-sm mt-0.5 block leading-tight">0</span>
             <span id="stat-prelist-lainnya-pct" class="text-[11px] font-semibold mt-0.5 block leading-tight"
@@ -616,7 +616,7 @@
                 Usaha
               </th>
               <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">
-                Lainnya*</th>
+                Non BKU</th>
               <th colspan="2"
                 class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">
                 Total</th>
@@ -714,8 +714,7 @@
       <!-- Footnote -->
       <div class="px-6 py-3 border-t border-[var(--border-color)]">
         <p class="text-[10px] text-[var(--text-muted)] italic">
-          <strong>* Lainnya</strong>: Gabungan dari kategori <strong>Non-BKU</strong> dan <strong>Dummy</strong>.
-          &nbsp;|&nbsp; Sumber data: SQL Lab Fasih.
+          Sumber data: SQL Lab Fasih.
           &nbsp;|&nbsp; <span id="prelist-baseline-info">Baseline harian belum tersedia.</span>
           &nbsp;|&nbsp; <strong>Jml</strong> = Jumlah, <strong>SUB %</strong> = Persentase Submit.
         </p>
@@ -1167,8 +1166,7 @@
 
     function buildPrelistRow(row) {
       const nonBku = prelistNumber(row.JUMLAH_NONBKU_PRELIST);
-      const dummy = prelistNumber(row.JUMLAH_DUMMY);
-      const lainnyaJml = nonBku + dummy;
+      const lainnyaJml = nonBku; // Dummy tidak dihitung, hanya Non BKU
       const kode = String(row.KODE_SUB_SLS ?? row.kode ?? '').trim();
       const namaSls = masterSubSlsMap.get(kode) || String(row.NAMA_SLS || row.nama_sls || row.SLS || row.nmsls || '').trim();
 
@@ -1180,8 +1178,9 @@
 
       const lainnyaSubmit = prelistNumber(row.NONBKU_PRELIST_SUBMIT);
 
-      const prelistJml = prelistNumber(row.JUMLAH_PRELIST);
-      const prelistSubmit = prelistNumber(row.JUMLAH_PRELIST_SELAIN_OPEN_DRAFT);
+      // Prelist Total = Keluarga + Usaha + Non BKU (Dummy tidak dihitung)
+      const prelistJml = klgPrelistJml + usahaPrelistJml + lainnyaJml;
+      const prelistSubmit = klgPrelistSubmit + usahaPrelistSubmit + lainnyaSubmit;
 
       const glKlgJml = prelistNumber(row.JUMLAH_KELUARGA_GENERAL_LINK);
       const glKlgSubmit = prelistNumber(row.KELUARGA_GENERAL_LINK_SUBMIT);
@@ -1440,7 +1439,7 @@
         <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
           <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Keluarga</th>
           <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Usaha</th>
-          <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Lainnya*</th>
+          <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Non BKU</th>
           <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">Total</th>
           <th colspan="2" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Keluarga</th>
           <th colspan="2" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Usaha</th>
@@ -1746,7 +1745,7 @@
         'Tingkat', 'Kode Wilayah / Sub SLS', 'Nama Wilayah / SLS',
         'Keluarga Prelist Jml', 'Keluarga Prelist %',
         'Usaha Prelist Jml', 'Usaha Prelist %',
-        'Lainnya Prelist Jml', 'Lainnya Prelist %',
+        'Non BKU Prelist Jml', 'Non BKU Prelist %',
         'Total Prelist Jml', 'Total Prelist %',
         'GL Keluarga Jml', 'GL Keluarga %',
         'GL Usaha Jml', 'GL Usaha %',
