@@ -329,7 +329,9 @@ function doGet() {
     "Sensus Ekonomi 2026 - UB",
     "master-kec",
     "master-subsls",
+    "master-desa",
     "Master SLS",
+    "Master Desa",
     "Rekap Prelist SubSLS",
     "History - Rekap Prelist SubSLS"
   ];
@@ -494,11 +496,24 @@ function doGet() {
         } else if (name === "master-kec") {
           mappedRow["idkec"] = getValCI(row, "idkec") || getValCI(row, "id");
           mappedRow["nmkec"] = getValCI(row, "nmkec") || getValCI(row, "nama");
-        } else if (name === "master-subsls" || name === "Master SLS" || name === "Master - SubSLS") {
+        } else if (name === "master-subsls" || name === "Master SLS" || name === "Master - SubSLS" || name === "master_subsls") {
           mappedRow["idsubsls"] =
-            getValCI(row, "idsubsls") || getValCI(row, "KODE_SUB_SLS") || getValCI(row, "kode_sub_sls") || getValCI(row, "id_sub_sls") || getValCI(row, "id") || getValCI(row, "kode") || getValCI(row, "wilayah") || "";
+            String(getValCI(row, "idsubsls") || getValCI(row, "KODE_SUB_SLS") || getValCI(row, "kode_sub_sls") || getValCI(row, "id_sub_sls") || getValCI(row, "id") || getValCI(row, "kode") || getValCI(row, "wilayah") || "").trim();
           mappedRow["nmsls"] =
-            getValCI(row, "nmsls") || getValCI(row, "SLS") || getValCI(row, "nama_sls") || getValCI(row, "NAMA_SLS") || getValCI(row, "nama") || "";
+            String(getValCI(row, "nmsls") || getValCI(row, "SLS") || getValCI(row, "nama_sls") || getValCI(row, "NAMA_SLS") || getValCI(row, "nama") || "").trim();
+          mappedRow["iddesa"] =
+            String(getValCI(row, "iddesa") || getValCI(row, "kode_desa") || getValCI(row, "KODE_DESA") || getValCI(row, "id_desa") || (mappedRow["idsubsls"].length >= 10 ? mappedRow["idsubsls"].substring(0, 10) : "")).trim();
+          mappedRow["nmdesa"] =
+            String(getValCI(row, "nmdesa") || getValCI(row, "nama_desa") || getValCI(row, "NAMA_DESA") || getValCI(row, "desa") || getValCI(row, "DESA") || getValCI(row, "Kelurahan") || getValCI(row, "KELURAHAN") || "").trim();
+          mappedRow["idkec"] =
+            String(getValCI(row, "idkec") || getValCI(row, "kode_kec") || getValCI(row, "KODE_KEC") || getValCI(row, "id_kec") || (mappedRow["idsubsls"].length >= 7 ? mappedRow["idsubsls"].substring(0, 7) : "")).trim();
+          mappedRow["nmkec"] =
+            String(getValCI(row, "nmkec") || getValCI(row, "nama_kec") || getValCI(row, "NAMA_KEC") || getValCI(row, "kec") || getValCI(row, "KEC") || getValCI(row, "Kecamatan") || getValCI(row, "KECAMATAN") || "").trim();
+        } else if (name === "master-desa" || name === "Master Desa" || name === "master_desa") {
+          mappedRow["iddesa"] =
+            String(getValCI(row, "iddesa") || getValCI(row, "kode_desa") || getValCI(row, "KODE_DESA") || getValCI(row, "id") || getValCI(row, "kode") || "").trim();
+          mappedRow["nmdesa"] =
+            String(getValCI(row, "nmdesa") || getValCI(row, "nama_desa") || getValCI(row, "NAMA_DESA") || getValCI(row, "desa") || getValCI(row, "DESA") || getValCI(row, "nama") || "").trim();
         } else if (name === "Rekap Prelist SubSLS" || name === "Rekap Prelist SE2026 - SubSLS") {
           mappedRow["KODE_SUB_SLS"] = getValCI(row, "KODE_SUB_SLS") || "";
           mappedRow["JUMLAH_PRELIST"] = Number(getValCI(row, "JUMLAH_PRELIST") || 0);
