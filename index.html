@@ -1958,27 +1958,49 @@
 
     // Fungsi utama yang memproses data JSON (baik dari cache maupun dari fetch)
     function processAndRenderData(data) {
-      const masterSubSlsRaw = data["master-subsls"] || data["Master SLS"] || [];
+      const masterSubSlsRaw = data["master-subsls"] || data["Master SLS"] || data["Master - SubSLS"] || data["master_subsls"] || [];
       masterSubSlsMap = new Map();
       masterDesaMap = new Map();
       masterKecMap = new Map();
 
       if (Array.isArray(masterSubSlsRaw)) {
         masterSubSlsRaw.forEach(row => {
-          const code = String(row.idsubsls || row.KODE_SUB_SLS || row.kode || row.wilayah || "").trim();
+          const code = String(row.idsubsls || row.KODE_SUB_SLS || row.kode_sub_sls || row.id_sub_sls || row.id || row.kode || row.wilayah || "").trim();
           const name = String(row.nmsls || row.SLS || row.nama_sls || row.NAMA_SLS || row.nama || "").trim();
           if (code && name) {
             masterSubSlsMap.set(code, name);
           }
-          const nmDesa = String(row.nmdesa || row.NMDESA || row.desa || row.DESA || "").trim();
-          const idDesa = String(row.iddesa || row.IDDESA || (code.length >= 10 ? code.substring(0, 10) : "")).trim();
-          if (idDesa && nmDesa) {
+
+          // Ekstrak dan agregasi nama desa dari kolom nmdesa / nama_desa / desa di master-subsls
+          const nmDesa = String(row.nmdesa || row.NMDESA || row.nama_desa || row.NAMA_DESA || row.desa || row.DESA || row.Kelurahan || row.KELURAHAN || "").trim();
+          let idDesa = String(row.iddesa || row.IDDESA || row.kode_desa || row.KODE_DESA || "").trim();
+          if (!idDesa && code.length >= 10) {
+            idDesa = code.substring(0, 10);
+          }
+          if (idDesa && nmDesa && nmDesa !== "-" && (!masterDesaMap.has(idDesa) || masterDesaMap.get(idDesa) === "-")) {
             masterDesaMap.set(idDesa, nmDesa);
           }
-          const nmKec = String(row.nmkec || row.NMKEC || row.kec || row.KEC || "").trim();
-          const idKec = String(row.idkec || row.IDKEC || (code.length >= 7 ? code.substring(0, 7) : "")).trim();
-          if (idKec && nmKec) {
+
+          // Ekstrak nama kecamatan jika ada
+          const nmKec = String(row.nmkec || row.NMKEC || row.nama_kec || row.NAMA_KEC || row.kec || row.KEC || row.Kecamatan || row.KECAMATAN || "").trim();
+          let idKec = String(row.idkec || row.IDKEC || row.kode_kec || row.KODE_KEC || "").trim();
+          if (!idKec && code.length >= 7) {
+            idKec = code.substring(0, 7);
+          }
+          if (idKec && nmKec && nmKec !== "-" && (!masterKecMap.has(idKec) || masterKecMap.get(idKec) === "-")) {
             masterKecMap.set(idKec, nmKec);
+          }
+        });
+      }
+
+      // Dukung juga jika ada sheet master-desa terpisah
+      const masterDesaSheet = data["master-desa"] || data["Master Desa"] || data["master_desa"];
+      if (Array.isArray(masterDesaSheet)) {
+        masterDesaSheet.forEach(md => {
+          const idDesa = String(md.iddesa || md.IDDESA || md.kode_desa || md.KODE_DESA || md.id || md.kode || "").trim();
+          const nmDesa = String(md.nmdesa || md.NMDESA || md.nama_desa || md.NAMA_DESA || md.nama || "").trim();
+          if (idDesa && nmDesa) {
+            masterDesaMap.set(idDesa.length >= 10 ? idDesa.substring(0, 10) : idDesa, nmDesa);
           }
         });
       }
