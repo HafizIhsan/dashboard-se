@@ -47,14 +47,18 @@
     <div class="flex flex-col items-center gap-3">
       <!-- Spinner with centered percentage number -->
       <div class="relative w-12 h-12 flex items-center justify-center">
-        <div class="w-12 h-12 border-2 border-[var(--border-color)] border-t-[var(--accent-color)] rounded-full animate-spin"></div>
+        <div
+          class="w-12 h-12 border-2 border-[var(--border-color)] border-t-[var(--accent-color)] rounded-full animate-spin">
+        </div>
         <span id="loading-pct" class="absolute text-[11px] font-mono font-bold text-[var(--accent-color)]">0%</span>
       </div>
       <!-- Label -->
-      <p id="loading-text" class="text-xs text-[var(--text-muted)] font-medium tracking-wide">Memuat data dashboard...</p>
+      <p id="loading-text" class="text-xs text-[var(--text-muted)] font-medium tracking-wide">Memuat data dashboard...
+      </p>
       <!-- Slim Mini Progress Bar -->
       <div class="w-36 h-1 bg-[var(--border-color)]/40 rounded-full overflow-hidden">
-        <div id="loading-bar" class="h-full bg-[var(--accent-color)] rounded-full transition-all duration-200" style="width: 0%;"></div>
+        <div id="loading-bar" class="h-full bg-[var(--accent-color)] rounded-full transition-all duration-200"
+          style="width: 0%;"></div>
       </div>
     </div>
   </div>
@@ -499,6 +503,13 @@
         </table>
       </div>
 
+      <!-- Footnote Table 1 -->
+      <div class="px-6 py-3 border-t border-[var(--border-color)]">
+        <p class="text-[10px] text-[var(--text-muted)] italic">
+          * Catatan: <strong>Total</strong> adalah <strong>Open + Draft + Submit</strong> (Approved tidak termasuk dalam penjumlahan Total karena status Approved merupakan bagian dari Submit).
+        </p>
+      </div>
+
     </section>
 
 
@@ -512,16 +523,9 @@
           <div class="flex items-center gap-2.5 flex-wrap">
             <h2 class="text-base font-bold tracking-tight text-[var(--text-primary)]">REKAPITULASI PRELIST & ASSIGNMENT
               BARU PER SUB SLS</h2>
-            <span
-              class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30">
-              <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-              Sedang Dalam Penyesuaian
-            </span>
           </div>
           <p class="text-xs text-[var(--text-muted)] mt-1">
-            Data dari SQL Lab Fasih — diurutkan per Kode Sub SLS. <span
-              class="text-[var(--warning-color)] font-medium">(Tabel ini masih dalam tahap penyesuaian & verifikasi
-              data)</span>
+            Data dari SQL Lab Fasih — diurutkan per Kode Sub SLS.
           </p>
         </div>
         <div class="flex flex-wrap sm:flex-nowrap items-end gap-2.5 w-full lg:w-auto">
@@ -584,17 +588,35 @@
           <colgroup>
             <col style="width:260px;" />
             <!-- Prelist: Keluarga (3), Usaha (3), Non BKU (3), Total (3) -->
-            <col style="width:90px;" /><col style="width:90px;" /><col style="width:90px;" />
-            <col style="width:90px;" /><col style="width:90px;" /><col style="width:90px;" />
-            <col style="width:90px;" /><col style="width:90px;" /><col style="width:90px;" />
-            <col style="width:95px;" /><col style="width:95px;" /><col style="width:95px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:95px;" />
+            <col style="width:95px;" />
+            <col style="width:95px;" />
             <!-- General Link: Keluarga (3), Usaha (3) -->
-            <col style="width:90px;" /><col style="width:90px;" /><col style="width:90px;" />
-            <col style="width:90px;" /><col style="width:90px;" /><col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
             <!-- Assignment Baru: Keluarga (3), Usaha (3), Total (3) -->
-            <col style="width:90px;" /><col style="width:90px;" /><col style="width:90px;" />
-            <col style="width:90px;" /><col style="width:90px;" /><col style="width:90px;" />
-            <col style="width:95px;" /><col style="width:95px;" /><col style="width:95px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:90px;" />
+            <col style="width:95px;" />
+            <col style="width:95px;" />
+            <col style="width:95px;" />
           </colgroup>
           <thead class="sticky top-0 z-20 shadow-sm">
             <!-- Row 1: Main Category Headers -->
@@ -612,49 +634,75 @@
             </tr>
             <!-- Row 2: Sub-group Headers -->
             <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
-              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Keluarga</th>
-              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Usaha</th>
-              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Non BKU</th>
-              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">Total</th>
-              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Keluarga</th>
-              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Usaha</th>
-              <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Keluarga</th>
-              <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Usaha</th>
-              <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] font-bold text-[var(--text-primary)]">Total</th>
+              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">
+                Keluarga</th>
+              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">
+                Usaha</th>
+              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Non
+                BKU</th>
+              <th colspan="3"
+                class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">
+                Total</th>
+              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">
+                Keluarga</th>
+              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">
+                Usaha</th>
+              <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">
+                Keluarga</th>
+              <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">
+                Usaha</th>
+              <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] font-bold text-[var(--text-primary)]">Total
+              </th>
             </tr>
             <!-- Row 3: Leaf Headers -->
             <tr class="text-[8px] md:text-[9px] whitespace-nowrap">
               <th class="text-right py-1.5 px-3 text-[var(--text-muted)] font-medium">Total</th>
               <th class="text-right py-1.5 px-3 text-[var(--success-color)] font-medium">Submit</th>
-              <th class="text-right py-1.5 px-3 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">SUB %</th>
+              <th
+                class="text-right py-1.5 px-3 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">
+                SUB %</th>
 
               <th class="text-right py-1.5 px-3 text-[var(--text-muted)] font-medium">Total</th>
               <th class="text-right py-1.5 px-3 text-[var(--success-color)] font-medium">Submit</th>
-              <th class="text-right py-1.5 px-3 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">SUB %</th>
+              <th
+                class="text-right py-1.5 px-3 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">
+                SUB %</th>
 
               <th class="text-right py-1.5 px-3 text-[var(--text-muted)] font-medium">Total</th>
               <th class="text-right py-1.5 px-3 text-[var(--success-color)] font-medium">Submit</th>
-              <th class="text-right py-1.5 px-3 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">SUB %</th>
+              <th
+                class="text-right py-1.5 px-3 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">
+                SUB %</th>
 
               <th class="text-right py-1.5 px-3 text-[var(--text-primary)] font-bold">Total</th>
               <th class="text-right py-1.5 px-3 text-[var(--success-color)] font-bold">Submit</th>
-              <th class="text-right py-1.5 px-3 text-[var(--accent-color)] font-bold border-r border-[var(--border-color)]">SUB %</th>
+              <th
+                class="text-right py-1.5 px-3 text-[var(--accent-color)] font-bold border-r border-[var(--border-color)]">
+                SUB %</th>
 
               <th class="text-right py-1.5 px-3 text-[var(--text-muted)] font-medium">Total</th>
               <th class="text-right py-1.5 px-3 text-[var(--success-color)] font-medium">Submit</th>
-              <th class="text-right py-1.5 px-3 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">SUB %</th>
+              <th
+                class="text-right py-1.5 px-3 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">
+                SUB %</th>
 
               <th class="text-right py-1.5 px-3 text-[var(--text-muted)] font-medium">Total</th>
               <th class="text-right py-1.5 px-3 text-[var(--success-color)] font-medium">Submit</th>
-              <th class="text-right py-1.5 px-3 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">SUB %</th>
+              <th
+                class="text-right py-1.5 px-3 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">
+                SUB %</th>
 
               <th class="text-right py-1.5 px-3 text-[var(--text-muted)] font-medium">Total</th>
               <th class="text-right py-1.5 px-3 text-[var(--success-color)] font-medium">Submit</th>
-              <th class="text-right py-1.5 px-3 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">SUB %</th>
+              <th
+                class="text-right py-1.5 px-3 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">
+                SUB %</th>
 
               <th class="text-right py-1.5 px-3 text-[var(--text-muted)] font-medium">Total</th>
               <th class="text-right py-1.5 px-3 text-[var(--success-color)] font-medium">Submit</th>
-              <th class="text-right py-1.5 px-3 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">SUB %</th>
+              <th
+                class="text-right py-1.5 px-3 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">
+                SUB %</th>
 
               <th class="text-right py-1.5 px-3 text-[var(--text-primary)] font-bold">Total</th>
               <th class="text-right py-1.5 px-3 text-[var(--success-color)] font-bold">Submit</th>
@@ -684,9 +732,12 @@
           <div id="prelist-tree-stats" class="hidden sm:inline-block text-[var(--text-secondary)]"></div>
         </div>
         <div class="flex items-center">
-          <button onclick="resetPrelistTable()" class="impeccable-btn flex items-center gap-1.5 px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]" title="Kembalikan tabel ke tampilan awal (reset filter, pencarian, dan tingkatan)">
+          <button onclick="resetPrelistTable()"
+            class="impeccable-btn flex items-center gap-1.5 px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            title="Kembalikan tabel ke tampilan awal (reset filter, pencarian, dan tingkatan)">
             <svg class="w-3.5 h-3.5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
             <span>Reset Tabel</span>
           </button>
@@ -701,7 +752,7 @@
   <!-- ===== DATA & LOGIC ===== -->
   <script>
     // URL Apps Script Web App Anda (Masukkan URL /exec Anda di sini)
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxDiHTVYmwcx7ZbOmiEdiOpeYjxSEvG9gzqZCkqHf-VoSXVOyk5rZ3mjYefLpmZ8YDH8Q/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJf7e8CWQwQYpwFeeeRn8CFYn0dWbxpgrlmZNryhpv1zuoquuEiSON8D7n7tDERsa56g/exec";
 
     // Helper format angka Indonesia: titik pemisah ribuan, koma pemisah desimal
     function fmtNum(n) { return Number(n).toLocaleString('id-ID'); }
