@@ -498,7 +498,7 @@
 
       <!-- Table Header & Controls -->
       <div
-        class="p-6 border-b border-[var(--border-color)] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        class="p-6 border-b border-[var(--border-color)] flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
           <div class="flex items-center gap-2.5 flex-wrap">
             <h2 class="text-base font-bold tracking-tight text-[var(--text-primary)]">REKAPITULASI PRELIST & ASSIGNMENT BARU PER SUB SLS</h2>
@@ -511,10 +511,10 @@
             Data dari SQL Lab Fasih — diurutkan per Kode Sub SLS. <span class="text-[var(--warning-color)] font-medium">(Tabel ini masih dalam tahap penyesuaian & verifikasi data)</span>
           </p>
         </div>
-        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+        <div class="flex flex-wrap sm:flex-nowrap items-end gap-2.5 w-full lg:w-auto">
           <!-- Filter Kabupaten (Custom Dropdown) -->
-          <div class="relative w-full sm:w-64 flex flex-col justify-end">
-            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1 font-bold">Kabupaten:</span>
+          <div class="relative w-full sm:w-56">
+            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1 font-bold block">Kabupaten:</span>
             <div class="relative w-full" id="prelist-kab-dropdown-container">
               <button type="button" id="prelist-kab-btn" onclick="togglePrelistKabDropdown(event)"
                 class="impeccable-input w-full text-xs h-[34px] flex items-center justify-between px-3 cursor-pointer bg-[var(--bg-card)] border border-[var(--border-color)] rounded text-[var(--text-primary)] font-medium text-left">
@@ -535,37 +535,30 @@
             </div>
           </div>
           <!-- Search Input -->
-          <div class="relative w-full sm:w-60 flex flex-col justify-end">
-            <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
+          <div class="relative w-full sm:w-56">
+            <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1 font-bold block">Pencarian:</span>
             <div class="relative w-full">
-              <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg class="h-4 w-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                <svg class="h-3.5 w-3.5 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </span>
               <input type="text" id="search-prelist" oninput="filterPrelistSubSls()"
-                placeholder="Cari SLS, Desa, Kec, kode..." class="impeccable-input pl-9 w-full text-sm h-[34px]" />
+                placeholder="Cari SLS, Desa, Kec, kode..." class="impeccable-input pl-8 w-full text-xs h-[34px]" />
             </div>
           </div>
-          <!-- Quick Tree Actions & Export -->
-          <div class="flex items-center gap-2 flex-col justify-end w-full sm:w-auto">
-            <span class="text-[9px] mb-1 opacity-0 pointer-events-none hidden sm:block">&nbsp;</span>
-            <div class="flex items-center gap-2 w-full sm:w-auto">
-              <button onclick="expandAllPrelistTree()" class="impeccable-btn flex items-center justify-center gap-1 h-[34px] text-xs px-2.5" title="Buka Semua Tingkatan">
-                <span>[+] Buka</span>
-              </button>
-              <button onclick="collapseAllPrelistTree()" class="impeccable-btn flex items-center justify-center gap-1 h-[34px] text-xs px-2.5" title="Tutup Semua Tingkatan">
-                <span>[-] Tutup</span>
-              </button>
-              <button onclick="exportPrelistCSV()" class="impeccable-btn flex items-center justify-center gap-1.5 h-[34px] text-xs px-3">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <span>Unduh CSV</span>
-              </button>
-            </div>
+          <!-- Export Button -->
+          <div class="w-full sm:w-auto shrink-0">
+            <button onclick="exportPrelistCSV()"
+              class="impeccable-btn flex items-center justify-center gap-1.5 h-[34px] text-xs px-3.5 w-full sm:w-auto"
+              title="Unduh Data Rekapitulasi Prelist CSV">
+              <svg class="w-4 h-4 text-[var(--accent-color)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span class="font-medium whitespace-nowrap">Unduh CSV</span>
+            </button>
           </div>
         </div>
       </div>
