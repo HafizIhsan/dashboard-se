@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pemeliharaan Sistem | Dashboard Monitoring SE2026 BPS Sumatera Barat</title>
+  <meta name="description" content="Dashboard Monitoring Sensus Ekonomi 2026 BPS Provinsi Sumatera Barat sedang dalam pemeliharaan sistem.">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e5b974'%3E%3Cpath d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/%3E%3C/svg%3E">
+
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Outfit', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --bg-base: #0a0907;
+      --bg-card: #14120e;
+      --border-color: rgba(229, 185, 116, 0.15);
+      --text-primary: #f4ede4;
+      --text-muted: #8c8275;
+      --accent: #e5b974;
+      --accent-glow: rgba(229, 185, 116, 0.15);
+    }
+
+    html.light {
+      --bg-base: #f7f4ef;
+      --bg-card: #ffffff;
+      --border-color: rgba(0, 0, 0, 0.08);
+      --text-primary: #1f1d1a;
+      --text-muted: #6b645c;
+      --accent: #b47a2a;
+      --accent-glow: rgba(180, 122, 42, 0.1);
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .maintenance-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+
+    .grain-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.025'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 10;
+    }
+  </style>
+</head>
+
+<body class="p-4 sm:p-6 selection:bg-amber-500/20 selection:text-amber-200">
+  <div class="grain-overlay"></div>
+
+  <main class="relative z-20 w-full max-w-xl mx-auto text-center">
+    <!-- Maintenance Card Container -->
+    <div class="maintenance-card rounded-2xl p-6 sm:p-10 text-left transition-all">
+      
+      <!-- Top Branding -->
+      <div class="flex items-center justify-between border-b border-[var(--border-color)] pb-5 mb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 font-bold text-lg">
+            📊
+          </div>
+          <div>
+            <h2 class="font-heading font-bold text-sm tracking-wide uppercase text-[var(--text-primary)]">BPS Provinsi Sumatera Barat</h2>
+            <p class="text-[11px] text-[var(--text-muted)]">Sensus Ekonomi 2026 (SE2026)</p>
+          </div>
+        </div>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+          <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+          Perbaikan Sistem
+        </span>
+      </div>
+
+      <!-- Main Headline & Message -->
+      <div class="space-y-3 mb-8">
+        <h1 class="font-heading text-xl sm:text-2xl font-bold tracking-tight text-[var(--text-primary)]">
+          Dashboard Sedang Dalam Pemeliharaan
+        </h1>
+        <p class="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
+          Mohon maaf atas ketidaknyamanannya. Dashboard Monitoring Progres Harian Sensus Ekonomi 2026 saat ini sedang dalam proses pemeliharaan rutin, perbaikan fitur, dan optimalisasi database.
+        </p>
+      </div>
+
+      <!-- Info Details Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8 text-xs">
+        <div class="p-3.5 rounded-xl bg-[var(--bg-base)] border border-[var(--border-color)]">
+          <span class="text-[10px] uppercase tracking-wider font-semibold text-[var(--text-muted)] block mb-1">Status Layanan</span>
+          <p class="font-medium text-[var(--text-primary)] flex items-center gap-1.5">
+            <span class="text-amber-400">⏳</span> Pemeliharaan Sedang Berjalan
+          </p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-[var(--bg-base)] border border-[var(--border-color)]">
+          <span class="text-[10px] uppercase tracking-wider font-semibold text-[var(--text-muted)] block mb-1">Perkiraan Akses</span>
+          <p class="font-medium text-[var(--text-primary)] flex items-center gap-1.5">
+            <span class="text-emerald-400">🔄</span> Segera Aktif Kembali
+          </p>
+        </div>
+      </div>
+
+      <!-- Action Button & Footer -->
+      <div class="pt-4 border-t border-[var(--border-color)] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+        <span class="text-[11px] text-[var(--text-muted)]">
+          Tim IPDS — BPS Provinsi Sumatera Barat
+        </span>
+        <button onclick="location.reload()"
+          class="w-full sm:w-auto px-4 py-2 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 font-medium border border-amber-500/30 transition-colors flex items-center justify-center gap-2">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Muat Ulang Laman
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Bottom copyright -->
+    <p class="mt-6 text-[11px] text-[var(--text-muted)] opacity-70">
+      &copy; 2026 BPS Provinsi Sumatera Barat. Seluruh hak cipta dilindungi.
+    </p>
+  </main>
+</body>
+
+</html>
