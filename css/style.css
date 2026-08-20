@@ -8,6 +8,7 @@
   --bg-primary: #0a0907;
   --bg-secondary: #12100d;
   --bg-tertiary: #191612;
+  --bg-card: #14120e;
   --border-color: rgba(249, 115, 22, 0.12);
   --border-hover: rgba(249, 115, 22, 0.25);
   --text-primary: #f4f1eb;
@@ -26,6 +27,7 @@ html.light {
   --bg-primary: #f7f4ef;
   --bg-secondary: #eae5dc;
   --bg-tertiary: #dfd9ce;
+  --bg-card: #ffffff;
   --border-color: rgba(234, 88, 12, 0.18);
   --border-hover: rgba(234, 88, 12, 0.35);
   --text-primary: #2d2b27;
@@ -187,7 +189,7 @@ body {
 /* Rekap Sub SLS styling & fixed column grid */
 #prelist-subsls-table {
   width: 100%;
-  min-width: 1650px;
+  min-width: 1750px;
   table-layout: fixed;
 }
 
@@ -222,15 +224,15 @@ body {
 }
 
 #prelist-subsls-table td {
-  padding: 14px 10px !important;
-  font-size: 0.86rem;
+  padding: 11px 8px !important;
+  font-size: 0.84rem;
   border-bottom: 1px solid var(--border-color);
   border-color: var(--border-color) !important;
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
 #prelist-subsls-table thead th {
-  padding: 12px 8px !important;
+  padding: 11px 8px !important;
 }
 
 #prelist-subsls-table .prelist-pct-cell {
@@ -267,15 +269,58 @@ body {
   border-radius: 4px;
 }
 
-/* Expand button transitions */
-.expand-icon {
-  display: inline-block;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+/* Tree table node styling */
+.tree-toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
   color: var(--accent-color);
+  cursor: pointer;
+  user-select: none;
+  font-family: 'Courier New', monospace;
+  transition: transform 0.15s ease, color 0.15s ease;
 }
 
-.expanded .expand-icon {
-  transform: rotate(90deg);
+.tree-toggle-icon:hover {
+  color: var(--accent-hover);
+}
+
+.tree-node-kab {
+  background-color: rgba(249, 115, 22, 0.03);
+  font-weight: 600;
+}
+
+.tree-node-kec {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+html.dark .tree-node-kec {
+  background-color: rgba(255, 255, 255, 0.015);
+}
+
+.tree-node-desa {
+  background-color: rgba(0, 0, 0, 0.035);
+}
+
+html.dark .tree-node-desa {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.tree-node-subsls {
+  background-color: transparent;
+}
+
+.subsls-badge {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background-color: var(--accent-subtle);
+  color: var(--accent-color);
+  border: 1px solid var(--border-color);
+  margin-left: 4px;
 }
 
 /* Custom dynamic progress bar */
@@ -296,7 +341,7 @@ body {
 
 /* Input controls */
 .impeccable-input {
-  background: var(--bg-secondary);
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
   border-radius: 4px;
@@ -308,6 +353,28 @@ body {
 .impeccable-input:focus {
   border-color: var(--accent-color);
   box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.15);
+}
+
+/* Custom Dropdown Styling (Solid & Accessible) */
+#prelist-kab-menu {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+}
+
+html.light #prelist-kab-menu {
+  background-color: #ffffff !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+#prelist-kab-btn {
+  background-color: var(--bg-card) !important;
+}
+
+html.light #prelist-kab-btn {
+  background-color: #ffffff !important;
 }
 
 .impeccable-btn {
@@ -354,7 +421,8 @@ body {
   }
 }
 
-/* Loading Overlay & Spinner */
+/* Loading Overlay & Progress Bar */
+/* Loading Overlay (Clean & Minimal) */
 .loading-overlay {
   position: fixed;
   top: 0;
@@ -367,36 +435,11 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.4s ease, visibility 0.4s;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
 }
 
 .loading-overlay.hidden {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-}
-
-.spinner {
-  width: 48px;
-  height: 48px;
-  border: 3px solid var(--border-color);
-  border-radius: 50%;
-  border-top-color: var(--accent-color);
-  animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.loading-text {
-  margin-top: 16px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  font-family: 'Albert Sans', sans-serif;
 }
