@@ -1358,10 +1358,9 @@
         return `<span class="font-bold" style="color:${color}">${pctText}%</span>`;
       }
 
-      const sign = delta > 0 ? '+' : '';
+      const sign = delta >= 0 ? '+' : '';
       const dColor = getDeltaColor(delta);
-      const icon = delta > 0 ? '▲' : delta < 0 ? '▼' : '•';
-      const deltaText = `${icon} ${sign}${fmtPct(delta)}%`;
+      const deltaText = `(${sign}${fmtPct(delta)}%)`;
 
       return `<span class="font-bold" style="color:${color}">${pctText}%</span><span class="text-[10px] font-semibold block mt-0.5" style="color:${dColor}" title="Perubahan terhadap baseline ${escapePrelistHtml(prelistBaselineDate)}">${deltaText}</span>`;
     }
