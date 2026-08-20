@@ -575,136 +575,83 @@
       <div class="overflow-auto max-h-[80vh]">
         <table class="impeccable-table text-left" id="prelist-subsls-table">
           <colgroup>
-            <col style="width:260px;" />
-            <col style="width:70px;" />
-            <col style="width:90px;" />
-            <col style="width:70px;" />
-            <col style="width:90px;" />
-            <col style="width:70px;" />
-            <col style="width:90px;" />
-            <col style="width:70px;" />
-            <col style="width:90px;" />
-            <col style="width:70px;" />
-            <col style="width:90px;" />
-            <col style="width:70px;" />
-            <col style="width:90px;" />
-            <col style="width:70px;" />
-            <col style="width:90px;" />
-            <col style="width:70px;" />
-            <col style="width:90px;" />
-            <col style="width:70px;" />
-            <col style="width:90px;" />
+            <col style="width:240px;" />
+            <!-- Prelist: Keluarga (3), Usaha (3), Non BKU (3), Total (3) -->
+            <col style="width:60px;" /><col style="width:60px;" /><col style="width:75px;" />
+            <col style="width:60px;" /><col style="width:60px;" /><col style="width:75px;" />
+            <col style="width:60px;" /><col style="width:60px;" /><col style="width:75px;" />
+            <col style="width:65px;" /><col style="width:65px;" /><col style="width:80px;" />
+            <!-- General Link: Keluarga (3), Usaha (3) -->
+            <col style="width:60px;" /><col style="width:60px;" /><col style="width:75px;" />
+            <col style="width:60px;" /><col style="width:60px;" /><col style="width:75px;" />
+            <!-- Assignment Baru: Keluarga (3), Usaha (3), Total (3) -->
+            <col style="width:60px;" /><col style="width:60px;" /><col style="width:75px;" />
+            <col style="width:60px;" /><col style="width:60px;" /><col style="width:75px;" />
+            <col style="width:65px;" /><col style="width:65px;" /><col style="width:80px;" />
           </colgroup>
           <thead class="sticky top-0 z-20 shadow-sm">
             <!-- Row 1: Main Category Headers -->
             <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
               <th rowspan="3"
-                class="cursor-pointer pl-6 select-none align-middle text-left border-r border-[var(--border-color)] min-w-[260px]"
-                onclick="sortPrelistTable('kode')">Wilayah / SLS / Sub SLS <span id="sort-prelist-kode"
-                  class="sort-icon">↕</span>
+                class="pl-6 select-none align-middle text-left border-r border-[var(--border-color)] min-w-[240px]">
+                Wilayah / SLS / Sub SLS
               </th>
-              <th colspan="8" class="text-center bg-[rgba(163,201,168,0.06)] border-r border-[var(--border-color)]"
+              <th colspan="12" class="text-center bg-[rgba(163,201,168,0.06)] border-r border-[var(--border-color)]"
                 style="border-bottom: 2px solid var(--success-color);">Prelist</th>
-              <th colspan="4" class="text-center bg-[rgba(163,201,168,0.12)] border-r border-[var(--border-color)]"
+              <th colspan="6" class="text-center bg-[rgba(163,201,168,0.12)] border-r border-[var(--border-color)]"
                 style="border-bottom: 2px solid var(--success-color);">General Link</th>
-              <th colspan="6" class="text-center bg-[rgba(229,185,116,0.06)]"
+              <th colspan="9" class="text-center bg-[rgba(229,185,116,0.06)]"
                 style="border-bottom: 2px solid var(--warning-color);">Assignment Baru</th>
             </tr>
             <!-- Row 2: Sub-group Headers -->
             <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
-              <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">
-                Keluarga</th>
-              <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">
-                Usaha
-              </th>
-              <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">
-                Non BKU</th>
-              <th colspan="2"
-                class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">
-                Total</th>
-              <th colspan="2" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">
-                Keluarga</th>
-              <th colspan="2" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">
-                Usaha
-              </th>
-              <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">
-                Keluarga</th>
-              <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">
-                Usaha
-              </th>
-              <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] font-bold text-[var(--text-primary)]">Total
-              </th>
+              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Keluarga</th>
+              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Usaha</th>
+              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Non BKU</th>
+              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">Total</th>
+              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Keluarga</th>
+              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Usaha</th>
+              <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Keluarga</th>
+              <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Usaha</th>
+              <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] font-bold text-[var(--text-primary)]">Total</th>
             </tr>
             <!-- Row 3: Leaf Headers -->
             <tr class="text-[8px] md:text-[9px] whitespace-nowrap">
-              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
-                onclick="sortPrelistTable('klgPrelistJml')">Jml <span id="sort-prelist-klgPrelistJml"
-                  class="sort-icon">↕</span></th>
-              <th
-                class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
-                onclick="sortPrelistTable('klgPrelistPct')">SUB % <span id="sort-prelist-klgPrelistPct"
-                  class="sort-icon">↕</span></th>
-              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
-                onclick="sortPrelistTable('usahaPrelistJml')">Jml <span id="sort-prelist-usahaPrelistJml"
-                  class="sort-icon">↕</span></th>
-              <th
-                class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
-                onclick="sortPrelistTable('usahaPrelistPct')">SUB % <span id="sort-prelist-usahaPrelistPct"
-                  class="sort-icon">↕</span></th>
-              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
-                onclick="sortPrelistTable('lainnyaJml')">Jml <span id="sort-prelist-lainnyaJml"
-                  class="sort-icon">↕</span>
-              </th>
-              <th
-                class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
-                onclick="sortPrelistTable('lainnyaPct')">SUB % <span id="sort-prelist-lainnyaPct"
-                  class="sort-icon">↕</span></th>
-              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
-                onclick="sortPrelistTable('prelistJml')">Jml <span id="sort-prelist-prelistJml"
-                  class="sort-icon">↕</span>
-              </th>
-              <th
-                class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none font-bold"
-                onclick="sortPrelistTable('prelistPct')">SUB % <span id="sort-prelist-prelistPct"
-                  class="sort-icon">↕</span></th>
-              <th class="text-right bg-[rgba(163,201,168,0.04)] cursor-pointer select-none"
-                onclick="sortPrelistTable('glKlgJml')">Jml <span id="sort-prelist-glKlgJml" class="sort-icon">↕</span>
-              </th>
-              <th
-                class="text-right bg-[rgba(163,201,168,0.04)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
-                onclick="sortPrelistTable('glKlgPct')">SUB % <span id="sort-prelist-glKlgPct" class="sort-icon">↕</span>
-              </th>
-              <th class="text-right bg-[rgba(163,201,168,0.04)] cursor-pointer select-none"
-                onclick="sortPrelistTable('glUsahaJml')">Jml <span id="sort-prelist-glUsahaJml"
-                  class="sort-icon">↕</span>
-              </th>
-              <th
-                class="text-right bg-[rgba(163,201,168,0.04)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
-                onclick="sortPrelistTable('glUsahaPct')">SUB % <span id="sort-prelist-glUsahaPct"
-                  class="sort-icon">↕</span></th>
-              <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
-                onclick="sortPrelistTable('klgBaruJml')">Jml <span id="sort-prelist-klgBaruJml"
-                  class="sort-icon">↕</span>
-              </th>
-              <th
-                class="text-right bg-[rgba(229,185,116,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
-                onclick="sortPrelistTable('klgBaruPct')">SUB % <span id="sort-prelist-klgBaruPct"
-                  class="sort-icon">↕</span></th>
-              <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
-                onclick="sortPrelistTable('usahaBaruJml')">Jml <span id="sort-prelist-usahaBaruJml"
-                  class="sort-icon">↕</span></th>
-              <th
-                class="text-right bg-[rgba(229,185,116,0.02)] border-r border-[var(--border-color)] text-[var(--accent-color)] cursor-pointer select-none"
-                onclick="sortPrelistTable('usahaBaruPct')">SUB % <span id="sort-prelist-usahaBaruPct"
-                  class="sort-icon">↕</span></th>
-              <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
-                onclick="sortPrelistTable('assignJml')">Jml <span id="sort-prelist-assignJml" class="sort-icon">↕</span>
-              </th>
-              <th
-                class="text-right bg-[rgba(229,185,116,0.02)] text-[var(--accent-color)] cursor-pointer select-none font-bold"
-                onclick="sortPrelistTable('assignPct')">SUB % <span id="sort-prelist-assignPct"
-                  class="sort-icon">↕</span>
-              </th>
+              <th class="text-right py-1.5 px-2 text-[var(--text-muted)] font-medium">Awal</th>
+              <th class="text-right py-1.5 px-2 text-[var(--success-color)] font-medium">Submit</th>
+              <th class="text-right py-1.5 px-2 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">SUB %</th>
+
+              <th class="text-right py-1.5 px-2 text-[var(--text-muted)] font-medium">Awal</th>
+              <th class="text-right py-1.5 px-2 text-[var(--success-color)] font-medium">Submit</th>
+              <th class="text-right py-1.5 px-2 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">SUB %</th>
+
+              <th class="text-right py-1.5 px-2 text-[var(--text-muted)] font-medium">Awal</th>
+              <th class="text-right py-1.5 px-2 text-[var(--success-color)] font-medium">Submit</th>
+              <th class="text-right py-1.5 px-2 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">SUB %</th>
+
+              <th class="text-right py-1.5 px-2 text-[var(--text-primary)] font-bold">Awal</th>
+              <th class="text-right py-1.5 px-2 text-[var(--success-color)] font-bold">Submit</th>
+              <th class="text-right py-1.5 px-2 text-[var(--accent-color)] font-bold border-r border-[var(--border-color)]">SUB %</th>
+
+              <th class="text-right py-1.5 px-2 text-[var(--text-muted)] font-medium">Awal</th>
+              <th class="text-right py-1.5 px-2 text-[var(--success-color)] font-medium">Submit</th>
+              <th class="text-right py-1.5 px-2 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">SUB %</th>
+
+              <th class="text-right py-1.5 px-2 text-[var(--text-muted)] font-medium">Awal</th>
+              <th class="text-right py-1.5 px-2 text-[var(--success-color)] font-medium">Submit</th>
+              <th class="text-right py-1.5 px-2 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">SUB %</th>
+
+              <th class="text-right py-1.5 px-2 text-[var(--text-muted)] font-medium">Awal</th>
+              <th class="text-right py-1.5 px-2 text-[var(--success-color)] font-medium">Submit</th>
+              <th class="text-right py-1.5 px-2 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">SUB %</th>
+
+              <th class="text-right py-1.5 px-2 text-[var(--text-muted)] font-medium">Awal</th>
+              <th class="text-right py-1.5 px-2 text-[var(--success-color)] font-medium">Submit</th>
+              <th class="text-right py-1.5 px-2 text-[var(--accent-color)] font-medium border-r border-[var(--border-color)]">SUB %</th>
+
+              <th class="text-right py-1.5 px-2 text-[var(--text-primary)] font-bold">Awal</th>
+              <th class="text-right py-1.5 px-2 text-[var(--success-color)] font-bold">Submit</th>
+              <th class="text-right py-1.5 px-2 text-[var(--accent-color)] font-bold">SUB %</th>
             </tr>
           </thead>
           <tbody id="prelist-subsls-body">
@@ -1426,40 +1373,44 @@
     function renderPrelistHeader() {
       const thead = document.querySelector('#prelist-subsls-table thead');
       if (!thead) return;
-      const leaf = (key, label, isBorderR = false, isBold = false) => `<th class="text-right select-none py-2 px-1.5 ${isBold ? 'font-bold text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'} ${isBorderR ? 'border-r border-[var(--border-color)]' : ''}">${label}</th>`;
+      const leafGroup = (isLastGroup = false, isBold = false) => `
+        <th class="text-right select-none py-1.5 px-2 text-[var(--text-muted)] font-medium">Awal</th>
+        <th class="text-right select-none py-1.5 px-2 text-[var(--success-color)] font-medium">Submit</th>
+        <th class="text-right select-none py-1.5 px-2 text-[var(--accent-color)] ${isBold ? 'font-bold' : 'font-medium'} ${!isLastGroup ? 'border-r border-[var(--border-color)]' : ''}">SUB %</th>
+      `;
       thead.innerHTML = `
         <!-- Row 1: Main Category Headers -->
         <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
           <th rowspan="3" class="pl-6 select-none align-middle text-left border-r border-[var(--border-color)] min-w-[240px]">
             Wilayah / SLS / Sub SLS
           </th>
-          <th colspan="8" class="text-center bg-[rgba(163,201,168,0.06)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">Prelist</th>
-          <th colspan="4" class="text-center bg-[rgba(163,201,168,0.12)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">General Link</th>
-          <th colspan="6" class="text-center bg-[rgba(229,185,116,0.06)]" style="border-bottom: 2px solid var(--warning-color);">Assignment Baru</th>
+          <th colspan="12" class="text-center bg-[rgba(163,201,168,0.06)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">Prelist</th>
+          <th colspan="6" class="text-center bg-[rgba(163,201,168,0.12)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">General Link</th>
+          <th colspan="9" class="text-center bg-[rgba(229,185,116,0.06)]" style="border-bottom: 2px solid var(--warning-color);">Assignment Baru</th>
         </tr>
         <!-- Row 2: Sub-group Headers -->
         <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
-          <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Keluarga</th>
-          <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Usaha</th>
-          <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Non BKU</th>
-          <th colspan="2" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">Total</th>
-          <th colspan="2" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Keluarga</th>
-          <th colspan="2" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Usaha</th>
-          <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Keluarga</th>
-          <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Usaha</th>
-          <th colspan="2" class="text-center bg-[rgba(229,185,116,0.03)] font-bold text-[var(--text-primary)]">Total</th>
+          <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Keluarga</th>
+          <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Usaha</th>
+          <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Non BKU</th>
+          <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">Total</th>
+          <th colspan="3" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Keluarga</th>
+          <th colspan="3" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Usaha</th>
+          <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Keluarga</th>
+          <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Usaha</th>
+          <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] font-bold text-[var(--text-primary)]">Total</th>
         </tr>
         <!-- Row 3: Leaf Headers -->
         <tr class="text-[8px] md:text-[9px] whitespace-nowrap">
-          ${leaf('klgPrelistJml', 'Jml')}${leaf('klgPrelistPct', 'SUB %', true)}
-          ${leaf('usahaPrelistJml', 'Jml')}${leaf('usahaPrelistPct', 'SUB %', true)}
-          ${leaf('lainnyaJml', 'Jml')}${leaf('lainnyaPct', 'SUB %', true)}
-          ${leaf('prelistJml', 'Jml')}${leaf('prelistPct', 'SUB %', true, true)}
-          ${leaf('glKlgJml', 'Jml')}${leaf('glKlgPct', 'SUB %', true)}
-          ${leaf('glUsahaJml', 'Jml')}${leaf('glUsahaPct', 'SUB %', true)}
-          ${leaf('klgBaruJml', 'Jml')}${leaf('klgBaruPct', 'SUB %', true)}
-          ${leaf('usahaBaruJml', 'Jml')}${leaf('usahaBaruPct', 'SUB %', true)}
-          ${leaf('assignJml', 'Jml')}${leaf('assignPct', 'SUB %', false, true)}
+          ${leafGroup(false)}
+          ${leafGroup(false)}
+          ${leafGroup(false)}
+          ${leafGroup(false, true)}
+          ${leafGroup(false)}
+          ${leafGroup(false)}
+          ${leafGroup(false)}
+          ${leafGroup(false)}
+          ${leafGroup(true, true)}
         </tr>`;
     }
 
@@ -1488,7 +1439,7 @@
           kab.children.forEach(kec => {
             if (kec.children) {
               totalDesaCount += kec.children.length;
-              kec.children.forEach(desa => {
+              kab.children.forEach(desa => {
                 if (desa.children) totalSubSlsCount += desa.children.length;
               });
             }
@@ -1510,37 +1461,52 @@
           summaryLabel = matchedKab ? matchedKab.nama : `Kabupaten [${filterKab}]`;
         }
 
-        const totalCellJml = (val) => `<td class="text-right py-3.5 px-2.5 text-[var(--text-secondary)] whitespace-nowrap text-xs font-bold">${fmtNum(val)}</td>`;
-        const totalCellPct = (val, delta, isLast = false) => `<td class="text-right py-3.5 px-2.5 whitespace-nowrap text-xs font-bold ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(val, true, delta)}</td>`;
+        const renderGroupCells = (valAwal, valSub, valPct, delta, isLast = false) => `
+          <td class="text-right py-3.5 px-2 text-[var(--text-secondary)] whitespace-nowrap text-xs font-bold">${fmtNum(valAwal)}</td>
+          <td class="text-right py-3.5 px-2 text-[var(--success-color)] whitespace-nowrap text-xs font-bold">${fmtNum(valSub)}</td>
+          <td class="text-right py-3.5 px-2 whitespace-nowrap text-xs font-bold ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(valPct, true, delta)}</td>
+        `;
 
         html += `<tr class="bg-[rgba(212,178,122,0.08)] font-bold border-b-2 border-[var(--border-color)]">
           <td class="pl-6 py-3.5 whitespace-nowrap text-xs border-r border-[var(--border-color)] text-[var(--text-primary)] font-bold">${escapePrelistHtml(summaryLabel)}</td>
-          ${totalCellJml(summaryAgg.klgPrelistJml)}${totalCellPct(summaryAgg.klgPrelistPct, summaryAgg.delta.klgPrelistPct)}
-          ${totalCellJml(summaryAgg.usahaPrelistJml)}${totalCellPct(summaryAgg.usahaPrelistPct, summaryAgg.delta.usahaPrelistPct)}
-          ${totalCellJml(summaryAgg.lainnyaJml)}${totalCellPct(summaryAgg.lainnyaPct, summaryAgg.delta.lainnyaPct)}
-          ${totalCellJml(summaryAgg.prelistJml)}${totalCellPct(summaryAgg.prelistPct, summaryAgg.delta.prelistPct)}
-          ${totalCellJml(summaryAgg.glKlgJml)}${totalCellPct(summaryAgg.glKlgPct, summaryAgg.delta.glKlgPct)}
-          ${totalCellJml(summaryAgg.glUsahaJml)}${totalCellPct(summaryAgg.glUsahaPct, summaryAgg.delta.glUsahaPct)}
-          ${totalCellJml(summaryAgg.klgBaruJml)}${totalCellPct(summaryAgg.klgBaruPct, summaryAgg.delta.klgBaruPct)}
-          ${totalCellJml(summaryAgg.usahaBaruJml)}${totalCellPct(summaryAgg.usahaBaruPct, summaryAgg.delta.usahaBaruPct)}
-          ${totalCellJml(summaryAgg.assignJml)}${totalCellPct(summaryAgg.assignPct, summaryAgg.delta.assignPct, true)}
+          ${renderGroupCells(summaryAgg.klgPrelistJml, summaryAgg.klgPrelistSubmit, summaryAgg.klgPrelistPct, summaryAgg.delta.klgPrelistPct)}
+          ${renderGroupCells(summaryAgg.usahaPrelistJml, summaryAgg.usahaPrelistSubmit, summaryAgg.usahaPrelistPct, summaryAgg.delta.usahaPrelistPct)}
+          ${renderGroupCells(summaryAgg.lainnyaJml, summaryAgg.lainnyaSubmit, summaryAgg.lainnyaPct, summaryAgg.delta.lainnyaPct)}
+          ${renderGroupCells(summaryAgg.prelistJml, summaryAgg.prelistSubmit, summaryAgg.prelistPct, summaryAgg.delta.prelistPct)}
+          ${renderGroupCells(summaryAgg.glKlgJml, summaryAgg.glKlgSubmit, summaryAgg.glKlgPct, summaryAgg.delta.glKlgPct)}
+          ${renderGroupCells(summaryAgg.glUsahaJml, summaryAgg.glUsahaSubmit, summaryAgg.glUsahaPct, summaryAgg.delta.glUsahaPct)}
+          ${renderGroupCells(summaryAgg.klgBaruJml, summaryAgg.klgBaruSubmit, summaryAgg.klgBaruPct, summaryAgg.delta.klgBaruPct)}
+          ${renderGroupCells(summaryAgg.usahaBaruJml, summaryAgg.usahaBaruSubmit, summaryAgg.usahaBaruPct, summaryAgg.delta.usahaBaruPct)}
+          ${renderGroupCells(summaryAgg.assignJml, summaryAgg.assignSubmit, summaryAgg.assignPct, summaryAgg.delta.assignPct, true)}
         </tr>`;
       }
 
-      const kabCellJml = (val) => `<td class="text-right py-2.5 px-2.5 text-[var(--text-primary)] whitespace-nowrap text-xs font-bold">${fmtNum(val)}</td>`;
-      const kabCellPct = (val, delta, isLast = false) => `<td class="text-right py-2.5 px-2.5 whitespace-nowrap text-xs font-bold ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(val, true, delta)}</td>`;
+      const renderKabGroup = (valAwal, valSub, valPct, delta, isLast = false) => `
+        <td class="text-right py-2.5 px-2 text-[var(--text-primary)] whitespace-nowrap text-xs font-bold">${fmtNum(valAwal)}</td>
+        <td class="text-right py-2.5 px-2 text-[var(--success-color)] whitespace-nowrap text-xs font-bold">${fmtNum(valSub)}</td>
+        <td class="text-right py-2.5 px-2 whitespace-nowrap text-xs font-bold ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(valPct, true, delta)}</td>
+      `;
 
-      const kecCellJml = (val) => `<td class="text-right py-2 px-2.5 text-[var(--text-secondary)] whitespace-nowrap text-xs font-semibold">${fmtNum(val)}</td>`;
-      const kecCellPct = (val, delta, isLast = false) => `<td class="text-right py-2 px-2.5 whitespace-nowrap text-xs font-semibold ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(val, true, delta)}</td>`;
+      const renderKecGroup = (valAwal, valSub, valPct, delta, isLast = false) => `
+        <td class="text-right py-2 px-2 text-[var(--text-secondary)] whitespace-nowrap text-xs font-semibold">${fmtNum(valAwal)}</td>
+        <td class="text-right py-2 px-2 text-[var(--success-color)] whitespace-nowrap text-xs font-semibold">${fmtNum(valSub)}</td>
+        <td class="text-right py-2 px-2 whitespace-nowrap text-xs font-semibold ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(valPct, true, delta)}</td>
+      `;
 
-      const desaCellJml = (val) => `<td class="text-right py-2 px-2.5 text-[var(--text-secondary)] whitespace-nowrap text-xs font-medium">${fmtNum(val)}</td>`;
-      const desaCellPct = (val, delta, isLast = false) => `<td class="text-right py-2 px-2.5 whitespace-nowrap text-xs font-medium ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(val, true, delta)}</td>`;
+      const renderDesaGroup = (valAwal, valSub, valPct, delta, isLast = false) => `
+        <td class="text-right py-2 px-2 text-[var(--text-secondary)] whitespace-nowrap text-xs font-medium">${fmtNum(valAwal)}</td>
+        <td class="text-right py-2 px-2 text-[var(--success-color)] whitespace-nowrap text-xs font-medium">${fmtNum(valSub)}</td>
+        <td class="text-right py-2 px-2 whitespace-nowrap text-xs font-medium ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(valPct, true, delta)}</td>
+      `;
 
-      const subCellJml = (val) => `<td class="text-right py-1.5 px-2.5 text-[var(--text-muted)] whitespace-nowrap text-xs font-normal">${fmtNum(val)}</td>`;
-      const subCellPct = (val, delta, isLast = false) => `<td class="text-right py-1.5 px-2.5 whitespace-nowrap text-xs ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(val, true, delta)}</td>`;
+      const renderSubGroup = (valAwal, valSub, valPct, delta, isLast = false) => `
+        <td class="text-right py-1.5 px-2 text-[var(--text-muted)] whitespace-nowrap text-xs font-normal">${fmtNum(valAwal)}</td>
+        <td class="text-right py-1.5 px-2 text-[var(--success-color)] whitespace-nowrap text-xs font-normal">${fmtNum(valSub)}</td>
+        <td class="text-right py-1.5 px-2 whitespace-nowrap text-xs ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(valPct, true, delta)}</td>
+      `;
 
       if (filteredTree.length === 0) {
-        html += '<tr><td colspan="19" class="text-center py-8 text-[var(--text-muted)]">Tidak ada data yang sesuai filter.</td></tr>';
+        html += '<tr><td colspan="28" class="text-center py-8 text-[var(--text-muted)]">Tidak ada data yang sesuai filter.</td></tr>';
       } else {
         filteredTree.forEach(kab => {
           const isKabOpen = expandedPrelistNodes.has(kab.id);
@@ -1556,15 +1522,15 @@
                 <span class="font-bold text-xs text-[var(--text-primary)]">[${kab.kode}] ${escapePrelistHtml(kab.nama)}</span>
               </div>
             </td>
-            ${kabCellJml(kab.klgPrelistJml)}${kabCellPct(kab.klgPrelistPct, kab.delta.klgPrelistPct)}
-            ${kabCellJml(kab.usahaPrelistJml)}${kabCellPct(kab.usahaPrelistPct, kab.delta.usahaPrelistPct)}
-            ${kabCellJml(kab.lainnyaJml)}${kabCellPct(kab.lainnyaPct, kab.delta.lainnyaPct)}
-            ${kabCellJml(kab.prelistJml)}${kabCellPct(kab.prelistPct, kab.delta.prelistPct)}
-            ${kabCellJml(kab.glKlgJml)}${kabCellPct(kab.glKlgPct, kab.delta.glKlgPct)}
-            ${kabCellJml(kab.glUsahaJml)}${kabCellPct(kab.glUsahaPct, kab.delta.glUsahaPct)}
-            ${kabCellJml(kab.klgBaruJml)}${kabCellPct(kab.klgBaruPct, kab.delta.klgBaruPct)}
-            ${kabCellJml(kab.usahaBaruJml)}${kabCellPct(kab.usahaBaruPct, kab.delta.usahaBaruPct)}
-            ${kabCellJml(kab.assignJml)}${kabCellPct(kab.assignPct, kab.delta.assignPct, true)}
+            ${renderKabGroup(kab.klgPrelistJml, kab.klgPrelistSubmit, kab.klgPrelistPct, kab.delta.klgPrelistPct)}
+            ${renderKabGroup(kab.usahaPrelistJml, kab.usahaPrelistSubmit, kab.usahaPrelistPct, kab.delta.usahaPrelistPct)}
+            ${renderKabGroup(kab.lainnyaJml, kab.lainnyaSubmit, kab.lainnyaPct, kab.delta.lainnyaPct)}
+            ${renderKabGroup(kab.prelistJml, kab.prelistSubmit, kab.prelistPct, kab.delta.prelistPct)}
+            ${renderKabGroup(kab.glKlgJml, kab.glKlgSubmit, kab.glKlgPct, kab.delta.glKlgPct)}
+            ${renderKabGroup(kab.glUsahaJml, kab.glUsahaSubmit, kab.glUsahaPct, kab.delta.glUsahaPct)}
+            ${renderKabGroup(kab.klgBaruJml, kab.klgBaruSubmit, kab.klgBaruPct, kab.delta.klgBaruPct)}
+            ${renderKabGroup(kab.usahaBaruJml, kab.usahaBaruSubmit, kab.usahaBaruPct, kab.delta.usahaBaruPct)}
+            ${renderKabGroup(kab.assignJml, kab.assignSubmit, kab.assignPct, kab.delta.assignPct, true)}
           </tr>`;
 
           if (isKabOpen && kab.children) {
@@ -1582,15 +1548,15 @@
                     <span class="font-semibold text-xs text-[var(--text-primary)]">└ [${kec.kode}] ${escapePrelistHtml(kec.nama)}</span>
                   </div>
                 </td>
-                ${kecCellJml(kec.klgPrelistJml)}${kecCellPct(kec.klgPrelistPct, kec.delta.klgPrelistPct)}
-                ${kecCellJml(kec.usahaPrelistJml)}${kecCellPct(kec.usahaPrelistPct, kec.delta.usahaPrelistPct)}
-                ${kecCellJml(kec.lainnyaJml)}${kecCellPct(kec.lainnyaPct, kec.delta.lainnyaPct)}
-                ${kecCellJml(kec.prelistJml)}${kecCellPct(kec.prelistPct, kec.delta.prelistPct)}
-                ${kecCellJml(kec.glKlgJml)}${kecCellPct(kec.glKlgPct, kec.delta.glKlgPct)}
-                ${kecCellJml(kec.glUsahaJml)}${kecCellPct(kec.glUsahaPct, kec.delta.glUsahaPct)}
-                ${kecCellJml(kec.klgBaruJml)}${kecCellPct(kec.klgBaruPct, kec.delta.klgBaruPct)}
-                ${kecCellJml(kec.usahaBaruJml)}${kecCellPct(kec.usahaBaruPct, kec.delta.usahaBaruPct)}
-                ${kecCellJml(kec.assignJml)}${kecCellPct(kec.assignPct, kec.delta.assignPct, true)}
+                ${renderKecGroup(kec.klgPrelistJml, kec.klgPrelistSubmit, kec.klgPrelistPct, kec.delta.klgPrelistPct)}
+                ${renderKecGroup(kec.usahaPrelistJml, kec.usahaPrelistSubmit, kec.usahaPrelistPct, kec.delta.usahaPrelistPct)}
+                ${renderKecGroup(kec.lainnyaJml, kec.lainnyaSubmit, kec.lainnyaPct, kec.delta.lainnyaPct)}
+                ${renderKecGroup(kec.prelistJml, kec.prelistSubmit, kec.prelistPct, kec.delta.prelistPct)}
+                ${renderKecGroup(kec.glKlgJml, kec.glKlgSubmit, kec.glKlgPct, kec.delta.glKlgPct)}
+                ${renderKecGroup(kec.glUsahaJml, kec.glUsahaSubmit, kec.glUsahaPct, kec.delta.glUsahaPct)}
+                ${renderKecGroup(kec.klgBaruJml, kec.klgBaruSubmit, kec.klgBaruPct, kec.delta.klgBaruPct)}
+                ${renderKecGroup(kec.usahaBaruJml, kec.usahaBaruSubmit, kec.usahaBaruPct, kec.delta.usahaBaruPct)}
+                ${renderKecGroup(kec.assignJml, kec.assignSubmit, kec.assignPct, kec.delta.assignPct, true)}
               </tr>`;
 
               if (isKecOpen && kec.children) {
@@ -1608,15 +1574,15 @@
                         <span class="font-medium text-xs text-[var(--text-secondary)]">└─ [${desa.kode}] ${escapePrelistHtml(desa.nama)}</span>
                       </div>
                     </td>
-                    ${desaCellJml(desa.klgPrelistJml)}${desaCellPct(desa.klgPrelistPct, desa.delta.klgPrelistPct)}
-                    ${desaCellJml(desa.usahaPrelistJml)}${desaCellPct(desa.usahaPrelistPct, desa.delta.usahaPrelistPct)}
-                    ${desaCellJml(desa.lainnyaJml)}${desaCellPct(desa.lainnyaPct, desa.delta.lainnyaPct)}
-                    ${desaCellJml(desa.prelistJml)}${desaCellPct(desa.prelistPct, desa.delta.prelistPct)}
-                    ${desaCellJml(desa.glKlgJml)}${desaCellPct(desa.glKlgPct, desa.delta.glKlgPct)}
-                    ${desaCellJml(desa.glUsahaJml)}${desaCellPct(desa.glUsahaPct, desa.delta.glUsahaPct)}
-                    ${desaCellJml(desa.klgBaruJml)}${desaCellPct(desa.klgBaruPct, desa.delta.klgBaruPct)}
-                    ${desaCellJml(desa.usahaBaruJml)}${desaCellPct(desa.usahaBaruPct, desa.delta.usahaBaruPct)}
-                    ${desaCellJml(desa.assignJml)}${desaCellPct(desa.assignPct, desa.delta.assignPct, true)}
+                    ${renderDesaGroup(desa.klgPrelistJml, desa.klgPrelistSubmit, desa.klgPrelistPct, desa.delta.klgPrelistPct)}
+                    ${renderDesaGroup(desa.usahaPrelistJml, desa.usahaPrelistSubmit, desa.usahaPrelistPct, desa.delta.usahaPrelistPct)}
+                    ${renderDesaGroup(desa.lainnyaJml, desa.lainnyaSubmit, desa.lainnyaPct, desa.delta.lainnyaPct)}
+                    ${renderDesaGroup(desa.prelistJml, desa.prelistSubmit, desa.prelistPct, desa.delta.prelistPct)}
+                    ${renderDesaGroup(desa.glKlgJml, desa.glKlgSubmit, desa.glKlgPct, desa.delta.glKlgPct)}
+                    ${renderDesaGroup(desa.glUsahaJml, desa.glUsahaSubmit, desa.glUsahaPct, desa.delta.glUsahaPct)}
+                    ${renderDesaGroup(desa.klgBaruJml, desa.klgBaruSubmit, desa.klgBaruPct, desa.delta.klgBaruPct)}
+                    ${renderDesaGroup(desa.usahaBaruJml, desa.usahaBaruSubmit, desa.usahaBaruPct, desa.delta.usahaBaruPct)}
+                    ${renderDesaGroup(desa.assignJml, desa.assignSubmit, desa.assignPct, desa.delta.assignPct, true)}
                   </tr>`;
 
                   if (isDesaOpen && desa.children) {
@@ -1634,15 +1600,15 @@
                           <div class="leading-tight">${subDisplayName}</div>
                           <div class="font-mono text-[10px] text-[var(--text-muted)] mt-0.5">${escapePrelistHtml(sub.kode)}</div>
                         </td>
-                        ${subCellJml(sub.klgPrelistJml)}${subCellPct(sub.klgPrelistPct, sub.delta.klgPrelistPct)}
-                        ${subCellJml(sub.usahaPrelistJml)}${subCellPct(sub.usahaPrelistPct, sub.delta.usahaPrelistPct)}
-                        ${subCellJml(sub.lainnyaJml)}${subCellPct(sub.lainnyaPct, sub.delta.lainnyaPct)}
-                        ${subCellJml(sub.prelistJml)}${subCellPct(sub.prelistPct, sub.delta.prelistPct)}
-                        ${subCellJml(sub.glKlgJml)}${subCellPct(sub.glKlgPct, sub.delta.glKlgPct)}
-                        ${subCellJml(sub.glUsahaJml)}${subCellPct(sub.glUsahaPct, sub.delta.glUsahaPct)}
-                        ${subCellJml(sub.klgBaruJml)}${subCellPct(sub.klgBaruPct, sub.delta.klgBaruPct)}
-                        ${subCellJml(sub.usahaBaruJml)}${subCellPct(sub.usahaBaruPct, sub.delta.usahaBaruPct)}
-                        ${subCellJml(sub.assignJml)}${subCellPct(sub.assignPct, sub.delta.assignPct, true)}
+                        ${renderSubGroup(sub.klgPrelistJml, sub.klgPrelistSubmit, sub.klgPrelistPct, sub.delta.klgPrelistPct)}
+                        ${renderSubGroup(sub.usahaPrelistJml, sub.usahaPrelistSubmit, sub.usahaPrelistPct, sub.delta.usahaPrelistPct)}
+                        ${renderSubGroup(sub.lainnyaJml, sub.lainnyaSubmit, sub.lainnyaPct, sub.delta.lainnyaPct)}
+                        ${renderSubGroup(sub.prelistJml, sub.prelistSubmit, sub.prelistPct, sub.delta.prelistPct)}
+                        ${renderSubGroup(sub.glKlgJml, sub.glKlgSubmit, sub.glKlgPct, sub.delta.glKlgPct)}
+                        ${renderSubGroup(sub.glUsahaJml, sub.glUsahaSubmit, sub.glUsahaPct, sub.delta.glUsahaPct)}
+                        ${renderSubGroup(sub.klgBaruJml, sub.klgBaruSubmit, sub.klgBaruPct, sub.delta.klgBaruPct)}
+                        ${renderSubGroup(sub.usahaBaruJml, sub.usahaBaruSubmit, sub.usahaBaruPct, sub.delta.usahaBaruPct)}
+                        ${renderSubGroup(sub.assignJml, sub.assignSubmit, sub.assignPct, sub.delta.assignPct, true)}
                       </tr>`;
                     });
                   }
@@ -1657,6 +1623,7 @@
 
       if (pageInfo) {
         pageInfo.textContent = `Menampilkan ${fmtNum(totalKabCount)} Kabupaten, ${fmtNum(totalKecCount)} Kecamatan, ${fmtNum(totalDesaCount)} Desa, ${fmtNum(totalSubSlsCount)} Sub SLS`;
+      }lKecCount)} Kecamatan, ${fmtNum(totalDesaCount)} Desa, ${fmtNum(totalSubSlsCount)} Sub SLS`;
       }
 
       const baselineInfo = document.getElementById('prelist-baseline-info');
@@ -1745,30 +1712,30 @@
     function exportPrelistCSV() {
       const headers = [
         'Tingkat', 'Kode Wilayah / Sub SLS', 'Nama Wilayah / SLS',
-        'Keluarga Prelist Jml', 'Keluarga Prelist %',
-        'Usaha Prelist Jml', 'Usaha Prelist %',
-        'Non BKU Prelist Jml', 'Non BKU Prelist %',
-        'Total Prelist Jml', 'Total Prelist %',
-        'GL Keluarga Jml', 'GL Keluarga %',
-        'GL Usaha Jml', 'GL Usaha %',
-        'Keluarga Baru Jml', 'Keluarga Baru %',
-        'Usaha Baru Jml', 'Usaha Baru %',
-        'Total Assignment Baru Jml', 'Total Assignment Baru %'
+        'Keluarga Prelist Awal', 'Keluarga Prelist Submit', 'Keluarga Prelist %',
+        'Usaha Prelist Awal', 'Usaha Prelist Submit', 'Usaha Prelist %',
+        'Non BKU Prelist Awal', 'Non BKU Prelist Submit', 'Non BKU Prelist %',
+        'Total Prelist Awal', 'Total Prelist Submit', 'Total Prelist %',
+        'GL Keluarga Awal', 'GL Keluarga Submit', 'GL Keluarga %',
+        'GL Usaha Awal', 'GL Usaha Submit', 'GL Usaha %',
+        'Keluarga Baru Awal', 'Keluarga Baru Submit', 'Keluarga Baru %',
+        'Usaha Baru Awal', 'Usaha Baru Submit', 'Usaha Baru %',
+        'Total Assignment Baru Awal', 'Total Assignment Baru Submit', 'Total Assignment Baru %'
       ];
 
       const rows = [];
       const addRow = (level, kode, nama, item) => {
         rows.push([
           level, kode, nama,
-          item.klgPrelistJml, item.klgPrelistPct !== null ? item.klgPrelistPct.toFixed(2) : '',
-          item.usahaPrelistJml, item.usahaPrelistPct !== null ? item.usahaPrelistPct.toFixed(2) : '',
-          item.lainnyaJml, item.lainnyaPct !== null ? item.lainnyaPct.toFixed(2) : '',
-          item.prelistJml, item.prelistPct !== null ? item.prelistPct.toFixed(2) : '',
-          item.glKlgJml, item.glKlgPct !== null ? item.glKlgPct.toFixed(2) : '',
-          item.glUsahaJml, item.glUsahaPct !== null ? item.glUsahaPct.toFixed(2) : '',
-          item.klgBaruJml, item.klgBaruPct !== null ? item.klgBaruPct.toFixed(2) : '',
-          item.usahaBaruJml, item.usahaBaruPct !== null ? item.usahaBaruPct.toFixed(2) : '',
-          item.assignJml, item.assignPct !== null ? item.assignPct.toFixed(2) : ''
+          item.klgPrelistJml, item.klgPrelistSubmit, item.klgPrelistPct !== null ? item.klgPrelistPct.toFixed(2) : '',
+          item.usahaPrelistJml, item.usahaPrelistSubmit, item.usahaPrelistPct !== null ? item.usahaPrelistPct.toFixed(2) : '',
+          item.lainnyaJml, item.lainnyaSubmit, item.lainnyaPct !== null ? item.lainnyaPct.toFixed(2) : '',
+          item.prelistJml, item.prelistSubmit, item.prelistPct !== null ? item.prelistPct.toFixed(2) : '',
+          item.glKlgJml, item.glKlgSubmit, item.glKlgPct !== null ? item.glKlgPct.toFixed(2) : '',
+          item.glUsahaJml, item.glUsahaSubmit, item.glUsahaPct !== null ? item.glUsahaPct.toFixed(2) : '',
+          item.klgBaruJml, item.klgBaruSubmit, item.klgBaruPct !== null ? item.klgBaruPct.toFixed(2) : '',
+          item.usahaBaruJml, item.usahaBaruSubmit, item.usahaBaruPct !== null ? item.usahaBaruPct.toFixed(2) : '',
+          item.assignJml, item.assignSubmit, item.assignPct !== null ? item.assignPct.toFixed(2) : ''
         ]);
       };
 
