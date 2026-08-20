@@ -42,10 +42,12 @@
 
 <body class="min-h-screen relative p-4 md:p-8 font-sans selection:bg-neutral-800 selection:text-amber-200">
 
-  <!-- Loading Spinner Overlay -->
+  <!-- Loading Spinner Overlay (Clean & Minimal) -->
   <div id="loading-overlay" class="loading-overlay">
-    <div class="spinner"></div>
-    <div class="loading-text">Memuat Data...</div>
+    <div class="flex flex-col items-center gap-3.5">
+      <div class="w-9 h-9 border-2 border-[var(--border-color)] border-t-[var(--accent-color)] rounded-full animate-spin"></div>
+      <p class="text-xs text-[var(--text-muted)] font-medium tracking-wide">Memuat data dashboard...</p>
+    </div>
   </div>
 
   <!-- Grain Texture overlay -->
@@ -432,9 +434,9 @@
                 Wilayah <span id="sort-indicator-wilayah">↕</span>
               </th>
               <th colspan="4" class="text-center bg-[rgba(212,178,122,0.02)]">Target Prelist Awal</th>
-              <th id="th-umkm-group" colspan="5" class="text-center bg-[rgba(163,201,168,0.02)]">[Sensus Ekonomi 2026
+              <th id="th-umkm-group" colspan="6" class="text-center bg-[rgba(163,201,168,0.02)]">[Sensus Ekonomi 2026
                 (UMKM)]</th>
-              <th id="th-ub-group" colspan="5" class="text-center bg-[rgba(229,185,116,0.02)]">[Sensus Ekonomi 2026
+              <th id="th-ub-group" colspan="6" class="text-center bg-[rgba(229,185,116,0.02)]">[Sensus Ekonomi 2026
                 (UB)]
               </th>
               <th rowspan="2" class="text-right cursor-pointer align-middle select-none whitespace-nowrap"
@@ -456,6 +458,8 @@
                 onclick="sortTable('umkmOpen')">Open <span id="sort-indicator-umkmOpen">↕</span></th>
               <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
                 onclick="sortTable('umkmDraft')">Draft <span id="sort-indicator-umkmDraft">↕</span></th>
+              <th class="text-right bg-[rgba(163,201,168,0.02)] text-[var(--accent-color)] cursor-pointer select-none"
+                onclick="sortTable('umkmApproved')">Approved <span id="sort-indicator-umkmApproved">↕</span></th>
               <th class="text-right bg-[rgba(163,201,168,0.02)] text-[var(--success-color)] cursor-pointer select-none"
                 onclick="sortTable('umkmSubmit')">Submit <span id="sort-indicator-umkmSubmit">↕</span></th>
               <th id="th-umkm-total" class="text-right bg-[rgba(163,201,168,0.02)] font-bold cursor-pointer select-none"
@@ -469,6 +473,8 @@
                 Open <span id="sort-indicator-ubOpen">↕</span></th>
               <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
                 onclick="sortTable('ubDraft')">Draft <span id="sort-indicator-ubDraft">↕</span></th>
+              <th class="text-right bg-[rgba(229,185,116,0.02)] text-[var(--accent-color)] cursor-pointer select-none"
+                onclick="sortTable('ubApproved')">Approved <span id="sort-indicator-ubApproved">↕</span></th>
               <th class="text-right bg-[rgba(229,185,116,0.02)] text-[var(--success-color)] cursor-pointer select-none"
                 onclick="sortTable('ubSubmit')">Submit <span id="sort-indicator-ubSubmit">↕</span></th>
               <th id="th-ub-total" class="text-right bg-[rgba(229,185,116,0.02)] font-bold cursor-pointer select-none"
@@ -502,7 +508,7 @@
         </div>
         <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           <!-- Filter Kabupaten (Custom Dropdown) -->
-          <div class="relative w-full sm:w-72 flex flex-col justify-end">
+          <div class="relative w-full sm:w-64 flex flex-col justify-end">
             <span class="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1 font-bold">Kabupaten:</span>
             <div class="relative w-full" id="prelist-kab-dropdown-container">
               <button type="button" id="prelist-kab-btn" onclick="togglePrelistKabDropdown(event)"
@@ -524,7 +530,7 @@
             </div>
           </div>
           <!-- Search Input -->
-          <div class="relative w-full sm:w-64 flex flex-col justify-end">
+          <div class="relative w-full sm:w-60 flex flex-col justify-end">
             <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
             <div class="relative w-full">
               <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -534,19 +540,27 @@
                 </svg>
               </span>
               <input type="text" id="search-prelist" oninput="filterPrelistSubSls()"
-                placeholder="Cari nama SLS atau kode..." class="impeccable-input pl-9 w-full text-sm h-[34px]" />
+                placeholder="Cari SLS, Desa, Kec, kode..." class="impeccable-input pl-9 w-full text-sm h-[34px]" />
             </div>
           </div>
-          <!-- Export Button -->
-          <div class="flex flex-col justify-end w-full sm:w-auto">
-            <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
-            <button onclick="exportPrelistCSV()" class="impeccable-btn flex items-center justify-center gap-2 h-[34px]">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <span>Unduh CSV</span>
-            </button>
+          <!-- Quick Tree Actions & Export -->
+          <div class="flex items-center gap-2 flex-col justify-end w-full sm:w-auto">
+            <span class="text-[9px] mb-1 opacity-0 pointer-events-none hidden sm:block">&nbsp;</span>
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <button onclick="expandAllPrelistTree()" class="impeccable-btn flex items-center justify-center gap-1 h-[34px] text-xs px-2.5" title="Buka Semua Tingkatan">
+                <span>[+] Buka</span>
+              </button>
+              <button onclick="collapseAllPrelistTree()" class="impeccable-btn flex items-center justify-center gap-1 h-[34px] text-xs px-2.5" title="Tutup Semua Tingkatan">
+                <span>[-] Tutup</span>
+              </button>
+              <button onclick="exportPrelistCSV()" class="impeccable-btn flex items-center justify-center gap-1.5 h-[34px] text-xs px-3">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>Unduh CSV</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -555,7 +569,7 @@
       <div class="overflow-auto max-h-[80vh]">
         <table class="impeccable-table text-left" id="prelist-subsls-table">
           <colgroup>
-            <col style="width:230px;" />
+            <col style="width:260px;" />
             <col style="width:70px;" />
             <col style="width:90px;" />
             <col style="width:70px;" />
@@ -579,8 +593,8 @@
             <!-- Row 1: Main Category Headers -->
             <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
               <th rowspan="3"
-                class="cursor-pointer pl-6 select-none align-middle text-left border-r border-[var(--border-color)] min-w-[220px]"
-                onclick="sortPrelistTable('kode')">SLS / Sub SLS <span id="sort-prelist-kode" class="sort-icon">↕</span>
+                class="cursor-pointer pl-6 select-none align-middle text-left border-r border-[var(--border-color)] min-w-[260px]"
+                onclick="sortPrelistTable('kode')">Wilayah / SLS / Sub SLS <span id="sort-prelist-kode" class="sort-icon">↕</span>
               </th>
               <th colspan="8" class="text-center bg-[rgba(163,201,168,0.06)] border-r border-[var(--border-color)]"
                 style="border-bottom: 2px solid var(--success-color);">Prelist</th>
@@ -702,29 +716,16 @@
         </p>
       </div>
 
-      <!-- Pagination Controls -->
+      <!-- Hierarchy Summary & Controls -->
       <div
         class="flex flex-col sm:flex-row items-center justify-between p-4 border-t border-[var(--border-color)] gap-3">
-        <div class="flex items-center gap-4 text-sm text-[var(--text-muted)]">
-          <div id="prelist-page-info">Menampilkan 0 data</div>
-          <div class="flex items-center gap-1.5 text-xs">
-            <span class="font-medium text-[var(--text-secondary)]">Tampilkan:</span>
-            <select id="prelist-rows-select" onchange="changePrelistPageSize(this.value)"
-              class="impeccable-input text-xs py-1 px-2 h-[30px] rounded cursor-pointer">
-              <option value="30" selected>30 baris</option>
-              <option value="50">50 baris</option>
-              <option value="100">100 baris</option>
-            </select>
-          </div>
+        <div class="flex items-center gap-4 text-xs text-[var(--text-muted)]">
+          <div id="prelist-page-info" class="font-medium text-[var(--text-primary)]">Menampilkan 0 data</div>
+          <div id="prelist-tree-stats" class="hidden sm:inline-block text-[var(--text-secondary)]"></div>
         </div>
-        <div class="flex space-x-1 items-center">
-          <button onclick="changePrelistPage(-1)" id="btn-prev-prelist" class="impeccable-btn px-3 py-1 text-sm"
-            disabled>Sebelumnya</button>
-          <div id="prelist-page-numbers" class="flex space-x-1 items-center">
-            <!-- Dynamic page numbers -->
-          </div>
-          <button onclick="changePrelistPage(1)" id="btn-next-prelist" class="impeccable-btn px-3 py-1 text-sm"
-            disabled>Berikutnya</button>
+        <div class="flex space-x-2 items-center">
+          <button onclick="expandAllPrelistTree()" class="impeccable-btn px-3 py-1 text-xs">[+] Buka Semua</button>
+          <button onclick="collapseAllPrelistTree()" class="impeccable-btn px-3 py-1 text-xs">[-] Tutup Semua</button>
         </div>
       </div>
     </section>
@@ -819,32 +820,32 @@
 
     // Data Dashboard SE2026 Sumatera Barat (Nilai awal 0, diisi dinamis dari Apps Script)
     const dashboardData = [
-      { id: 1, kode: "1301", nama: "Kabupaten Kepulauan Mentawai", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 2, kode: "1302", nama: "Kabupaten Pesisir Selatan", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 3, kode: "1303", nama: "Kabupaten Solok", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 4, kode: "1304", nama: "Kabupaten Sijunjung", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 5, kode: "1305", nama: "Kabupaten Tanah Datar", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 6, kode: "1306", nama: "Kabupaten Padang Pariaman", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 7, kode: "1307", nama: "Kabupaten Agam", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 8, kode: "1308", nama: "Kabupaten Lima Puluh Kota", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 9, kode: "1309", nama: "Kabupaten Pasaman", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 10, kode: "1310", nama: "Kabupaten Solok Selatan", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 11, kode: "1311", nama: "Kabupaten Dharmasraya", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 12, kode: "1312", nama: "Kabupaten Pasaman Barat", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 13, kode: "1371", nama: "Kota Padang", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 14, kode: "1372", nama: "Kota Solok", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 15, kode: "1373", nama: "Kota Sawahlunto", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 16, kode: "1374", nama: "Kota Padang Panjang", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 17, kode: "1375", nama: "Kota Bukittinggi", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 18, kode: "1376", nama: "Kota Payakumbuh", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
-      { id: 19, kode: "1377", nama: "Kota Pariaman", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] }
+      { id: 1, kode: "1301", nama: "Kabupaten Kepulauan Mentawai", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 2, kode: "1302", nama: "Kabupaten Pesisir Selatan", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 3, kode: "1303", nama: "Kabupaten Solok", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 4, kode: "1304", nama: "Kabupaten Sijunjung", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 5, kode: "1305", nama: "Kabupaten Tanah Datar", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 6, kode: "1306", nama: "Kabupaten Padang Pariaman", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 7, kode: "1307", nama: "Kabupaten Agam", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 8, kode: "1308", nama: "Kabupaten Lima Puluh Kota", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 9, kode: "1309", nama: "Kabupaten Pasaman", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 10, kode: "1310", nama: "Kabupaten Solok Selatan", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 11, kode: "1311", nama: "Kabupaten Dharmasraya", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 12, kode: "1312", nama: "Kabupaten Pasaman Barat", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 13, kode: "1371", nama: "Kota Padang", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 14, kode: "1372", nama: "Kota Solok", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 15, kode: "1373", nama: "Kota Sawahlunto", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 16, kode: "1374", nama: "Kota Padang Panjang", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 17, kode: "1375", nama: "Kota Bukittinggi", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 18, kode: "1376", nama: "Kota Payakumbuh", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] },
+      { id: 19, kode: "1377", nama: "Kota Pariaman", targetUmkm: 0, targetUb: 0, umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0, ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0, progress: 0, harianUmkm: 0, harianUb: 0, kecamatans: [] }
     ];
 
     // Build overall Province summary (Default 0)
     const sumData = {
       targetUmkm: 0, targetUb: 0, targetKeluarga: 0,
-      umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0,
-      ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0,
+      umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0,
+      ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0,
       progress: 0, harianUmkm: 0, harianUb: 0
     };
 
@@ -957,6 +958,10 @@
               valA = a.umkmDraft;
               valB = b.umkmDraft;
               break;
+            case 'umkmApproved':
+              valA = a.umkmApproved || 0;
+              valB = b.umkmApproved || 0;
+              break;
             case 'umkmSubmit':
               valA = a.umkmSubmit;
               valB = b.umkmSubmit;
@@ -978,6 +983,10 @@
             case 'ubDraft':
               valA = a.ubDraft;
               valB = b.ubDraft;
+              break;
+            case 'ubApproved':
+              valA = a.ubApproved || 0;
+              valB = b.ubApproved || 0;
               break;
             case 'ubSubmit':
               valA = a.ubSubmit;
@@ -1108,16 +1117,17 @@
     // Charts references
     let donutChart, progressChart, submitChart, dailyChart;
 
-    // ====== REKAP PRELIST & ASSIGNMENT BARU PER SUB SLS ======
+    // ====== REKAP PRELIST & ASSIGNMENT BARU PER SUB SLS (HIERARKI 4 TINGKAT) ======
     let prelistSubSlsData = [];
-    let filteredPrelistSubSlsData = [];
-    let currentPrelistPage = 1;
-    let prelistRowsPerPage = 30;
-    let prelistSortColumn = 'kode';
-    let prelistSortOrder = 'asc';
+    let prelistTreeData = [];
+    let expandedPrelistNodes = new Set();
     let prelistBaselineDate = '';
     let prelistBaselineByCode = new Map();
     let masterSubSlsMap = new Map();
+    let masterDesaMap = new Map();
+    let masterKecMap = new Map();
+    let selectedKabPrelist = '';
+
     const prelistPctKeys = ['klgPrelistPct', 'usahaPrelistPct', 'lainnyaPct', 'prelistPct', 'glKlgPct', 'glUsahaPct', 'klgBaruPct', 'usahaBaruPct', 'assignPct'];
 
     const prelistNumber = (value) => {
@@ -1131,22 +1141,21 @@
     };
 
     function getPrelistSource(data) {
-      return data['Rekap Prelist SubSLS'] || [];
+      return data['Rekap Prelist SubSLS'] || data['Rekap Prelist SE2026 - SubSLS'] || [];
     }
 
     function preparePrelistBaseline(data) {
       prelistBaselineDate = '';
       prelistBaselineByCode = new Map();
-      const history = data['History - Rekap Prelist SubSLS'] || [];
+      const history = data['History - Rekap Prelist SubSLS'] || data['History - Rekap Prelist SE2026 - SubSLS'] || [];
       const currentDate = String(data.lastUpdated || '').substring(0, 10);
       const dates = [...new Set(history.map(row => String(row['Tanggal Baseline'] || '').substring(0, 10)).filter(Boolean))]
         .filter(date => !currentDate || date < currentDate).sort().reverse();
       if (!dates.length) return;
       prelistBaselineDate = dates[0];
       const baselineRows = history.filter(row => String(row['Tanggal Baseline'] || '').substring(0, 10) === prelistBaselineDate);
-      // Build baseline metrics without comparing them to another baseline.
       baselineRows.forEach(row => {
-        const code = String(row.KODE_SUB_SLS ?? '').trim();
+        const code = String(row.KODE_SUB_SLS ?? row.kode ?? '').trim();
         if (code) prelistBaselineByCode.set(code, buildPrelistRow(row));
       });
     }
@@ -1156,35 +1165,233 @@
       const dummy = prelistNumber(row.JUMLAH_DUMMY);
       const lainnyaJml = nonBku + dummy;
       const kode = String(row.KODE_SUB_SLS ?? row.kode ?? '').trim();
-      const namaSls = masterSubSlsMap.get(kode) || '';
+      const namaSls = masterSubSlsMap.get(kode) || String(row.NAMA_SLS || row.nama_sls || row.SLS || row.nmsls || '').trim();
+
+      const klgPrelistJml = prelistNumber(row.JUMLAH_KELUARGA_PRELIST);
+      const klgPrelistSubmit = prelistNumber(row.KELUARGA_PRELIST_SUBMIT);
+
+      const usahaPrelistJml = prelistNumber(row.JUMLAH_USAHA_PRELIST);
+      const usahaPrelistSubmit = prelistNumber(row.USAHA_PRELIST_SUBMIT);
+
+      const lainnyaSubmit = prelistNumber(row.NONBKU_PRELIST_SUBMIT);
+
+      const prelistJml = prelistNumber(row.JUMLAH_PRELIST);
+      const prelistSubmit = prelistNumber(row.JUMLAH_PRELIST_SELAIN_OPEN_DRAFT);
+
+      const glKlgJml = prelistNumber(row.JUMLAH_KELUARGA_GENERAL_LINK);
+      const glKlgSubmit = prelistNumber(row.KELUARGA_GENERAL_LINK_SUBMIT);
+
+      const glUsahaJml = prelistNumber(row.JUMLAH_USAHA_GENERAL_LINK);
+      const glUsahaSubmit = prelistNumber(row.USAHA_GENERAL_LINK_SUBMIT);
+
+      const klgBaruJml = prelistNumber(row.JUMLAH_KELUARGA_BARU);
+      const klgBaruSubmit = prelistNumber(row.KELUARGA_BARU_SUBMIT);
+
+      const usahaBaruJml = prelistNumber(row.JUMLAH_USAHA_BARU);
+      const usahaBaruSubmit = prelistNumber(row.USAHA_BARU_SUBMIT);
+
+      const assignJml = prelistNumber(row.JUMLAH_ASSIGNMENT_BARU);
+      const assignSubmit = klgBaruSubmit + usahaBaruSubmit;
+
       const result = {
         kode,
         namaSls,
-        klgPrelistJml: prelistNumber(row.JUMLAH_KELUARGA_PRELIST),
-        klgPrelistPct: prelistPercent(row.KELUARGA_PRELIST_SUBMIT, row.JUMLAH_KELUARGA_PRELIST),
-        usahaPrelistJml: prelistNumber(row.JUMLAH_USAHA_PRELIST),
-        usahaPrelistPct: prelistPercent(row.USAHA_PRELIST_SUBMIT, row.JUMLAH_USAHA_PRELIST),
-        lainnyaJml,
-        lainnyaPct: prelistPercent(row.NONBKU_PRELIST_SUBMIT, lainnyaJml),
-        prelistJml: prelistNumber(row.JUMLAH_PRELIST),
-        prelistPct: prelistPercent(row.JUMLAH_PRELIST_SELAIN_OPEN_DRAFT, row.JUMLAH_PRELIST),
-        glKlgJml: prelistNumber(row.JUMLAH_KELUARGA_GENERAL_LINK),
-        glKlgPct: prelistPercent(row.KELUARGA_GENERAL_LINK_SUBMIT, row.JUMLAH_KELUARGA_GENERAL_LINK),
-        glUsahaJml: prelistNumber(row.JUMLAH_USAHA_GENERAL_LINK),
-        glUsahaPct: prelistPercent(row.USAHA_GENERAL_LINK_SUBMIT, row.JUMLAH_USAHA_GENERAL_LINK),
-        klgBaruJml: prelistNumber(row.JUMLAH_KELUARGA_BARU),
-        klgBaruPct: prelistPercent(row.KELUARGA_BARU_SUBMIT, row.JUMLAH_KELUARGA_BARU),
-        usahaBaruJml: prelistNumber(row.JUMLAH_USAHA_BARU),
-        usahaBaruPct: prelistPercent(row.USAHA_BARU_SUBMIT, row.JUMLAH_USAHA_BARU),
-        assignJml: prelistNumber(row.JUMLAH_ASSIGNMENT_BARU),
-        assignPct: prelistPercent(prelistNumber(row.KELUARGA_BARU_SUBMIT) + prelistNumber(row.USAHA_BARU_SUBMIT), row.JUMLAH_ASSIGNMENT_BARU)
+        klgPrelistJml, klgPrelistSubmit, klgPrelistPct: prelistPercent(klgPrelistSubmit, klgPrelistJml),
+        usahaPrelistJml, usahaPrelistSubmit, usahaPrelistPct: prelistPercent(usahaPrelistSubmit, usahaPrelistJml),
+        lainnyaJml, lainnyaSubmit, lainnyaPct: prelistPercent(lainnyaSubmit, lainnyaJml),
+        prelistJml, prelistSubmit, prelistPct: prelistPercent(prelistSubmit, prelistJml),
+        glKlgJml, glKlgSubmit, glKlgPct: prelistPercent(glKlgSubmit, glKlgJml),
+        glUsahaJml, glUsahaSubmit, glUsahaPct: prelistPercent(glUsahaSubmit, glUsahaJml),
+        klgBaruJml, klgBaruSubmit, klgBaruPct: prelistPercent(klgBaruSubmit, klgBaruJml),
+        usahaBaruJml, usahaBaruSubmit, usahaBaruPct: prelistPercent(usahaBaruSubmit, usahaBaruJml),
+        assignJml, assignSubmit, assignPct: prelistPercent(assignSubmit, assignJml)
       };
+
       const baseline = prelistBaselineByCode.get(result.kode);
       result.delta = {};
       prelistPctKeys.forEach(key => {
         result.delta[key] = baseline && result[key] !== null && baseline[key] !== null ? result[key] - baseline[key] : null;
       });
       return result;
+    }
+
+    function aggregatePrelistMetrics(items) {
+      const agg = {
+        klgPrelistJml: 0, klgPrelistSubmit: 0,
+        usahaPrelistJml: 0, usahaPrelistSubmit: 0,
+        lainnyaJml: 0, lainnyaSubmit: 0,
+        prelistJml: 0, prelistSubmit: 0,
+        glKlgJml: 0, glKlgSubmit: 0,
+        glUsahaJml: 0, glUsahaSubmit: 0,
+        klgBaruJml: 0, klgBaruSubmit: 0,
+        usahaBaruJml: 0, usahaBaruSubmit: 0,
+        assignJml: 0, assignSubmit: 0
+      };
+
+      items.forEach(item => {
+        agg.klgPrelistJml += item.klgPrelistJml || 0;
+        agg.klgPrelistSubmit += item.klgPrelistSubmit || 0;
+        agg.usahaPrelistJml += item.usahaPrelistJml || 0;
+        agg.usahaPrelistSubmit += item.usahaPrelistSubmit || 0;
+        agg.lainnyaJml += item.lainnyaJml || 0;
+        agg.lainnyaSubmit += item.lainnyaSubmit || 0;
+        agg.prelistJml += item.prelistJml || 0;
+        agg.prelistSubmit += item.prelistSubmit || 0;
+        agg.glKlgJml += item.glKlgJml || 0;
+        agg.glKlgSubmit += item.glKlgSubmit || 0;
+        agg.glUsahaJml += item.glUsahaJml || 0;
+        agg.glUsahaSubmit += item.glUsahaSubmit || 0;
+        agg.klgBaruJml += item.klgBaruJml || 0;
+        agg.klgBaruSubmit += item.klgBaruSubmit || 0;
+        agg.usahaBaruJml += item.usahaBaruJml || 0;
+        agg.usahaBaruSubmit += item.usahaBaruSubmit || 0;
+        agg.assignJml += item.assignJml || 0;
+        agg.assignSubmit += item.assignSubmit || 0;
+      });
+
+      agg.klgPrelistPct = prelistPercent(agg.klgPrelistSubmit, agg.klgPrelistJml);
+      agg.usahaPrelistPct = prelistPercent(agg.usahaPrelistSubmit, agg.usahaPrelistJml);
+      agg.lainnyaPct = prelistPercent(agg.lainnyaSubmit, agg.lainnyaJml);
+      agg.prelistPct = prelistPercent(agg.prelistSubmit, agg.prelistJml);
+      agg.glKlgPct = prelistPercent(agg.glKlgSubmit, agg.glKlgJml);
+      agg.glUsahaPct = prelistPercent(agg.glUsahaSubmit, agg.glUsahaJml);
+      agg.klgBaruPct = prelistPercent(agg.klgBaruSubmit, agg.klgBaruJml);
+      agg.usahaBaruPct = prelistPercent(agg.usahaBaruSubmit, agg.usahaBaruJml);
+      agg.assignPct = prelistPercent(agg.assignSubmit, agg.assignJml);
+
+      agg.delta = {};
+      if (prelistBaselineByCode && prelistBaselineByCode.size > 0) {
+        const pctPairs = [
+          ['klgPrelistPct', 'klgPrelistJml', 'klgPrelistSubmit'],
+          ['usahaPrelistPct', 'usahaPrelistJml', 'usahaPrelistSubmit'],
+          ['lainnyaPct', 'lainnyaJml', 'lainnyaSubmit'],
+          ['prelistPct', 'prelistJml', 'prelistSubmit'],
+          ['glKlgPct', 'glKlgJml', 'glKlgSubmit'],
+          ['glUsahaPct', 'glUsahaJml', 'glUsahaSubmit'],
+          ['klgBaruPct', 'klgBaruJml', 'klgBaruSubmit'],
+          ['usahaBaruPct', 'usahaBaruJml', 'usahaBaruSubmit'],
+          ['assignPct', 'assignJml', 'assignSubmit']
+        ];
+
+        pctPairs.forEach(([pctKey, jmlKey, subKey]) => {
+          let baseJml = 0;
+          let baseSub = 0;
+          items.forEach(it => {
+            const baseRow = prelistBaselineByCode.get(it.kode);
+            if (baseRow) {
+              baseJml += baseRow[jmlKey] || 0;
+              baseSub += baseRow[subKey] || 0;
+            }
+          });
+          if (baseJml > 0 && agg[pctKey] !== null) {
+            const basePct = (baseSub / baseJml) * 100;
+            agg.delta[pctKey] = agg[pctKey] - basePct;
+          } else {
+            agg.delta[pctKey] = null;
+          }
+        });
+      } else {
+        prelistPctKeys.forEach(k => { agg.delta[k] = null; });
+      }
+
+      return agg;
+    }
+
+    function buildPrelistHierarchy(rows) {
+      const kabMap = new Map();
+
+      rows.forEach(row => {
+        const kode = row.kode;
+        if (!kode) return;
+        const kodeKab = kode.substring(0, 4);
+        const kodeKec = kode.length >= 7 ? kode.substring(0, 7) : kode;
+        const kodeDesa = kode.length >= 10 ? kode.substring(0, 10) : kode;
+
+        if (!kabMap.has(kodeKab)) {
+          const matchedKab = Array.isArray(dashboardData) ? dashboardData.find(w => w.kode === kodeKab) : null;
+          const namaKab = matchedKab ? matchedKab.nama : `Kabupaten [${kodeKab}]`;
+          kabMap.set(kodeKab, {
+            id: `kab_${kodeKab}`,
+            kode: kodeKab,
+            nama: namaKab,
+            level: 'kab',
+            kecMap: new Map(),
+            leaves: []
+          });
+        }
+        const kabNode = kabMap.get(kodeKab);
+        kabNode.leaves.push(row);
+
+        if (!kabNode.kecMap.has(kodeKec)) {
+          const nmKec = masterKecMap.get(kodeKec) || `Kecamatan [${kodeKec.slice(-3)}]`;
+          kabNode.kecMap.set(kodeKec, {
+            id: `kec_${kodeKec}`,
+            kode: kodeKec,
+            nama: nmKec,
+            level: 'kec',
+            desaMap: new Map(),
+            leaves: []
+          });
+        }
+        const kecNode = kabNode.kecMap.get(kodeKec);
+        kecNode.leaves.push(row);
+
+        if (!kecNode.desaMap.has(kodeDesa)) {
+          const nmDesa = masterDesaMap.get(kodeDesa) || `Desa [${kodeDesa.slice(-3)}]`;
+          kecNode.desaMap.set(kodeDesa, {
+            id: `desa_${kodeDesa}`,
+            kode: kodeDesa,
+            nama: nmDesa,
+            level: 'desa',
+            subSlsList: [],
+            leaves: []
+          });
+        }
+        const desaNode = kecNode.desaMap.get(kodeDesa);
+        desaNode.leaves.push(row);
+        desaNode.subSlsList.push({
+          ...row,
+          id: `subsls_${row.kode}`,
+          level: 'subsls'
+        });
+      });
+
+      const resultTree = [];
+      const sortedKabKeys = [...kabMap.keys()].sort();
+
+      sortedKabKeys.forEach(kabKey => {
+        const kab = kabMap.get(kabKey);
+        const kabAgg = aggregatePrelistMetrics(kab.leaves);
+        Object.assign(kab, kabAgg);
+
+        const kecList = [];
+        const sortedKecKeys = [...kab.kecMap.keys()].sort();
+        sortedKecKeys.forEach(kecKey => {
+          const kec = kab.kecMap.get(kecKey);
+          const kecAgg = aggregatePrelistMetrics(kec.leaves);
+          Object.assign(kec, kecAgg);
+
+          const desaList = [];
+          const sortedDesaKeys = [...kec.desaMap.keys()].sort();
+          sortedDesaKeys.forEach(desaKey => {
+            const desa = kec.desaMap.get(desaKey);
+            const desaAgg = aggregatePrelistMetrics(desa.leaves);
+            Object.assign(desa, desaAgg);
+
+            desa.subSlsList.sort((a, b) => a.kode.localeCompare(b.kode));
+            desa.children = desa.subSlsList;
+            desaList.push(desa);
+          });
+
+          kec.children = desaList;
+          kecList.push(kec);
+        });
+
+        kab.children = kecList;
+        resultTree.push(kab);
+      });
+
+      return resultTree;
     }
 
     function formatPrelistValue(value, isPercent = false, delta = null) {
@@ -1206,22 +1413,19 @@
       return `<span class="font-bold" style="color:${color}">${pctText}%</span><span class="text-[10px] font-semibold block mt-0.5" style="color:${dColor}" title="Perubahan terhadap baseline ${escapePrelistHtml(prelistBaselineDate)}">${deltaText}</span>`;
     }
 
-    function prelistSortIcon(key) {
-      const isActive = prelistSortColumn === key;
-      const icon = isActive ? (prelistSortOrder === 'asc' ? '▲' : '▼') : '↕';
-      const activeClass = isActive ? 'sort-active' : '';
-      return `<span id="sort-prelist-${key}" class="sort-icon ${activeClass}" aria-hidden="true">${icon}</span>`;
+    function escapePrelistHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
     }
 
     function renderPrelistHeader() {
       const thead = document.querySelector('#prelist-subsls-table thead');
       if (!thead) return;
-      const leaf = (key, label, isBorderR = false, isBold = false) => `<th class="text-right cursor-pointer select-none py-2 px-1.5 ${isBold ? 'font-bold' : ''} ${isBorderR ? 'border-r border-[var(--border-color)]' : ''}" onclick="sortPrelistTable('${key}')">${label} ${prelistSortIcon(key)}</th>`;
+      const leaf = (key, label, isBorderR = false, isBold = false) => `<th class="text-right select-none py-2 px-1.5 ${isBold ? 'font-bold text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'} ${isBorderR ? 'border-r border-[var(--border-color)]' : ''}">${label}</th>`;
       thead.innerHTML = `
         <!-- Row 1: Main Category Headers -->
         <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
-          <th rowspan="3" class="cursor-pointer pl-6 select-none align-middle text-left border-r border-[var(--border-color)] min-w-[220px]" onclick="sortPrelistTable('kode')">
-            SLS / Sub SLS <span id="sort-prelist-kode" class="sort-icon ${prelistSortColumn === 'kode' ? 'sort-active' : ''}">${prelistSortColumn === 'kode' ? (prelistSortOrder === 'asc' ? '▲' : '▼') : '↕'}</span>
+          <th rowspan="3" class="pl-6 select-none align-middle text-left border-r border-[var(--border-color)] min-w-[240px]">
+            Wilayah / SLS / Sub SLS
           </th>
           <th colspan="8" class="text-center bg-[rgba(163,201,168,0.06)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">Prelist</th>
           <th colspan="4" class="text-center bg-[rgba(163,201,168,0.12)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">General Link</th>
@@ -1253,168 +1457,348 @@
         </tr>`;
     }
 
-    function escapePrelistHtml(value) {
-      return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
-    }
-
     function renderPrelistTable() {
       renderPrelistHeader();
       const tbody = document.getElementById('prelist-subsls-body');
       const pageInfo = document.getElementById('prelist-page-info');
       if (!tbody) return;
-      const totalRows = filteredPrelistSubSlsData.length;
-      const totalPages = Math.max(1, Math.ceil(totalRows / prelistRowsPerPage));
-      currentPrelistPage = Math.min(Math.max(currentPrelistPage, 1), totalPages);
-      const start = (currentPrelistPage - 1) * prelistRowsPerPage;
-      const pageRows = filteredPrelistSubSlsData.slice(start, start + prelistRowsPerPage);
 
-      let html = '';
-      if (totalRows) {
-        const totalRow = {};
-        const totalKeys = ['klgPrelistJml', 'usahaPrelistJml', 'lainnyaJml', 'prelistJml', 'glKlgJml', 'glUsahaJml', 'klgBaruJml', 'usahaBaruJml', 'assignJml'];
-        totalKeys.forEach(key => { totalRow[key] = filteredPrelistSubSlsData.reduce((sum, row) => sum + row[key], 0); });
+      const filterKab = selectedKabPrelist || document.getElementById('filter-kab-prelist')?.value || '';
+      const filterTerm = (document.getElementById('search-prelist')?.value || '').trim().toLowerCase();
 
-        const pctKeys = [
-          ['klgPrelistPct', 'klgPrelistJml'],
-          ['usahaPrelistPct', 'usahaPrelistJml'],
-          ['lainnyaPct', 'lainnyaJml'],
-          ['prelistPct', 'prelistJml'],
-          ['glKlgPct', 'glKlgJml'],
-          ['glUsahaPct', 'glUsahaJml'],
-          ['klgBaruPct', 'klgBaruJml'],
-          ['usahaBaruPct', 'usahaBaruJml'],
-          ['assignPct', 'assignJml']
-        ];
-        pctKeys.forEach(([pct, amount]) => {
-          const denominator = totalRow[amount];
-          const submitted = filteredPrelistSubSlsData.reduce((sum, row) => sum + (row[pct] === null ? 0 : row[pct] * row[amount] / 100), 0);
-          totalRow[pct] = prelistPercent(submitted, denominator);
-        });
+      // Filter tree data by kabupaten
+      const filteredTree = prelistTreeData.filter(kab => !filterKab || kab.kode === filterKab);
 
-        totalRow.delta = {};
-        if (prelistBaselineByCode && prelistBaselineByCode.size > 0) {
-          pctKeys.forEach(([pct, amount]) => {
-            let baseTotalAmount = 0;
-            let baseTotalSubmitted = 0;
-            filteredPrelistSubSlsData.forEach(row => {
-              const baseRow = prelistBaselineByCode.get(row.kode);
-              if (baseRow) {
-                baseTotalAmount += baseRow[amount] || 0;
-                baseTotalSubmitted += (baseRow[pct] === null ? 0 : baseRow[pct] * (baseRow[amount] || 0) / 100);
-              }
-            });
-            if (baseTotalAmount > 0 && totalRow[pct] !== null) {
-              const basePct = (baseTotalSubmitted / baseTotalAmount) * 100;
-              totalRow.delta[pct] = totalRow[pct] - basePct;
-            } else {
-              totalRow.delta[pct] = null;
+      let totalKabCount = 0;
+      let totalKecCount = 0;
+      let totalDesaCount = 0;
+      let totalSubSlsCount = 0;
+
+      // Count totals for summary
+      filteredTree.forEach(kab => {
+        totalKabCount++;
+        if (kab.children) {
+          totalKecCount += kab.children.length;
+          kab.children.forEach(kec => {
+            if (kec.children) {
+              totalDesaCount += kec.children.length;
+              kec.children.forEach(desa => {
+                if (desa.children) totalSubSlsCount += desa.children.length;
+              });
             }
           });
+        }
+      });
+
+      let html = '';
+
+      // 1. Province or Filtered Kabupaten Summary Total Row
+      if (prelistSubSlsData.length > 0) {
+        const activeLeaves = [];
+        filteredTree.forEach(kab => activeLeaves.push(...kab.leaves));
+        const summaryAgg = aggregatePrelistMetrics(activeLeaves);
+
+        let summaryLabel = 'Sumatera Barat';
+        if (filterKab) {
+          const matchedKab = Array.isArray(dashboardData) ? dashboardData.find(w => w.kode === filterKab) : null;
+          summaryLabel = matchedKab ? matchedKab.nama : `Kabupaten [${filterKab}]`;
         }
 
         const totalCellJml = (val) => `<td class="text-right py-3.5 px-2.5 text-[var(--text-secondary)] whitespace-nowrap text-xs font-bold">${fmtNum(val)}</td>`;
         const totalCellPct = (val, delta, isLast = false) => `<td class="text-right py-3.5 px-2.5 whitespace-nowrap text-xs font-bold ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(val, true, delta)}</td>`;
 
-        const activeKabCode = selectedKabPrelist || document.getElementById('filter-kab-prelist')?.value || '';
-        let summaryLabel = 'Sumatera Barat';
-        if (activeKabCode) {
-          const matchedKab = Array.isArray(dashboardData) ? dashboardData.find(w => w.kode === activeKabCode) : null;
-          summaryLabel = matchedKab ? matchedKab.nama : `Kabupaten [${activeKabCode}]`;
-        }
-
-        html += `<tr class="bg-[rgba(212,178,122,0.06)] font-bold border-b border-[var(--border-color)]">
+        html += `<tr class="bg-[rgba(212,178,122,0.08)] font-bold border-b-2 border-[var(--border-color)]">
           <td class="pl-6 py-3.5 whitespace-nowrap text-xs border-r border-[var(--border-color)] text-[var(--text-primary)] font-bold">${escapePrelistHtml(summaryLabel)}</td>
-          ${totalCellJml(totalRow.klgPrelistJml)}${totalCellPct(totalRow.klgPrelistPct, totalRow.delta.klgPrelistPct)}
-          ${totalCellJml(totalRow.usahaPrelistJml)}${totalCellPct(totalRow.usahaPrelistPct, totalRow.delta.usahaPrelistPct)}
-          ${totalCellJml(totalRow.lainnyaJml)}${totalCellPct(totalRow.lainnyaPct, totalRow.delta.lainnyaPct)}
-          ${totalCellJml(totalRow.prelistJml)}${totalCellPct(totalRow.prelistPct, totalRow.delta.prelistPct)}
-          ${totalCellJml(totalRow.glKlgJml)}${totalCellPct(totalRow.glKlgPct, totalRow.delta.glKlgPct)}
-          ${totalCellJml(totalRow.glUsahaJml)}${totalCellPct(totalRow.glUsahaPct, totalRow.delta.glUsahaPct)}
-          ${totalCellJml(totalRow.klgBaruJml)}${totalCellPct(totalRow.klgBaruPct, totalRow.delta.klgBaruPct)}
-          ${totalCellJml(totalRow.usahaBaruJml)}${totalCellPct(totalRow.usahaBaruPct, totalRow.delta.usahaBaruPct)}
-          ${totalCellJml(totalRow.assignJml)}${totalCellPct(totalRow.assignPct, totalRow.delta.assignPct, true)}
+          ${totalCellJml(summaryAgg.klgPrelistJml)}${totalCellPct(summaryAgg.klgPrelistPct, summaryAgg.delta.klgPrelistPct)}
+          ${totalCellJml(summaryAgg.usahaPrelistJml)}${totalCellPct(summaryAgg.usahaPrelistPct, summaryAgg.delta.usahaPrelistPct)}
+          ${totalCellJml(summaryAgg.lainnyaJml)}${totalCellPct(summaryAgg.lainnyaPct, summaryAgg.delta.lainnyaPct)}
+          ${totalCellJml(summaryAgg.prelistJml)}${totalCellPct(summaryAgg.prelistPct, summaryAgg.delta.prelistPct)}
+          ${totalCellJml(summaryAgg.glKlgJml)}${totalCellPct(summaryAgg.glKlgPct, summaryAgg.delta.glKlgPct)}
+          ${totalCellJml(summaryAgg.glUsahaJml)}${totalCellPct(summaryAgg.glUsahaPct, summaryAgg.delta.glUsahaPct)}
+          ${totalCellJml(summaryAgg.klgBaruJml)}${totalCellPct(summaryAgg.klgBaruPct, summaryAgg.delta.klgBaruPct)}
+          ${totalCellJml(summaryAgg.usahaBaruJml)}${totalCellPct(summaryAgg.usahaBaruPct, summaryAgg.delta.usahaBaruPct)}
+          ${totalCellJml(summaryAgg.assignJml)}${totalCellPct(summaryAgg.assignPct, summaryAgg.delta.assignPct, true)}
         </tr>`;
-
-        const rowCellJml = (val) => `<td class="text-right py-3 px-2.5 text-[var(--text-muted)] whitespace-nowrap text-xs font-medium">${formatPrelistValue(val, false)}</td>`;
-        const rowCellPct = (val, delta, isLast = false) => `<td class="text-right py-3 px-2.5 whitespace-nowrap text-xs ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(val, true, delta)}</td>`;
-
-        html += pageRows.map((row, index) => {
-          const rowBgClass = index % 2 !== 0 ? 'bg-[rgba(0,0,0,0.04)] dark:bg-[rgba(255,255,255,0.04)]' : '';
-          const slsCellHtml = row.namaSls
-            ? `<div class="font-bold text-xs text-[var(--text-primary)] leading-tight tracking-tight">${escapePrelistHtml(row.namaSls)}</div>
-               <div class="font-mono text-xs text-[var(--text-secondary)] mt-1 font-semibold tracking-wide">${escapePrelistHtml(row.kode)}</div>`
-            : `<span class="font-mono text-xs text-[var(--text-primary)] font-semibold">${escapePrelistHtml(row.kode)}</span>`;
-
-          return `<tr class="border-b border-[var(--border-color)] hover:bg-[rgba(229,185,116,0.08)] transition-colors ${rowBgClass}">
-            <td class="pl-6 py-2.5 whitespace-nowrap border-r border-[var(--border-color)]">${slsCellHtml}</td>
-            ${rowCellJml(row.klgPrelistJml)}${rowCellPct(row.klgPrelistPct, row.delta.klgPrelistPct)}
-            ${rowCellJml(row.usahaPrelistJml)}${rowCellPct(row.usahaPrelistPct, row.delta.usahaPrelistPct)}
-            ${rowCellJml(row.lainnyaJml)}${rowCellPct(row.lainnyaPct, row.delta.lainnyaPct)}
-            ${rowCellJml(row.prelistJml)}${rowCellPct(row.prelistPct, row.delta.prelistPct)}
-            ${rowCellJml(row.glKlgJml)}${rowCellPct(row.glKlgPct, row.delta.glKlgPct)}
-            ${rowCellJml(row.glUsahaJml)}${rowCellPct(row.glUsahaPct, row.delta.glUsahaPct)}
-            ${rowCellJml(row.klgBaruJml)}${rowCellPct(row.klgBaruPct, row.delta.klgBaruPct)}
-            ${rowCellJml(row.usahaBaruJml)}${rowCellPct(row.usahaBaruPct, row.delta.usahaBaruPct)}
-            ${rowCellJml(row.assignJml)}${rowCellPct(row.assignPct, row.delta.assignPct, true)}
-          </tr>`;
-        }).join('');
-      } else {
-        html = '<tr><td colspan="19" class="text-center py-8 text-[var(--text-muted)]">Tidak ada data yang sesuai filter.</td></tr>';
       }
+
+      const kabCellJml = (val) => `<td class="text-right py-2.5 px-2.5 text-[var(--text-primary)] whitespace-nowrap text-xs font-bold">${fmtNum(val)}</td>`;
+      const kabCellPct = (val, delta, isLast = false) => `<td class="text-right py-2.5 px-2.5 whitespace-nowrap text-xs font-bold ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(val, true, delta)}</td>`;
+
+      const kecCellJml = (val) => `<td class="text-right py-2 px-2.5 text-[var(--text-secondary)] whitespace-nowrap text-xs font-semibold">${fmtNum(val)}</td>`;
+      const kecCellPct = (val, delta, isLast = false) => `<td class="text-right py-2 px-2.5 whitespace-nowrap text-xs font-semibold ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(val, true, delta)}</td>`;
+
+      const desaCellJml = (val) => `<td class="text-right py-2 px-2.5 text-[var(--text-secondary)] whitespace-nowrap text-xs font-medium">${fmtNum(val)}</td>`;
+      const desaCellPct = (val, delta, isLast = false) => `<td class="text-right py-2 px-2.5 whitespace-nowrap text-xs font-medium ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(val, true, delta)}</td>`;
+
+      const subCellJml = (val) => `<td class="text-right py-1.5 px-2.5 text-[var(--text-muted)] whitespace-nowrap text-xs font-normal">${fmtNum(val)}</td>`;
+      const subCellPct = (val, delta, isLast = false) => `<td class="text-right py-1.5 px-2.5 whitespace-nowrap text-xs ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(val, true, delta)}</td>`;
+
+      if (filteredTree.length === 0) {
+        html += '<tr><td colspan="19" class="text-center py-8 text-[var(--text-muted)]">Tidak ada data yang sesuai filter.</td></tr>';
+      } else {
+        filteredTree.forEach(kab => {
+          const isKabOpen = expandedPrelistNodes.has(kab.id);
+          const kabHasChildren = kab.children && kab.children.length > 0;
+          const kabToggle = kabHasChildren
+            ? `<span class="tree-toggle-icon" onclick="togglePrelistNode('${kab.id}', event)">${isKabOpen ? '[-]' : '[+]'}</span>`
+            : '<span class="inline-block w-4 mr-1.5"></span>';
+
+          html += `<tr class="tree-node-kab border-b border-[var(--border-color)] transition-colors cursor-pointer" onclick="togglePrelistNode('${kab.id}', event)">
+            <td class="pl-6 py-2.5 whitespace-nowrap border-r border-[var(--border-color)]">
+              <div class="flex items-center">
+                ${kabToggle}
+                <span class="font-bold text-xs text-[var(--text-primary)]">[${kab.kode}] ${escapePrelistHtml(kab.nama)}</span>
+              </div>
+            </td>
+            ${kabCellJml(kab.klgPrelistJml)}${kabCellPct(kab.klgPrelistPct, kab.delta.klgPrelistPct)}
+            ${kabCellJml(kab.usahaPrelistJml)}${kabCellPct(kab.usahaPrelistPct, kab.delta.usahaPrelistPct)}
+            ${kabCellJml(kab.lainnyaJml)}${kabCellPct(kab.lainnyaPct, kab.delta.lainnyaPct)}
+            ${kabCellJml(kab.prelistJml)}${kabCellPct(kab.prelistPct, kab.delta.prelistPct)}
+            ${kabCellJml(kab.glKlgJml)}${kabCellPct(kab.glKlgPct, kab.delta.glKlgPct)}
+            ${kabCellJml(kab.glUsahaJml)}${kabCellPct(kab.glUsahaPct, kab.delta.glUsahaPct)}
+            ${kabCellJml(kab.klgBaruJml)}${kabCellPct(kab.klgBaruPct, kab.delta.klgBaruPct)}
+            ${kabCellJml(kab.usahaBaruJml)}${kabCellPct(kab.usahaBaruPct, kab.delta.usahaBaruPct)}
+            ${kabCellJml(kab.assignJml)}${kabCellPct(kab.assignPct, kab.delta.assignPct, true)}
+          </tr>`;
+
+          if (isKabOpen && kab.children) {
+            kab.children.forEach(kec => {
+              const isKecOpen = expandedPrelistNodes.has(kec.id);
+              const kecHasChildren = kec.children && kec.children.length > 0;
+              const kecToggle = kecHasChildren
+                ? `<span class="tree-toggle-icon" onclick="togglePrelistNode('${kec.id}', event)">${isKecOpen ? '[-]' : '[+]'}</span>`
+                : '<span class="inline-block w-4 mr-1.5"></span>';
+
+              html += `<tr class="tree-node-kec border-b border-[var(--border-color)] transition-colors cursor-pointer" onclick="togglePrelistNode('${kec.id}', event)">
+                <td class="pl-10 py-2 whitespace-nowrap border-r border-[var(--border-color)]">
+                  <div class="flex items-center">
+                    ${kecToggle}
+                    <span class="font-semibold text-xs text-[var(--text-primary)]">└ [${kec.kode}] ${escapePrelistHtml(kec.nama)}</span>
+                  </div>
+                </td>
+                ${kecCellJml(kec.klgPrelistJml)}${kecCellPct(kec.klgPrelistPct, kec.delta.klgPrelistPct)}
+                ${kecCellJml(kec.usahaPrelistJml)}${kecCellPct(kec.usahaPrelistPct, kec.delta.usahaPrelistPct)}
+                ${kecCellJml(kec.lainnyaJml)}${kecCellPct(kec.lainnyaPct, kec.delta.lainnyaPct)}
+                ${kecCellJml(kec.prelistJml)}${kecCellPct(kec.prelistPct, kec.delta.prelistPct)}
+                ${kecCellJml(kec.glKlgJml)}${kecCellPct(kec.glKlgPct, kec.delta.glKlgPct)}
+                ${kecCellJml(kec.glUsahaJml)}${kecCellPct(kec.glUsahaPct, kec.delta.glUsahaPct)}
+                ${kecCellJml(kec.klgBaruJml)}${kecCellPct(kec.klgBaruPct, kec.delta.klgBaruPct)}
+                ${kecCellJml(kec.usahaBaruJml)}${kecCellPct(kec.usahaBaruPct, kec.delta.usahaBaruPct)}
+                ${kecCellJml(kec.assignJml)}${kecCellPct(kec.assignPct, kec.delta.assignPct, true)}
+              </tr>`;
+
+              if (isKecOpen && kec.children) {
+                kec.children.forEach(desa => {
+                  const isDesaOpen = expandedPrelistNodes.has(desa.id);
+                  const desaHasChildren = desa.children && desa.children.length > 0;
+                  const desaToggle = desaHasChildren
+                    ? `<span class="tree-toggle-icon" onclick="togglePrelistNode('${desa.id}', event)">${isDesaOpen ? '[-]' : '[+]'}</span>`
+                    : '<span class="inline-block w-4 mr-1.5"></span>';
+
+                  html += `<tr class="tree-node-desa border-b border-[var(--border-color)] transition-colors cursor-pointer" onclick="togglePrelistNode('${desa.id}', event)">
+                    <td class="pl-14 py-2 whitespace-nowrap border-r border-[var(--border-color)]">
+                      <div class="flex items-center">
+                        ${desaToggle}
+                        <span class="font-medium text-xs text-[var(--text-secondary)]">└─ [${desa.kode}] ${escapePrelistHtml(desa.nama)}</span>
+                      </div>
+                    </td>
+                    ${desaCellJml(desa.klgPrelistJml)}${desaCellPct(desa.klgPrelistPct, desa.delta.klgPrelistPct)}
+                    ${desaCellJml(desa.usahaPrelistJml)}${desaCellPct(desa.usahaPrelistPct, desa.delta.usahaPrelistPct)}
+                    ${desaCellJml(desa.lainnyaJml)}${desaCellPct(desa.lainnyaPct, desa.delta.lainnyaPct)}
+                    ${desaCellJml(desa.prelistJml)}${desaCellPct(desa.prelistPct, desa.delta.prelistPct)}
+                    ${desaCellJml(desa.glKlgJml)}${desaCellPct(desa.glKlgPct, desa.delta.glKlgPct)}
+                    ${desaCellJml(desa.glUsahaJml)}${desaCellPct(desa.glUsahaPct, desa.delta.glUsahaPct)}
+                    ${desaCellJml(desa.klgBaruJml)}${desaCellPct(desa.klgBaruPct, desa.delta.klgBaruPct)}
+                    ${desaCellJml(desa.usahaBaruJml)}${desaCellPct(desa.usahaBaruPct, desa.delta.usahaBaruPct)}
+                    ${desaCellJml(desa.assignJml)}${desaCellPct(desa.assignPct, desa.delta.assignPct, true)}
+                  </tr>`;
+
+                  if (isDesaOpen && desa.children) {
+                    desa.children.forEach(sub => {
+                      if (filterTerm && !sub.kode.toLowerCase().includes(filterTerm) && (!sub.namaSls || !sub.namaSls.toLowerCase().includes(filterTerm))) {
+                        return;
+                      }
+                      const sub2Digit = sub.kode.length >= 2 ? sub.kode.slice(-2) : '';
+                      const subDisplayName = sub.namaSls
+                        ? `<span class="font-bold text-xs text-[var(--text-primary)]">${escapePrelistHtml(sub.namaSls)}</span> <span class="subsls-badge font-mono">[${sub2Digit}]</span>`
+                        : `<span class="font-mono text-xs text-[var(--text-primary)] font-semibold">[${escapePrelistHtml(sub.kode)}]</span>`;
+
+                      html += `<tr class="tree-node-subsls border-b border-[var(--border-color)] hover:bg-[rgba(229,185,116,0.08)] transition-colors">
+                        <td class="pl-20 py-2 whitespace-nowrap border-r border-[var(--border-color)]">
+                          <div class="leading-tight">${subDisplayName}</div>
+                          <div class="font-mono text-[10px] text-[var(--text-muted)] mt-0.5">${escapePrelistHtml(sub.kode)}</div>
+                        </td>
+                        ${subCellJml(sub.klgPrelistJml)}${subCellPct(sub.klgPrelistPct, sub.delta.klgPrelistPct)}
+                        ${subCellJml(sub.usahaPrelistJml)}${subCellPct(sub.usahaPrelistPct, sub.delta.usahaPrelistPct)}
+                        ${subCellJml(sub.lainnyaJml)}${subCellPct(sub.lainnyaPct, sub.delta.lainnyaPct)}
+                        ${subCellJml(sub.prelistJml)}${subCellPct(sub.prelistPct, sub.delta.prelistPct)}
+                        ${subCellJml(sub.glKlgJml)}${subCellPct(sub.glKlgPct, sub.delta.glKlgPct)}
+                        ${subCellJml(sub.glUsahaJml)}${subCellPct(sub.glUsahaPct, sub.delta.glUsahaPct)}
+                        ${subCellJml(sub.klgBaruJml)}${subCellPct(sub.klgBaruPct, sub.delta.klgBaruPct)}
+                        ${subCellJml(sub.usahaBaruJml)}${subCellPct(sub.usahaBaruPct, sub.delta.usahaBaruPct)}
+                        ${subCellJml(sub.assignJml)}${subCellPct(sub.assignPct, sub.delta.assignPct, true)}
+                      </tr>`;
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+
       tbody.innerHTML = html;
-      pageInfo.textContent = totalRows ? `Menampilkan ${start + 1}-${Math.min(start + prelistRowsPerPage, totalRows)} dari ${totalRows} data` : 'Menampilkan 0 data';
+
+      if (pageInfo) {
+        pageInfo.textContent = `Menampilkan ${fmtNum(totalKabCount)} Kabupaten, ${fmtNum(totalKecCount)} Kecamatan, ${fmtNum(totalDesaCount)} Desa, ${fmtNum(totalSubSlsCount)} Sub SLS`;
+      }
+
       const baselineInfo = document.getElementById('prelist-baseline-info');
-      if (baselineInfo) baselineInfo.textContent = prelistBaselineDate ? `Baseline perubahan: ${prelistBaselineDate}` : 'Baseline harian belum tersedia (data pertama).';
-      const rowsSelect = document.getElementById('prelist-rows-select');
-      if (rowsSelect && rowsSelect.value !== String(prelistRowsPerPage)) rowsSelect.value = String(prelistRowsPerPage);
-      document.getElementById('btn-prev-prelist').disabled = currentPrelistPage <= 1;
-      document.getElementById('btn-next-prelist').disabled = currentPrelistPage >= totalPages;
-      const pages = document.getElementById('prelist-page-numbers');
-      pages.innerHTML = Array.from({ length: totalPages }, (_, i) => i + 1).filter(page => totalPages <= 7 || page === 1 || page === totalPages || Math.abs(page - currentPrelistPage) <= 1).map(page => `<button onclick="setPrelistPage(${page})" class="px-2.5 py-1 text-xs rounded font-medium transition-all ${page === currentPrelistPage ? 'bg-[var(--accent-color)] text-white dark:text-black font-bold shadow-sm' : 'impeccable-btn hover:bg-[rgba(249,115,22,0.1)]'}">${page}</button>`).join('');
+      if (baselineInfo) {
+        baselineInfo.textContent = prelistBaselineDate ? `Baseline perubahan: ${prelistBaselineDate}` : 'Baseline harian belum tersedia (data pertama).';
+      }
     }
 
-    function changePrelistPageSize(val) {
-      prelistRowsPerPage = parseInt(val, 10) || 30;
-      currentPrelistPage = 1;
+    function togglePrelistNode(nodeId, e) {
+      if (e) e.stopPropagation();
+      if (expandedPrelistNodes.has(nodeId)) {
+        expandedPrelistNodes.delete(nodeId);
+      } else {
+        expandedPrelistNodes.add(nodeId);
+      }
+      renderPrelistTable();
+    }
+
+    function expandAllPrelistTree() {
+      if (!prelistTreeData) return;
+      prelistTreeData.forEach(kab => {
+        expandedPrelistNodes.add(kab.id);
+        if (kab.children) {
+          kab.children.forEach(kec => {
+            expandedPrelistNodes.add(kec.id);
+            if (kec.children) {
+              kec.children.forEach(desa => {
+                expandedPrelistNodes.add(desa.id);
+              });
+            }
+          });
+        }
+      });
+      renderPrelistTable();
+    }
+
+    function collapseAllPrelistTree() {
+      expandedPrelistNodes.clear();
       renderPrelistTable();
     }
 
     function filterPrelistSubSls() {
       const term = (document.getElementById('search-prelist')?.value || '').trim().toLowerCase();
-      const kab = selectedKabPrelist || document.getElementById('filter-kab-prelist')?.value || '';
-      filteredPrelistSubSlsData = prelistSubSlsData.filter(row => {
-        const matchTerm = !term || row.kode.toLowerCase().includes(term) || (row.namaSls && row.namaSls.toLowerCase().includes(term));
-        const matchKab = !kab || row.kode.substring(0, 4) === kab;
-        return matchTerm && matchKab;
-      });
-      currentPrelistPage = 1;
-      renderPrelistTable();
-    }
 
-    function sortPrelistTable(key) {
-      if (prelistSortColumn === key) {
-        prelistSortOrder = prelistSortOrder === 'asc' ? 'desc' : 'asc';
-      } else {
-        prelistSortColumn = key;
-        prelistSortOrder = 'asc';
+      if (term) {
+        prelistTreeData.forEach(kabNode => {
+          let kabHasMatch = false;
+          if (kabNode.children) {
+            kabNode.children.forEach(kecNode => {
+              let kecHasMatch = false;
+              if (kecNode.children) {
+                kecNode.children.forEach(desaNode => {
+                  let desaHasMatch = false;
+                  if (desaNode.children) {
+                    desaNode.children.forEach(subNode => {
+                      const matchSub = subNode.kode.toLowerCase().includes(term) || (subNode.namaSls && subNode.namaSls.toLowerCase().includes(term));
+                      if (matchSub) {
+                        desaHasMatch = true;
+                        kecHasMatch = true;
+                        kabHasMatch = true;
+                      }
+                    });
+                  }
+                  if (desaHasMatch || desaNode.nama.toLowerCase().includes(term) || desaNode.kode.toLowerCase().includes(term)) {
+                    expandedPrelistNodes.add(desaNode.id);
+                    kecHasMatch = true;
+                    kabHasMatch = true;
+                  }
+                });
+              }
+              if (kecHasMatch || kecNode.nama.toLowerCase().includes(term) || kecNode.kode.toLowerCase().includes(term)) {
+                expandedPrelistNodes.add(kecNode.id);
+                kabHasMatch = true;
+              }
+            });
+          }
+          if (kabHasMatch || kabNode.nama.toLowerCase().includes(term) || kabNode.kode.toLowerCase().includes(term)) {
+            expandedPrelistNodes.add(kabNode.id);
+          }
+        });
       }
-      filteredPrelistSubSlsData.sort((a, b) => {
-        const av = a[key], bv = b[key];
-        const result = typeof av === 'number' ? (av ?? -Infinity) - (bv ?? -Infinity) : String(av || '').localeCompare(String(bv || ''));
-        return prelistSortOrder === 'asc' ? result : -result;
-      });
+
       renderPrelistTable();
     }
-
-    function changePrelistPage(delta) { currentPrelistPage += delta; renderPrelistTable(); }
-    function setPrelistPage(page) { currentPrelistPage = page; renderPrelistTable(); }
 
     function exportPrelistCSV() {
-      const headers = ['Kode Sub SLS', 'Nama SLS', 'Keluarga Jml', 'Keluarga %', 'Usaha Jml', 'Usaha %', 'Lainnya Jml', 'Lainnya %', 'Prelist Total Jml', 'Prelist Total %', 'GL Keluarga Jml', 'GL Keluarga %', 'GL Usaha Jml', 'GL Usaha %', 'Keluarga Baru Jml', 'Keluarga Baru %', 'Usaha Baru Jml', 'Usaha Baru %', 'Assignment Baru Total Jml', 'Assignment Baru Total %'];
-      const rows = filteredPrelistSubSlsData.map(row => [row.kode, row.namaSls || '', row.klgPrelistJml, row.klgPrelistPct ?? '', row.usahaPrelistJml, row.usahaPrelistPct ?? '', row.lainnyaJml, row.lainnyaPct ?? '', row.prelistJml, row.prelistPct ?? '', row.glKlgJml, row.glKlgPct ?? '', row.glUsahaJml, row.glUsahaPct ?? '', row.klgBaruJml, row.klgBaruPct ?? '', row.usahaBaruJml, row.usahaBaruPct ?? '', row.assignJml, row.assignPct ?? '']);
-      const csv = [headers, ...rows].map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(',')).join('\r\n');
+      const headers = [
+        'Tingkat', 'Kode Wilayah / Sub SLS', 'Nama Wilayah / SLS',
+        'Keluarga Prelist Jml', 'Keluarga Prelist %',
+        'Usaha Prelist Jml', 'Usaha Prelist %',
+        'Lainnya Prelist Jml', 'Lainnya Prelist %',
+        'Total Prelist Jml', 'Total Prelist %',
+        'GL Keluarga Jml', 'GL Keluarga %',
+        'GL Usaha Jml', 'GL Usaha %',
+        'Keluarga Baru Jml', 'Keluarga Baru %',
+        'Usaha Baru Jml', 'Usaha Baru %',
+        'Total Assignment Baru Jml', 'Total Assignment Baru %'
+      ];
+
+      const rows = [];
+      const addRow = (level, kode, nama, item) => {
+        rows.push([
+          level, kode, nama,
+          item.klgPrelistJml, item.klgPrelistPct !== null ? item.klgPrelistPct.toFixed(2) : '',
+          item.usahaPrelistJml, item.usahaPrelistPct !== null ? item.usahaPrelistPct.toFixed(2) : '',
+          item.lainnyaJml, item.lainnyaPct !== null ? item.lainnyaPct.toFixed(2) : '',
+          item.prelistJml, item.prelistPct !== null ? item.prelistPct.toFixed(2) : '',
+          item.glKlgJml, item.glKlgPct !== null ? item.glKlgPct.toFixed(2) : '',
+          item.glUsahaJml, item.glUsahaPct !== null ? item.glUsahaPct.toFixed(2) : '',
+          item.klgBaruJml, item.klgBaruPct !== null ? item.klgBaruPct.toFixed(2) : '',
+          item.usahaBaruJml, item.usahaBaruPct !== null ? item.usahaBaruPct.toFixed(2) : '',
+          item.assignJml, item.assignPct !== null ? item.assignPct.toFixed(2) : ''
+        ]);
+      };
+
+      const filterKab = selectedKabPrelist || document.getElementById('filter-kab-prelist')?.value || '';
+      const filterTerm = (document.getElementById('search-prelist')?.value || '').trim().toLowerCase();
+
+      prelistTreeData.forEach(kab => {
+        if (filterKab && kab.kode !== filterKab) return;
+        addRow('Kabupaten', kab.kode, kab.nama, kab);
+        if (kab.children) {
+          kab.children.forEach(kec => {
+            addRow('Kecamatan', kec.kode, kec.nama, kec);
+            if (kec.children) {
+              kec.children.forEach(desa => {
+                addRow('Desa', desa.kode, desa.nama, desa);
+                if (desa.children) {
+                  desa.children.forEach(sub => {
+                    if (!filterTerm || sub.kode.toLowerCase().includes(filterTerm) || (sub.namaSls && sub.namaSls.toLowerCase().includes(filterTerm))) {
+                      const sub2 = sub.kode.length >= 2 ? ` [${sub.kode.slice(-2)}]` : '';
+                      addRow('Sub SLS', sub.kode, `${sub.namaSls || 'Sub SLS'}${sub2}`, sub);
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+
+      const csv = [headers, ...rows].map(row => row.map(val => `"${String(val ?? '').replace(/"/g, '""')}"`).join(',')).join('\r\n');
       const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `rekap-prelist-subsls-${new Date().toISOString().slice(0, 10)}.csv`; link.click(); URL.revokeObjectURL(link.href);
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `rekap-hierarki-prelist-subsls-${new Date().toISOString().slice(0, 10)}.csv`;
+      link.click();
+      URL.revokeObjectURL(link.href);
     }
 
     function updatePrelistSummaryCard() {
@@ -1425,10 +1809,10 @@
       const totalUsahaPrelist = prelistSubSlsData.reduce((s, r) => s + r.usahaPrelistJml, 0);
       const totalLainnyaPrelist = prelistSubSlsData.reduce((s, r) => s + r.lainnyaJml, 0);
 
-      const subPrelist = prelistSubSlsData.reduce((s, r) => s + (r.prelistPct === null ? 0 : r.prelistPct * r.prelistJml / 100), 0);
-      const subKlgPrelist = prelistSubSlsData.reduce((s, r) => s + (r.klgPrelistPct === null ? 0 : r.klgPrelistPct * r.klgPrelistJml / 100), 0);
-      const subUsahaPrelist = prelistSubSlsData.reduce((s, r) => s + (r.usahaPrelistPct === null ? 0 : r.usahaPrelistPct * r.usahaPrelistJml / 100), 0);
-      const subLainnyaPrelist = prelistSubSlsData.reduce((s, r) => s + (r.lainnyaPct === null ? 0 : r.lainnyaPct * r.lainnyaJml / 100), 0);
+      const subPrelist = prelistSubSlsData.reduce((s, r) => s + r.prelistSubmit, 0);
+      const subKlgPrelist = prelistSubSlsData.reduce((s, r) => s + r.klgPrelistSubmit, 0);
+      const subUsahaPrelist = prelistSubSlsData.reduce((s, r) => s + r.usahaPrelistSubmit, 0);
+      const subLainnyaPrelist = prelistSubSlsData.reduce((s, r) => s + r.lainnyaSubmit, 0);
 
       const pctPrelist = totalPrelist > 0 ? (subPrelist / totalPrelist) * 100 : 0;
       const pctKlgPrelist = totalKlgPrelist > 0 ? (subKlgPrelist / totalKlgPrelist) * 100 : 0;
@@ -1441,7 +1825,7 @@
         let baseSubPrelist = 0;
         prelistBaselineByCode.forEach(baseRow => {
           baseTotalPrelist += baseRow.prelistJml || 0;
-          baseSubPrelist += (baseRow.prelistPct === null ? 0 : baseRow.prelistPct * baseRow.prelistJml / 100);
+          baseSubPrelist += baseRow.prelistSubmit || 0;
         });
         if (baseTotalPrelist > 0) {
           const basePct = (baseSubPrelist / baseTotalPrelist) * 100;
@@ -1496,8 +1880,6 @@
         elStatPrelistLainnyaPct.style.color = getProgressColor(pctLainnyaPrelist);
       }
     }
-
-    let selectedKabPrelist = '';
 
     function updatePrelistKabDropdown() {
       const menu = document.getElementById('prelist-kab-menu');
@@ -1568,7 +1950,7 @@
       if (arrow) arrow.classList.remove('rotate-180');
 
       updatePrelistKabDropdown();
-      filterPrelistSubSls();
+      renderPrelistTable();
     }
 
     document.addEventListener('click', function (event) {
@@ -1594,10 +1976,22 @@
       "TOTAL_REVOKED_BY_ADMIN_KABUPATEN", "Submit", "SUBMIT"
     ];
 
+    // Helper untuk mengekstrak Approved (penjumlahan TOTAL_APPROVED_BY_PENGAWAS + TOTAL_COMPLETED_BY_ADMIN_KABUPATEN + TOTAL_EDITED_BY_ADMIN_KABUPATEN)
+    function extractApprovedFromRow(row) {
+      if (!row) return 0;
+      const appPengawas = Number(row["TOTAL_APPROVED_BY_PENGAWAS"] || row["APPROVED BY Pengawas"] || 0);
+      const compAdmin = Number(row["TOTAL_COMPLETED_BY_ADMIN_KABUPATEN"] || row["COMPLETED BY Admin Kabupaten"] || 0);
+      const editAdmin = Number(row["TOTAL_EDITED_BY_ADMIN_KABUPATEN"] || row["EDITED BY Admin Kabupaten"] || 0);
+      return appPengawas + compAdmin + editAdmin;
+    }
+
     // Fungsi utama yang memproses data JSON (baik dari cache maupun dari fetch)
     function processAndRenderData(data) {
       const masterSubSlsRaw = data["master-subsls"] || data["Master SLS"] || [];
       masterSubSlsMap = new Map();
+      masterDesaMap = new Map();
+      masterKecMap = new Map();
+
       if (Array.isArray(masterSubSlsRaw)) {
         masterSubSlsRaw.forEach(row => {
           const code = String(row.idsubsls || row.KODE_SUB_SLS || row.kode || row.wilayah || "").trim();
@@ -1605,13 +1999,31 @@
           if (code && name) {
             masterSubSlsMap.set(code, name);
           }
+          const nmDesa = String(row.nmdesa || row.NMDESA || row.desa || row.DESA || "").trim();
+          const idDesa = String(row.iddesa || row.IDDESA || (code.length >= 10 ? code.substring(0, 10) : "")).trim();
+          if (idDesa && nmDesa) {
+            masterDesaMap.set(idDesa, nmDesa);
+          }
+          const nmKec = String(row.nmkec || row.NMKEC || row.kec || row.KEC || "").trim();
+          const idKec = String(row.idkec || row.IDKEC || (code.length >= 7 ? code.substring(0, 7) : "")).trim();
+          if (idKec && nmKec) {
+            masterKecMap.set(idKec, nmKec);
+          }
+        });
+      }
+
+      const masterKecSheet = data["master-kec"];
+      if (Array.isArray(masterKecSheet)) {
+        masterKecSheet.forEach(mk => {
+          const idKec = String(mk.idkec || mk.IDKEC || mk.id || "").trim();
+          const nmKec = String(mk.nmkec || mk.NMKEC || mk.nama || "").trim();
+          if (idKec && nmKec) masterKecMap.set(idKec.substring(0, 7), nmKec);
         });
       }
 
       preparePrelistBaseline(data);
       prelistSubSlsData = getPrelistSource(data).map(buildPrelistRow).filter(row => row.kode).sort((a, b) => a.kode.localeCompare(b.kode));
-      filteredPrelistSubSlsData = [...prelistSubSlsData];
-      currentPrelistPage = 1;
+      prelistTreeData = buildPrelistHierarchy(prelistSubSlsData);
       updatePrelistKabDropdown();
       renderPrelistTable();
       updatePrelistSummaryCard();
@@ -1621,7 +2033,6 @@
       const snapshotUbSheet = data["snapshot-kemarin-ub"];
       const umkmKecSheet = data["Sensus Ekonomi 2026"];
       const ubKecSheet = data["Sensus Ekonomi 2026 - UB"];
-      const masterKecSheet = data["master-kec"];
 
       if (!umkmKecSheet || !ubKecSheet) {
         console.warn("Data kecamatan (Sensus Ekonomi 2026 / Sensus Ekonomi 2026 - UB) tidak ditemukan di payload Apps Script.");
@@ -1658,6 +2069,7 @@
               const existing = map.get(wil);
               existing.OPEN = (Number(existing.OPEN || 0) + Number(row.OPEN || row.TOTAL_OPEN || 0));
               existing.DRAFT = (Number(existing.DRAFT || 0) + Number(row.DRAFT || row.TOTAL_DRAFT || 0));
+              existing.APPROVED_COMBINED = (Number(existing.APPROVED_COMBINED || 0) + extractApprovedFromRow(row));
               ALL_SUBMIT_FIELDS.forEach(f => {
                 existing[f] = (Number(existing[f] || 0) + Number(row[f] || 0));
               });
@@ -1670,7 +2082,8 @@
                 Wilayah: wil,
                 Kecamatan: kecName || "-",
                 OPEN: Number(row.OPEN || row.TOTAL_OPEN || 0),
-                DRAFT: Number(row.DRAFT || row.TOTAL_DRAFT || 0)
+                DRAFT: Number(row.DRAFT || row.TOTAL_DRAFT || 0),
+                APPROVED_COMBINED: extractApprovedFromRow(row)
               });
             }
           });
@@ -1719,8 +2132,8 @@
         w.targetUb = 0;
         w.targetKeluarga = 0;
 
-        w.umkmOpen = 0; w.umkmDraft = 0; w.umkmSubmit = 0; w.umkmTotal = 0;
-        w.ubOpen = 0; w.ubDraft = 0; w.ubSubmit = 0; w.ubTotal = 0;
+        w.umkmOpen = 0; w.umkmDraft = 0; w.umkmApproved = 0; w.umkmSubmit = 0; w.umkmTotal = 0;
+        w.ubOpen = 0; w.ubDraft = 0; w.ubApproved = 0; w.ubSubmit = 0; w.ubTotal = 0;
         w.harianUmkm = 0; w.harianUb = 0;
         w.progress = 0;
         w.kecamatans = [];
@@ -1787,8 +2200,8 @@
               kode: idKec,
               nama: nmKec,
               targetUmkm: 0, targetUb: 0, targetKeluarga: 0,
-              umkmOpen: 0, umkmDraft: 0, umkmSubmit: 0, umkmTotal: 0,
-              ubOpen: 0, ubDraft: 0, ubSubmit: 0, ubTotal: 0,
+              umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0,
+              ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0,
               progress: 0
             };
 
@@ -1811,6 +2224,7 @@
               if (umkmRow) {
                 kData.umkmOpen = Number(umkmRow.OPEN || umkmRow.TOTAL_OPEN || 0);
                 kData.umkmDraft = Number(umkmRow.DRAFT || umkmRow.TOTAL_DRAFT || 0);
+                kData.umkmApproved = umkmRow.APPROVED_COMBINED !== undefined ? umkmRow.APPROVED_COMBINED : extractApprovedFromRow(umkmRow);
 
                 let submit = 0;
                 ALL_SUBMIT_FIELDS.forEach(f => { submit += Number(umkmRow[f] || 0); });
@@ -1835,6 +2249,7 @@
               if (ubRow) {
                 kData.ubOpen = Number(ubRow.OPEN || ubRow.TOTAL_OPEN || 0);
                 kData.ubDraft = Number(ubRow.DRAFT || ubRow.TOTAL_DRAFT || 0);
+                kData.ubApproved = ubRow.APPROVED_COMBINED !== undefined ? ubRow.APPROVED_COMBINED : extractApprovedFromRow(ubRow);
 
                 let submit = 0;
                 ALL_SUBMIT_FIELDS.forEach(f => { submit += Number(ubRow[f] || 0); });
@@ -1864,11 +2279,13 @@
 
             parentKab.umkmOpen += kData.umkmOpen;
             parentKab.umkmDraft += kData.umkmDraft;
+            parentKab.umkmApproved += kData.umkmApproved;
             parentKab.umkmSubmit += kData.umkmSubmit;
             parentKab.umkmTotal += kData.umkmTotal;
 
             parentKab.ubOpen += kData.ubOpen;
             parentKab.ubDraft += kData.ubDraft;
+            parentKab.ubApproved += kData.ubApproved;
             parentKab.ubSubmit += kData.ubSubmit;
             parentKab.ubTotal += kData.ubTotal;
 
@@ -1896,11 +2313,13 @@
 
       sumData.umkmOpen = dashboardData.reduce((s, x) => s + x.umkmOpen, 0);
       sumData.umkmDraft = dashboardData.reduce((s, x) => s + x.umkmDraft, 0);
+      sumData.umkmApproved = dashboardData.reduce((s, x) => s + (x.umkmApproved || 0), 0);
       sumData.umkmSubmit = dashboardData.reduce((s, x) => s + x.umkmSubmit, 0);
       sumData.umkmTotal = dashboardData.reduce((s, x) => s + x.umkmTotal, 0);
 
       sumData.ubOpen = dashboardData.reduce((s, x) => s + x.ubOpen, 0);
       sumData.ubDraft = dashboardData.reduce((s, x) => s + x.ubDraft, 0);
+      sumData.ubApproved = dashboardData.reduce((s, x) => s + (x.ubApproved || 0), 0);
       sumData.ubSubmit = dashboardData.reduce((s, x) => s + x.ubSubmit, 0);
       sumData.ubTotal = dashboardData.reduce((s, x) => s + x.ubTotal, 0);
 
@@ -1973,6 +2392,21 @@
       if (typeof updatePrelistSummaryCard === 'function') updatePrelistSummaryCard();
     }
 
+    // ====== Loading Overlay Controller (Clean & Minimal) ======
+    function startLoadingProgress() {
+      const overlay = document.getElementById('loading-overlay');
+      if (overlay) overlay.classList.remove('hidden');
+    }
+
+    function finishLoadingProgress() {
+      const overlay = document.getElementById('loading-overlay');
+      if (overlay) {
+        setTimeout(() => {
+          overlay.classList.add('hidden');
+        }, 150);
+      }
+    }
+
     // ====== IndexedDB Cache Helper (Mendukung data besar puluhan MB tanpa batas localStorage) ======
     const IDB_DB_NAME = 'DashboardSE_DB';
     const IDB_STORE_NAME = 'cacheStore';
@@ -2030,8 +2464,10 @@
 
     // Fetch data dari Apps Script dengan IndexedDB caching (instan & tanpa batas 5MB)
     async function loadDataFromAppsScript() {
+      startLoadingProgress();
       if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "") {
         console.log("Menggunakan data mockup lokal (APPS_SCRIPT_URL kosong).");
+        finishLoadingProgress();
         return;
       }
 
@@ -2063,6 +2499,8 @@
         console.log("✅ Data terbaru dari server berhasil dimuat.");
       } catch (err) {
         console.error("Gagal memuat data dari Apps Script:", err);
+      } finally {
+        finishLoadingProgress();
       }
     }
 
@@ -2075,12 +2513,6 @@
 
       // Load data from Apps Script
       await loadDataFromAppsScript();
-
-      // Hide loading spinner
-      const loader = document.getElementById('loading-overlay');
-      if (loader) {
-        loader.classList.add('hidden');
-      }
 
       // Populate Table
       if (typeof updateTableData === 'function') {
@@ -2142,8 +2574,8 @@
       const thUmkmTotal = document.getElementById('th-umkm-total');
       const thUbTotal = document.getElementById('th-ub-total');
 
-      if (thUmkmGroup) thUmkmGroup.colSpan = showPct ? 5 : 4;
-      if (thUbGroup) thUbGroup.colSpan = showPct ? 5 : 4;
+      if (thUmkmGroup) thUmkmGroup.colSpan = showPct ? 6 : 5;
+      if (thUbGroup) thUbGroup.colSpan = showPct ? 6 : 5;
       if (thUmkmPct) thUmkmPct.style.display = showPct ? '' : 'none';
       if (thUbPct) thUbPct.style.display = showPct ? '' : 'none';
 
@@ -2179,12 +2611,14 @@
         
         <td class="text-right text-neutral-400">${fmtNum(sumData.umkmOpen)}</td>
         <td class="text-right text-[var(--warning-color)]">${fmtNum(sumData.umkmDraft)}</td>
+        <td class="text-right text-[var(--accent-color)] font-semibold">${fmtNum(sumData.umkmApproved || 0)}</td>
         <td class="text-right text-[var(--success-color)]">${fmtNum(sumData.umkmSubmit)}</td>
         <td class="text-right text-[var(--text-primary)] ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(sumData.umkmTotal)}</td>
         ${showPct ? `<td class="text-right border-r border-[var(--border-color)] font-bold" style="color: ${getProgressColor(provUmkmProgress)}">${fmtPct(provUmkmProgress)}% <span class="text-[10px] font-semibold block mt-0.5" style="color: ${getDailyColor(provUmkmDailyPct)}">(+${fmtPct(provUmkmDailyPct)}%)</span></td>` : ''}
         
         <td class="text-right text-neutral-400">${fmtNum(sumData.ubOpen)}</td>
         <td class="text-right text-[var(--warning-color)]">${fmtNum(sumData.ubDraft)}</td>
+        <td class="text-right text-[var(--accent-color)] font-semibold">${fmtNum(sumData.ubApproved || 0)}</td>
         <td class="text-right text-[var(--success-color)]">${fmtNum(sumData.ubSubmit)}</td>
         <td class="text-right text-[var(--text-primary)] ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(sumData.ubTotal)}</td>
         ${showPct ? `<td class="text-right border-r border-[var(--border-color)] font-bold" style="color: ${getProgressColor(provUbProgress)}">${fmtPct(provUbProgress)}% <span class="text-[10px] font-semibold block mt-0.5" style="color: ${getDailyColor(provUbDailyPct)}">(+${fmtPct(provUbDailyPct)}%)</span></td>` : ''}
@@ -2225,12 +2659,14 @@
           
           <td class="text-right text-[var(--text-muted)]">${fmtNum(w.umkmOpen)}</td>
           <td class="text-right text-[var(--warning-color)]">${fmtNum(w.umkmDraft)}</td>
+          <td class="text-right text-[var(--accent-color)] font-semibold">${fmtNum(w.umkmApproved || 0)}</td>
           <td class="text-right text-[var(--success-color)]">${fmtNum(w.umkmSubmit)}</td>
           <td class="text-right font-semibold ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(w.umkmTotal)}</td>
           ${showPct ? `<td class="text-right border-r border-[var(--border-color)] font-bold" style="color: ${getProgressColor(wUmkmProgress)}">${fmtPct(wUmkmProgress)}% <span class="text-[10px] font-semibold block mt-0.5" style="color: ${getDailyColor(wUmkmDailyPct)}">(+${fmtPct(wUmkmDailyPct)}%)</span></td>` : ''}
           
           <td class="text-right text-[var(--text-muted)]">${fmtNum(w.ubOpen)}</td>
           <td class="text-right text-[var(--warning-color)]">${fmtNum(w.ubDraft)}</td>
+          <td class="text-right text-[var(--accent-color)] font-semibold">${fmtNum(w.ubApproved || 0)}</td>
           <td class="text-right text-[var(--success-color)]">${fmtNum(w.ubSubmit)}</td>
           <td class="text-right font-semibold ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(w.ubTotal)}</td>
           ${showPct ? `<td class="text-right border-r border-[var(--border-color)] font-bold" style="color: ${getProgressColor(wUbProgress)}">${fmtPct(wUbProgress)}% <span class="text-[10px] font-semibold block mt-0.5" style="color: ${getDailyColor(wUbDailyPct)}">(+${fmtPct(wUbDailyPct)}%)</span></td>` : ''}
@@ -2262,12 +2698,14 @@
               
               <td class="text-right py-2 pr-2 pl-4 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.umkmOpen)}</td>
               <td class="text-right py-2 px-2 text-[var(--warning-color)] text-[13px]">${fmtNum(kec.umkmDraft)}</td>
+              <td class="text-right py-2 px-2 text-[var(--accent-color)] text-[13px] font-semibold">${fmtNum(kec.umkmApproved || 0)}</td>
               <td class="text-right py-2 px-2 text-[var(--success-color)] text-[13px]">${fmtNum(kec.umkmSubmit)}</td>
               <td class="text-right py-2 px-2 font-semibold text-[13px] ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(kec.umkmTotal)}</td>
               ${showPct ? `<td class="text-right py-2 px-2 border-r border-[var(--border-color)] font-bold text-[13px] text-[var(--accent-color)]">${fmtPct(kUmkmProgress)}%</td>` : ''}
               
               <td class="text-right py-2 pr-2 pl-4 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.ubOpen)}</td>
               <td class="text-right py-2 px-2 text-[var(--warning-color)] text-[13px]">${fmtNum(kec.ubDraft)}</td>
+              <td class="text-right py-2 px-2 text-[var(--accent-color)] text-[13px] font-semibold">${fmtNum(kec.ubApproved || 0)}</td>
               <td class="text-right py-2 px-2 text-[var(--success-color)] text-[13px]">${fmtNum(kec.ubSubmit)}</td>
               <td class="text-right py-2 px-2 font-semibold text-[13px] ${!showPct ? 'border-r border-[var(--border-color)]' : ''}">${fmtNum(kec.ubTotal)}</td>
               ${showPct ? `<td class="text-right py-2 px-2 border-r border-[var(--border-color)] font-bold text-[13px] text-[var(--accent-color)]">${fmtPct(kUbProgress)}%</td>` : ''}
@@ -2342,8 +2780,8 @@
       // Reset indicators
       const allSortKeys = [
         'wilayah', 'targetUmkm', 'targetUb', 'targetKeluarga', 'targetTotal',
-        'umkmOpen', 'umkmDraft', 'umkmSubmit', 'umkmTotal', 'umkmPct',
-        'ubOpen', 'ubDraft', 'ubSubmit', 'ubTotal', 'ubPct', 'progress'
+        'umkmOpen', 'umkmDraft', 'umkmApproved', 'umkmSubmit', 'umkmTotal', 'umkmPct',
+        'ubOpen', 'ubDraft', 'ubApproved', 'ubSubmit', 'ubTotal', 'ubPct', 'progress'
       ];
       allSortKeys.forEach(k => {
         const ind = document.getElementById(`sort-indicator-${k}`);
@@ -2394,6 +2832,10 @@
             valA = a.umkmDraft;
             valB = b.umkmDraft;
             break;
+          case 'umkmApproved':
+            valA = a.umkmApproved || 0;
+            valB = b.umkmApproved || 0;
+            break;
           case 'umkmSubmit':
             valA = a.umkmSubmit;
             valB = b.umkmSubmit;
@@ -2415,6 +2857,10 @@
           case 'ubDraft':
             valA = a.ubDraft;
             valB = b.ubDraft;
+            break;
+          case 'ubApproved':
+            valA = a.ubApproved || 0;
+            valB = b.ubApproved || 0;
             break;
           case 'ubSubmit':
             valA = a.ubSubmit;
@@ -2454,7 +2900,7 @@
       const mode = document.getElementById('progress-mode-table') ? document.getElementById('progress-mode-table').value : 'fasih';
 
       // Define CSV header
-      let csv = 'Kode,Wilayah,Prelist Awal-UMKM,Prelist Awal-UB,Prelist Awal-Keluarga,Total Prelist Awal,[SE2026] Open,[SE2026] Draft,[SE2026] Submit,[SE2026] Total,[SE2026] %,[SE2026-UB] Open,[SE2026-UB] Draft,[SE2026-UB] Submit,[SE2026-UB] Total,[SE2026-UB] %,% Progres Akumulatif\n';
+      let csv = 'Kode,Wilayah,Prelist Awal-UMKM,Prelist Awal-UB,Prelist Awal-Keluarga,Total Prelist Awal,[SE2026] Open,[SE2026] Draft,[SE2026] Approved,[SE2026] Submit,[SE2026] Total,[SE2026] %,[SE2026-UB] Open,[SE2026-UB] Draft,[SE2026-UB] Approved,[SE2026-UB] Submit,[SE2026-UB] Total,[SE2026-UB] %,% Progres Akumulatif\n';
 
       const escape = (str) => `"${String(str).replace(/"/g, '""')}"`;
 
@@ -2475,7 +2921,7 @@
         const tKel = d.targetKeluarga || 0;
         const tTot = tUmkm + tUb + tKel;
 
-        return `${kode},${escape(nama)},${tUmkm},${tUb},${tKel},${tTot},${d.umkmOpen},${d.umkmDraft},${d.umkmSubmit},${d.umkmTotal},${mode === 'fasih' ? umkmProgress.toFixed(2) : '-'},${d.ubOpen},${d.ubDraft},${d.ubSubmit},${d.ubTotal},${mode === 'fasih' ? ubProgress.toFixed(2) : '-'},${overallProgress.toFixed(2)}\n`;
+        return `${kode},${escape(nama)},${tUmkm},${tUb},${tKel},${tTot},${d.umkmOpen},${d.umkmDraft},${d.umkmApproved || 0},${d.umkmSubmit},${d.umkmTotal},${mode === 'fasih' ? umkmProgress.toFixed(2) : '-'},${d.ubOpen},${d.ubDraft},${d.ubApproved || 0},${d.ubSubmit},${d.ubTotal},${mode === 'fasih' ? ubProgress.toFixed(2) : '-'},${overallProgress.toFixed(2)}\n`;
       };
 
       // Province row
