@@ -186,11 +186,11 @@ body {
   background-color: rgba(212, 178, 122, 0.15);
 }
 
-/* Rekap Sub SLS styling & fixed column grid */
+/* Rekap Sub SLS styling */
 #prelist-subsls-table {
-  width: 100%;
-  min-width: 3000px;
-  table-layout: fixed;
+  width: max-content;
+  min-width: 100%;
+  border-collapse: separate;
 }
 
 #prelist-subsls-table thead th {

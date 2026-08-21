@@ -586,42 +586,6 @@
       <!-- Table Wrapper -->
       <div class="overflow-auto max-h-[80vh]">
         <table class="impeccable-table text-left" id="prelist-subsls-table">
-          <colgroup>
-            <col style="width:260px;" />
-            <!-- Prelist: Keluarga (3), Usaha (3), Non BKU (3), Total (3) -->
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:95px;" />
-            <col style="width:95px;" />
-            <col style="width:95px;" />
-            <!-- General Link: Keluarga (3), Usaha (3) -->
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <!-- Assignment Baru: Keluarga (3), Usaha (3), Non BKU (3), Total (3) -->
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:90px;" />
-            <col style="width:95px;" />
-            <col style="width:95px;" />
-            <col style="width:95px;" />
-          </colgroup>
           <thead class="sticky top-0 z-20 shadow-sm">
             <!-- Row 1: Main Category Headers -->
             <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
@@ -1459,9 +1423,9 @@
       const thead = document.querySelector('#prelist-subsls-table thead');
       if (!thead) return;
       const leafGroup = (isLastGroup = false, isBold = false) => `
-        <th class="text-right select-none py-1.5 px-3 ${isBold ? 'text-[var(--text-primary)] font-bold' : 'text-[var(--text-muted)] font-medium'}">Total</th>
-        <th class="text-right select-none py-1.5 px-3 ${isBold ? 'text-[var(--success-color)] font-bold' : 'text-[var(--success-color)] font-medium'}">Submit</th>
-        <th class="text-right select-none py-1.5 px-3 ${isBold ? 'text-[var(--accent-color)] font-bold' : 'text-[var(--accent-color)] font-medium'} ${!isLastGroup ? 'border-r border-[var(--border-color)]' : ''}">SUB %</th>
+        <th class="text-right select-none py-1.5 px-3 min-w-[85px] ${isBold ? 'text-[var(--text-primary)] font-bold' : 'text-[var(--text-muted)] font-medium'}">Total</th>
+        <th class="text-right select-none py-1.5 px-3 min-w-[85px] ${isBold ? 'text-[var(--success-color)] font-bold' : 'text-[var(--success-color)] font-medium'}">Submit</th>
+        <th class="text-right select-none py-1.5 px-3 min-w-[95px] ${isBold ? 'text-[var(--accent-color)] font-bold' : 'text-[var(--accent-color)] font-medium'} ${!isLastGroup ? 'border-r border-[var(--border-color)]' : ''}">SUB %</th>
       `;
       thead.innerHTML = `
         <!-- Row 1: Main Category Headers -->
