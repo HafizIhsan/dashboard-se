@@ -189,7 +189,7 @@ body {
 /* Rekap Sub SLS styling & fixed column grid */
 #prelist-subsls-table {
   width: 100%;
-  min-width: 1750px;
+  min-width: 2100px;
   table-layout: fixed;
 }
 
