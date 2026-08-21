@@ -564,7 +564,7 @@
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </span>
-              <input type="text" id="search-prelist" oninput="filterPrelistSubSls()"
+              <input type="text" id="search-prelist" oninput="debouncedFilterPrelistSubSls()"
                 placeholder="Cari SLS, Desa, Kec, kode..." class="impeccable-input pl-8 w-full text-xs h-[34px]" />
             </div>
           </div>
@@ -753,7 +753,7 @@
   <!-- ===== DATA & LOGIC ===== -->
   <script>
     // URL Apps Script Web App Anda (Masukkan URL /exec Anda di sini)
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwf43PHbWGx5bndAb-Bj4qZ6mOnI8XCbT9MYMGvHqWCh2RTz5M141NsVPycmFjO84PqCQ/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyZCA2j8WkzRbpFm5qB0gKdfmQ12Omq-MxXY71XhiMcFnZ_LBcdrQgDW8smtXgzg4_57g/exec";
 
     // Helper format angka Indonesia: titik pemisah ribuan, koma pemisah desimal
     function fmtNum(n) { return Number(n).toLocaleString('id-ID'); }
@@ -1144,7 +1144,7 @@
     let masterKecMap = new Map();
     let selectedKabPrelist = '';
 
-    const prelistPctKeys = ['klgPrelistPct', 'usahaPrelistPct', 'lainnyaPct', 'prelistPct', 'glKlgPct', 'glUsahaPct', 'klgBaruPct', 'usahaBaruPct', 'assignPct'];
+    const prelistPctKeys = ['klgPrelistPct', 'usahaPrelistPct', 'lainnyaPct', 'prelistPct', 'glKlgPct', 'glUsahaPct', 'klgBaruPct', 'usahaBaruPct', 'lainnyaBaruPct', 'assignPct'];
 
     const prelistNumber = (value) => {
       const number = Number(value);
@@ -1209,8 +1209,11 @@
       const usahaBaruJml = prelistNumber(row.JUMLAH_USAHA_BARU);
       const usahaBaruSubmit = prelistNumber(row.USAHA_BARU_SUBMIT);
 
+      const lainnyaBaruJml = prelistNumber(row.JUMLAH_NONBKU_BARU);
+      const lainnyaBaruSubmit = prelistNumber(row.NONBKU_BARU_SUBMIT);
+
       const assignJml = prelistNumber(row.JUMLAH_ASSIGNMENT_BARU);
-      const assignSubmit = klgBaruSubmit + usahaBaruSubmit;
+      const assignSubmit = klgBaruSubmit + usahaBaruSubmit + lainnyaBaruSubmit;
 
       const result = {
         kode,
@@ -1223,6 +1226,7 @@
         glUsahaJml, glUsahaSubmit, glUsahaPct: prelistPercent(glUsahaSubmit, glUsahaJml),
         klgBaruJml, klgBaruSubmit, klgBaruPct: prelistPercent(klgBaruSubmit, klgBaruJml),
         usahaBaruJml, usahaBaruSubmit, usahaBaruPct: prelistPercent(usahaBaruSubmit, usahaBaruJml),
+        lainnyaBaruJml, lainnyaBaruSubmit, lainnyaBaruPct: prelistPercent(lainnyaBaruSubmit, lainnyaBaruJml),
         assignJml, assignSubmit, assignPct: prelistPercent(assignSubmit, assignJml)
       };
 
@@ -1244,6 +1248,7 @@
         glUsahaJml: 0, glUsahaSubmit: 0,
         klgBaruJml: 0, klgBaruSubmit: 0,
         usahaBaruJml: 0, usahaBaruSubmit: 0,
+        lainnyaBaruJml: 0, lainnyaBaruSubmit: 0,
         assignJml: 0, assignSubmit: 0
       };
 
@@ -1264,6 +1269,8 @@
         agg.klgBaruSubmit += item.klgBaruSubmit || 0;
         agg.usahaBaruJml += item.usahaBaruJml || 0;
         agg.usahaBaruSubmit += item.usahaBaruSubmit || 0;
+        agg.lainnyaBaruJml += item.lainnyaBaruJml || 0;
+        agg.lainnyaBaruSubmit += item.lainnyaBaruSubmit || 0;
         agg.assignJml += item.assignJml || 0;
         agg.assignSubmit += item.assignSubmit || 0;
       });
@@ -1276,6 +1283,7 @@
       agg.glUsahaPct = prelistPercent(agg.glUsahaSubmit, agg.glUsahaJml);
       agg.klgBaruPct = prelistPercent(agg.klgBaruSubmit, agg.klgBaruJml);
       agg.usahaBaruPct = prelistPercent(agg.usahaBaruSubmit, agg.usahaBaruJml);
+      agg.lainnyaBaruPct = prelistPercent(agg.lainnyaBaruSubmit, agg.lainnyaBaruJml);
       agg.assignPct = prelistPercent(agg.assignSubmit, agg.assignJml);
 
       agg.delta = {};
@@ -1289,6 +1297,7 @@
           ['glUsahaPct', 'glUsahaJml', 'glUsahaSubmit'],
           ['klgBaruPct', 'klgBaruJml', 'klgBaruSubmit'],
           ['usahaBaruPct', 'usahaBaruJml', 'usahaBaruSubmit'],
+          ['lainnyaBaruPct', 'lainnyaBaruJml', 'lainnyaBaruSubmit'],
           ['assignPct', 'assignJml', 'assignSubmit']
         ];
 
@@ -1451,7 +1460,7 @@
           </th>
           <th colspan="12" class="text-center bg-[rgba(163,201,168,0.06)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">Prelist</th>
           <th colspan="6" class="text-center bg-[rgba(163,201,168,0.12)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">General Link</th>
-          <th colspan="9" class="text-center bg-[rgba(229,185,116,0.06)]" style="border-bottom: 2px solid var(--warning-color);">Assignment Baru</th>
+          <th colspan="12" class="text-center bg-[rgba(229,185,116,0.06)]" style="border-bottom: 2px solid var(--warning-color);">Assignment Baru</th>
         </tr>
         <!-- Row 2: Sub-group Headers -->
         <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
@@ -1463,6 +1472,7 @@
           <th colspan="3" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Usaha</th>
           <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Keluarga</th>
           <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Usaha</th>
+          <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Non BKU</th>
           <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] font-bold text-[var(--text-primary)]">Total</th>
         </tr>
         <!-- Row 3: Leaf Headers -->
@@ -1471,6 +1481,7 @@
           ${leafGroup(false)}
           ${leafGroup(false)}
           ${leafGroup(false, true)}
+          ${leafGroup(false)}
           ${leafGroup(false)}
           ${leafGroup(false)}
           ${leafGroup(false)}
@@ -1542,6 +1553,7 @@
           ${renderGroupCells(summaryAgg.glUsahaJml, summaryAgg.glUsahaSubmit, summaryAgg.glUsahaPct, summaryAgg.delta.glUsahaPct)}
           ${renderGroupCells(summaryAgg.klgBaruJml, summaryAgg.klgBaruSubmit, summaryAgg.klgBaruPct, summaryAgg.delta.klgBaruPct)}
           ${renderGroupCells(summaryAgg.usahaBaruJml, summaryAgg.usahaBaruSubmit, summaryAgg.usahaBaruPct, summaryAgg.delta.usahaBaruPct)}
+          ${renderGroupCells(summaryAgg.lainnyaBaruJml, summaryAgg.lainnyaBaruSubmit, summaryAgg.lainnyaBaruPct, summaryAgg.delta.lainnyaBaruPct)}
           ${renderGroupCells(summaryAgg.assignJml, summaryAgg.assignSubmit, summaryAgg.assignPct, summaryAgg.delta.assignPct, true)}
         </tr>`;
       }
@@ -1595,6 +1607,7 @@
             ${renderKabGroup(kab.glUsahaJml, kab.glUsahaSubmit, kab.glUsahaPct, kab.delta.glUsahaPct)}
             ${renderKabGroup(kab.klgBaruJml, kab.klgBaruSubmit, kab.klgBaruPct, kab.delta.klgBaruPct)}
             ${renderKabGroup(kab.usahaBaruJml, kab.usahaBaruSubmit, kab.usahaBaruPct, kab.delta.usahaBaruPct)}
+            ${renderKabGroup(kab.lainnyaBaruJml, kab.lainnyaBaruSubmit, kab.lainnyaBaruPct, kab.delta.lainnyaBaruPct)}
             ${renderKabGroup(kab.assignJml, kab.assignSubmit, kab.assignPct, kab.delta.assignPct, true)}
           </tr>`;
 
@@ -1621,6 +1634,7 @@
                 ${renderKecGroup(kec.glUsahaJml, kec.glUsahaSubmit, kec.glUsahaPct, kec.delta.glUsahaPct)}
                 ${renderKecGroup(kec.klgBaruJml, kec.klgBaruSubmit, kec.klgBaruPct, kec.delta.klgBaruPct)}
                 ${renderKecGroup(kec.usahaBaruJml, kec.usahaBaruSubmit, kec.usahaBaruPct, kec.delta.usahaBaruPct)}
+                ${renderKecGroup(kec.lainnyaBaruJml, kec.lainnyaBaruSubmit, kec.lainnyaBaruPct, kec.delta.lainnyaBaruPct)}
                 ${renderKecGroup(kec.assignJml, kec.assignSubmit, kec.assignPct, kec.delta.assignPct, true)}
               </tr>`;
 
@@ -1647,6 +1661,7 @@
                     ${renderDesaGroup(desa.glUsahaJml, desa.glUsahaSubmit, desa.glUsahaPct, desa.delta.glUsahaPct)}
                     ${renderDesaGroup(desa.klgBaruJml, desa.klgBaruSubmit, desa.klgBaruPct, desa.delta.klgBaruPct)}
                     ${renderDesaGroup(desa.usahaBaruJml, desa.usahaBaruSubmit, desa.usahaBaruPct, desa.delta.usahaBaruPct)}
+                    ${renderDesaGroup(desa.lainnyaBaruJml, desa.lainnyaBaruSubmit, desa.lainnyaBaruPct, desa.delta.lainnyaBaruPct)}
                     ${renderDesaGroup(desa.assignJml, desa.assignSubmit, desa.assignPct, desa.delta.assignPct, true)}
                   </tr>`;
 
@@ -1673,6 +1688,7 @@
                         ${renderSubGroup(sub.glUsahaJml, sub.glUsahaSubmit, sub.glUsahaPct, sub.delta.glUsahaPct)}
                         ${renderSubGroup(sub.klgBaruJml, sub.klgBaruSubmit, sub.klgBaruPct, sub.delta.klgBaruPct)}
                         ${renderSubGroup(sub.usahaBaruJml, sub.usahaBaruSubmit, sub.usahaBaruPct, sub.delta.usahaBaruPct)}
+                        ${renderSubGroup(sub.lainnyaBaruJml, sub.lainnyaBaruSubmit, sub.lainnyaBaruPct, sub.delta.lainnyaBaruPct)}
                         ${renderSubGroup(sub.assignJml, sub.assignSubmit, sub.assignPct, sub.delta.assignPct, true)}
                       </tr>`;
                     });
@@ -1717,6 +1733,22 @@
       expandedPrelistNodes.clear();
       renderPrelistTable();
     }
+
+    const debounce = (func, wait) => {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    };
+
+    const debouncedFilterPrelistSubSls = debounce(() => {
+      filterPrelistSubSls();
+    }, 300);
 
     function filterPrelistSubSls() {
       const term = (document.getElementById('search-prelist')?.value || '').trim().toLowerCase();
@@ -1773,6 +1805,7 @@
         'GL Usaha Total', 'GL Usaha Submit', 'GL Usaha %',
         'Keluarga Baru Total', 'Keluarga Baru Submit', 'Keluarga Baru %',
         'Usaha Baru Total', 'Usaha Baru Submit', 'Usaha Baru %',
+        'Non BKU Baru Total', 'Non BKU Baru Submit', 'Non BKU Baru %',
         'Total Assignment Baru Total', 'Total Assignment Baru Submit', 'Total Assignment Baru %'
       ];
 
@@ -1788,6 +1821,7 @@
           item.glUsahaJml, item.glUsahaSubmit, item.glUsahaPct !== null ? item.glUsahaPct.toFixed(2) : '',
           item.klgBaruJml, item.klgBaruSubmit, item.klgBaruPct !== null ? item.klgBaruPct.toFixed(2) : '',
           item.usahaBaruJml, item.usahaBaruSubmit, item.usahaBaruPct !== null ? item.usahaBaruPct.toFixed(2) : '',
+          item.lainnyaBaruJml, item.lainnyaBaruSubmit, item.lainnyaBaruPct !== null ? item.lainnyaBaruPct.toFixed(2) : '',
           item.assignJml, item.assignSubmit, item.assignPct !== null ? item.assignPct.toFixed(2) : ''
         ]);
       };

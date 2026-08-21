@@ -496,6 +496,8 @@ function doGet() {
           mappedRow["KELUARGA_BARU_SUBMIT"] = Number(getValCI(row, "KELUARGA_BARU_SUBMIT") || 0);
           mappedRow["JUMLAH_USAHA_BARU"] = Number(getValCI(row, "JUMLAH_USAHA_BARU") || 0);
           mappedRow["USAHA_BARU_SUBMIT"] = Number(getValCI(row, "USAHA_BARU_SUBMIT") || 0);
+          mappedRow["JUMLAH_NONBKU_BARU"] = Number(getValCI(row, "JUMLAH_NONBKU_BARU") || 0);
+          mappedRow["NONBKU_BARU_SUBMIT"] = Number(getValCI(row, "NONBKU_BARU_SUBMIT") || 0);
           mappedRow["JUMLAH_BARU_STATUS_DRAFT"] = Number(getValCI(row, "JUMLAH_BARU_STATUS_DRAFT") || 0);
         } else {
           mappedRow = row;
