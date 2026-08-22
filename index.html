@@ -20,7 +20,7 @@
   <!-- Frameworks (Tailwind for Layout) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 
   <script>
     tailwind.config = {
@@ -427,12 +427,12 @@
           <!-- Export Button -->
           <div class="flex flex-col justify-end w-full sm:w-auto">
             <span class="text-[9px] mb-1 opacity-0 pointer-events-none">&nbsp;</span>
-            <button onclick="exportCSV()" class="impeccable-btn flex items-center justify-center gap-2 h-[34px]">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <button onclick="exportExcel()" class="impeccable-btn flex items-center justify-center gap-2 h-[34px]" title="Unduh Progres Wilayah (.xlsx)">
+              <svg class="w-4 h-4 text-[var(--accent-color)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                   d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <span>Unduh CSV</span>
+              <span>Unduh Excel</span>
             </button>
           </div>
         </div>
@@ -570,14 +570,14 @@
           </div>
           <!-- Export Button -->
           <div class="w-full sm:w-auto shrink-0">
-            <button onclick="exportPrelistCSV()"
+            <button onclick="exportPrelistExcel()"
               class="impeccable-btn flex items-center justify-center gap-1.5 h-[34px] text-xs px-3.5 w-full sm:w-auto"
-              title="Unduh Data Rekapitulasi Prelist CSV">
+              title="Unduh Data Rekapitulasi Prelist Per Sub SLS (.xlsx)">
               <svg class="w-4 h-4 text-[var(--accent-color)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                   d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <span class="font-medium whitespace-nowrap">Unduh CSV</span>
+              <span class="font-medium whitespace-nowrap">Unduh Excel</span>
             </button>
           </div>
         </div>
@@ -597,8 +597,10 @@
                 style="border-bottom: 2px solid var(--success-color);">Prelist</th>
               <th colspan="6" class="text-center bg-[rgba(163,201,168,0.12)] border-r border-[var(--border-color)]"
                 style="border-bottom: 2px solid var(--success-color);">General Link</th>
-              <th colspan="12" class="text-center bg-[rgba(229,185,116,0.06)]"
+              <th colspan="12" class="text-center bg-[rgba(229,185,116,0.06)] border-r border-[var(--border-color)]"
                 style="border-bottom: 2px solid var(--warning-color);">Assignment Baru</th>
+              <th colspan="3" class="text-center col-total-keseluruhan-header"
+                style="border-bottom: 2px solid var(--accent-color);">Total Keseluruhan</th>
             </tr>
             <!-- Row 2: Sub-group Headers -->
             <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
@@ -621,7 +623,9 @@
                 Usaha</th>
               <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">
                 Non BKU</th>
-              <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] font-bold text-[var(--text-primary)]">Total
+              <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">Total
+              </th>
+              <th colspan="3" class="text-center bg-[rgba(249,115,22,0.06)] font-bold text-[var(--accent-color)]">Total
               </th>
             </tr>
             <!-- Row 3: Leaf Headers -->
@@ -682,7 +686,11 @@
 
               <th class="text-right py-1.5 px-3 text-[var(--text-primary)] font-bold">Total</th>
               <th class="text-right py-1.5 px-3 text-[var(--success-color)] font-bold">Submit</th>
-              <th class="text-right py-1.5 px-3 text-[var(--accent-color)] font-bold">SUB %</th>
+              <th class="text-right py-1.5 px-3 text-[var(--accent-color)] font-bold border-r border-[var(--border-color)]">SUB %</th>
+
+              <th class="text-right py-1.5 px-3 text-[var(--text-primary)] font-bold col-total-keseluruhan">Total</th>
+              <th class="text-right py-1.5 px-3 text-[var(--success-color)] font-bold col-total-keseluruhan">Submit</th>
+              <th class="text-right py-1.5 px-3 text-[var(--accent-color)] font-bold col-total-keseluruhan">SUB %</th>
             </tr>
           </thead>
           <tbody id="prelist-subsls-body">
@@ -1119,7 +1127,7 @@
     let masterKecMap = new Map();
     let selectedKabPrelist = '';
 
-    const prelistPctKeys = ['klgPrelistPct', 'usahaPrelistPct', 'lainnyaPct', 'prelistPct', 'glKlgPct', 'glUsahaPct', 'klgBaruPct', 'usahaBaruPct', 'lainnyaBaruPct', 'assignPct'];
+    const prelistPctKeys = ['klgPrelistPct', 'usahaPrelistPct', 'lainnyaPct', 'prelistPct', 'glKlgPct', 'glUsahaPct', 'klgBaruPct', 'usahaBaruPct', 'lainnyaBaruPct', 'assignPct', 'totalSemuaPct'];
 
     const prelistNumber = (value) => {
       const number = Number(value);
@@ -1190,6 +1198,11 @@
       const assignJml = prelistNumber(row.JUMLAH_ASSIGNMENT_BARU);
       const assignSubmit = klgBaruSubmit + usahaBaruSubmit + lainnyaBaruSubmit;
 
+      // Total Keseluruhan (Kumulasi semua jenis assignment: Prelist + General Link + Assignment Baru)
+      const totalSemuaJml = prelistJml + glKlgJml + glUsahaJml + assignJml;
+      const totalSemuaSubmit = prelistSubmit + glKlgSubmit + glUsahaSubmit + assignSubmit;
+      const totalSemuaPct = prelistPercent(totalSemuaSubmit, totalSemuaJml);
+
       const result = {
         kode,
         namaSls,
@@ -1202,7 +1215,8 @@
         klgBaruJml, klgBaruSubmit, klgBaruPct: prelistPercent(klgBaruSubmit, klgBaruJml),
         usahaBaruJml, usahaBaruSubmit, usahaBaruPct: prelistPercent(usahaBaruSubmit, usahaBaruJml),
         lainnyaBaruJml, lainnyaBaruSubmit, lainnyaBaruPct: prelistPercent(lainnyaBaruSubmit, lainnyaBaruJml),
-        assignJml, assignSubmit, assignPct: prelistPercent(assignSubmit, assignJml)
+        assignJml, assignSubmit, assignPct: prelistPercent(assignSubmit, assignJml),
+        totalSemuaJml, totalSemuaSubmit, totalSemuaPct
       };
 
       const baseline = prelistBaselineByCode.get(result.kode);
@@ -1224,7 +1238,8 @@
         klgBaruJml: 0, klgBaruSubmit: 0,
         usahaBaruJml: 0, usahaBaruSubmit: 0,
         lainnyaBaruJml: 0, lainnyaBaruSubmit: 0,
-        assignJml: 0, assignSubmit: 0
+        assignJml: 0, assignSubmit: 0,
+        totalSemuaJml: 0, totalSemuaSubmit: 0
       };
 
       items.forEach(item => {
@@ -1248,6 +1263,8 @@
         agg.lainnyaBaruSubmit += item.lainnyaBaruSubmit || 0;
         agg.assignJml += item.assignJml || 0;
         agg.assignSubmit += item.assignSubmit || 0;
+        agg.totalSemuaJml += item.totalSemuaJml || 0;
+        agg.totalSemuaSubmit += item.totalSemuaSubmit || 0;
       });
 
       agg.klgPrelistPct = prelistPercent(agg.klgPrelistSubmit, agg.klgPrelistJml);
@@ -1260,6 +1277,7 @@
       agg.usahaBaruPct = prelistPercent(agg.usahaBaruSubmit, agg.usahaBaruJml);
       agg.lainnyaBaruPct = prelistPercent(agg.lainnyaBaruSubmit, agg.lainnyaBaruJml);
       agg.assignPct = prelistPercent(agg.assignSubmit, agg.assignJml);
+      agg.totalSemuaPct = prelistPercent(agg.totalSemuaSubmit, agg.totalSemuaJml);
 
       agg.delta = {};
       if (prelistBaselineByCode && prelistBaselineByCode.size > 0) {
@@ -1273,7 +1291,8 @@
           ['klgBaruPct', 'klgBaruJml', 'klgBaruSubmit'],
           ['usahaBaruPct', 'usahaBaruJml', 'usahaBaruSubmit'],
           ['lainnyaBaruPct', 'lainnyaBaruJml', 'lainnyaBaruSubmit'],
-          ['assignPct', 'assignJml', 'assignSubmit']
+          ['assignPct', 'assignJml', 'assignSubmit'],
+          ['totalSemuaPct', 'totalSemuaJml', 'totalSemuaSubmit']
         ];
 
         pctPairs.forEach(([pctKey, jmlKey, subKey]) => {
@@ -1422,10 +1441,10 @@
     function renderPrelistHeader() {
       const thead = document.querySelector('#prelist-subsls-table thead');
       if (!thead) return;
-      const leafGroup = (isLastGroup = false, isBold = false) => `
-        <th class="text-right select-none py-1.5 px-3 min-w-[85px] ${isBold ? 'text-[var(--text-primary)] font-bold' : 'text-[var(--text-muted)] font-medium'}">Total</th>
-        <th class="text-right select-none py-1.5 px-3 min-w-[85px] ${isBold ? 'text-[var(--success-color)] font-bold' : 'text-[var(--success-color)] font-medium'}">Submit</th>
-        <th class="text-right select-none py-1.5 px-3 min-w-[95px] ${isBold ? 'text-[var(--accent-color)] font-bold' : 'text-[var(--accent-color)] font-medium'} ${!isLastGroup ? 'border-r border-[var(--border-color)]' : ''}">SUB %</th>
+      const leafGroup = (isLastGroup = false, isBold = false, isHighlight = false) => `
+        <th class="text-right select-none py-1.5 px-3 min-w-[85px] ${isHighlight ? 'col-total-keseluruhan' : ''} ${isBold ? 'text-[var(--text-primary)] font-bold' : 'text-[var(--text-muted)] font-medium'}">Total</th>
+        <th class="text-right select-none py-1.5 px-3 min-w-[85px] ${isHighlight ? 'col-total-keseluruhan' : ''} ${isBold ? 'text-[var(--success-color)] font-bold' : 'text-[var(--success-color)] font-medium'}">Submit</th>
+        <th class="text-right select-none py-1.5 px-3 min-w-[95px] ${isHighlight ? 'col-total-keseluruhan' : ''} ${isBold ? 'text-[var(--accent-color)] font-bold' : 'text-[var(--accent-color)] font-medium'} ${!isLastGroup ? 'border-r border-[var(--border-color)]' : ''}">SUB %</th>
       `;
       thead.innerHTML = `
         <!-- Row 1: Main Category Headers -->
@@ -1435,7 +1454,8 @@
           </th>
           <th colspan="12" class="text-center bg-[rgba(163,201,168,0.06)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">Prelist</th>
           <th colspan="6" class="text-center bg-[rgba(163,201,168,0.12)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">General Link</th>
-          <th colspan="12" class="text-center bg-[rgba(229,185,116,0.06)]" style="border-bottom: 2px solid var(--warning-color);">Assignment Baru</th>
+          <th colspan="12" class="text-center bg-[rgba(229,185,116,0.06)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--warning-color);">Assignment Baru</th>
+          <th colspan="3" class="text-center col-total-keseluruhan-header" style="border-bottom: 2px solid var(--accent-color);">Total Keseluruhan</th>
         </tr>
         <!-- Row 2: Sub-group Headers -->
         <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
@@ -1448,7 +1468,8 @@
           <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Keluarga</th>
           <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Usaha</th>
           <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Non BKU</th>
-          <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] font-bold text-[var(--text-primary)]">Total</th>
+          <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">Total</th>
+          <th colspan="3" class="text-center bg-[rgba(249,115,22,0.06)] font-bold text-[var(--accent-color)]">Total</th>
         </tr>
         <!-- Row 3: Leaf Headers -->
         <tr class="text-[8px] md:text-[9px] whitespace-nowrap">
@@ -1461,7 +1482,8 @@
           ${leafGroup(false)}
           ${leafGroup(false)}
           ${leafGroup(false)}
-          ${leafGroup(true, true)}
+          ${leafGroup(false, true)}
+          ${leafGroup(true, true, true)}
         </tr>`;
     }
 
@@ -1512,10 +1534,10 @@
           summaryLabel = matchedKab ? matchedKab.nama : `Kabupaten [${filterKab}]`;
         }
 
-        const renderGroupCells = (valTotal, valSub, valPct, delta, isLast = false) => `
-          <td class="text-right py-3.5 px-3 text-[var(--text-secondary)] whitespace-nowrap text-xs font-bold">${fmtNum(valTotal)}</td>
-          <td class="text-right py-3.5 px-3 text-[var(--success-color)] whitespace-nowrap text-xs font-bold">${fmtNum(valSub)}</td>
-          <td class="text-right py-3.5 px-3 whitespace-nowrap text-xs font-bold ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(valPct, true, delta)}</td>
+        const renderGroupCells = (valTotal, valSub, valPct, delta, isLast = false, isHighlight = false) => `
+          <td class="text-right py-3.5 px-3 whitespace-nowrap text-xs font-bold ${isHighlight ? 'col-total-keseluruhan-summary text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}">${fmtNum(valTotal)}</td>
+          <td class="text-right py-3.5 px-3 text-[var(--success-color)] whitespace-nowrap text-xs font-bold ${isHighlight ? 'col-total-keseluruhan-summary' : ''}">${fmtNum(valSub)}</td>
+          <td class="text-right py-3.5 px-3 whitespace-nowrap text-xs font-bold ${isHighlight ? 'col-total-keseluruhan-summary' : ''} ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(valPct, true, delta)}</td>
         `;
 
         html += `<tr class="bg-[rgba(212,178,122,0.08)] font-bold border-b-2 border-[var(--border-color)]">
@@ -1529,36 +1551,37 @@
           ${renderGroupCells(summaryAgg.klgBaruJml, summaryAgg.klgBaruSubmit, summaryAgg.klgBaruPct, summaryAgg.delta.klgBaruPct)}
           ${renderGroupCells(summaryAgg.usahaBaruJml, summaryAgg.usahaBaruSubmit, summaryAgg.usahaBaruPct, summaryAgg.delta.usahaBaruPct)}
           ${renderGroupCells(summaryAgg.lainnyaBaruJml, summaryAgg.lainnyaBaruSubmit, summaryAgg.lainnyaBaruPct, summaryAgg.delta.lainnyaBaruPct)}
-          ${renderGroupCells(summaryAgg.assignJml, summaryAgg.assignSubmit, summaryAgg.assignPct, summaryAgg.delta.assignPct, true)}
+          ${renderGroupCells(summaryAgg.assignJml, summaryAgg.assignSubmit, summaryAgg.assignPct, summaryAgg.delta.assignPct, false)}
+          ${renderGroupCells(summaryAgg.totalSemuaJml, summaryAgg.totalSemuaSubmit, summaryAgg.totalSemuaPct, summaryAgg.delta.totalSemuaPct, true, true)}
         </tr>`;
       }
 
-      const renderKabGroup = (valTotal, valSub, valPct, delta, isLast = false) => `
-        <td class="text-right py-2.5 px-3 text-[var(--text-primary)] whitespace-nowrap text-xs font-bold">${fmtNum(valTotal)}</td>
-        <td class="text-right py-2.5 px-3 text-[var(--success-color)] whitespace-nowrap text-xs font-bold">${fmtNum(valSub)}</td>
-        <td class="text-right py-2.5 px-3 whitespace-nowrap text-xs font-bold ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(valPct, true, delta)}</td>
+      const renderKabGroup = (valTotal, valSub, valPct, delta, isLast = false, isHighlight = false) => `
+        <td class="text-right py-2.5 px-3 whitespace-nowrap text-xs font-bold ${isHighlight ? 'col-total-keseluruhan text-[var(--text-primary)]' : 'text-[var(--text-primary)]'}">${fmtNum(valTotal)}</td>
+        <td class="text-right py-2.5 px-3 text-[var(--success-color)] whitespace-nowrap text-xs font-bold ${isHighlight ? 'col-total-keseluruhan' : ''}">${fmtNum(valSub)}</td>
+        <td class="text-right py-2.5 px-3 whitespace-nowrap text-xs font-bold ${isHighlight ? 'col-total-keseluruhan' : ''} ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(valPct, true, delta)}</td>
       `;
 
-      const renderKecGroup = (valTotal, valSub, valPct, delta, isLast = false) => `
-        <td class="text-right py-2 px-3 text-[var(--text-secondary)] whitespace-nowrap text-xs font-semibold">${fmtNum(valTotal)}</td>
-        <td class="text-right py-2 px-3 text-[var(--success-color)] whitespace-nowrap text-xs font-semibold">${fmtNum(valSub)}</td>
-        <td class="text-right py-2 px-3 whitespace-nowrap text-xs font-semibold ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(valPct, true, delta)}</td>
+      const renderKecGroup = (valTotal, valSub, valPct, delta, isLast = false, isHighlight = false) => `
+        <td class="text-right py-2 px-3 whitespace-nowrap text-xs font-semibold ${isHighlight ? 'col-total-keseluruhan text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}">${fmtNum(valTotal)}</td>
+        <td class="text-right py-2 px-3 text-[var(--success-color)] whitespace-nowrap text-xs font-semibold ${isHighlight ? 'col-total-keseluruhan' : ''}">${fmtNum(valSub)}</td>
+        <td class="text-right py-2 px-3 whitespace-nowrap text-xs font-semibold ${isHighlight ? 'col-total-keseluruhan' : ''} ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(valPct, true, delta)}</td>
       `;
 
-      const renderDesaGroup = (valTotal, valSub, valPct, delta, isLast = false) => `
-        <td class="text-right py-2 px-3 text-[var(--text-secondary)] whitespace-nowrap text-xs font-medium">${fmtNum(valTotal)}</td>
-        <td class="text-right py-2 px-3 text-[var(--success-color)] whitespace-nowrap text-xs font-medium">${fmtNum(valSub)}</td>
-        <td class="text-right py-2 px-3 whitespace-nowrap text-xs font-medium ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(valPct, true, delta)}</td>
+      const renderDesaGroup = (valTotal, valSub, valPct, delta, isLast = false, isHighlight = false) => `
+        <td class="text-right py-2 px-3 whitespace-nowrap text-xs font-medium ${isHighlight ? 'col-total-keseluruhan text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}">${fmtNum(valTotal)}</td>
+        <td class="text-right py-2 px-3 text-[var(--success-color)] whitespace-nowrap text-xs font-medium ${isHighlight ? 'col-total-keseluruhan' : ''}">${fmtNum(valSub)}</td>
+        <td class="text-right py-2 px-3 whitespace-nowrap text-xs font-medium ${isHighlight ? 'col-total-keseluruhan' : ''} ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(valPct, true, delta)}</td>
       `;
 
-      const renderSubGroup = (valTotal, valSub, valPct, delta, isLast = false) => `
-        <td class="text-right py-1.5 px-3 text-[var(--text-muted)] whitespace-nowrap text-xs font-normal">${fmtNum(valTotal)}</td>
-        <td class="text-right py-1.5 px-3 text-[var(--success-color)] whitespace-nowrap text-xs font-normal">${fmtNum(valSub)}</td>
-        <td class="text-right py-1.5 px-3 whitespace-nowrap text-xs ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(valPct, true, delta)}</td>
+      const renderSubGroup = (valTotal, valSub, valPct, delta, isLast = false, isHighlight = false) => `
+        <td class="text-right py-1.5 px-3 whitespace-nowrap text-xs ${isHighlight ? 'col-total-keseluruhan text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] font-normal'}">${fmtNum(valTotal)}</td>
+        <td class="text-right py-1.5 px-3 text-[var(--success-color)] whitespace-nowrap text-xs ${isHighlight ? 'col-total-keseluruhan font-semibold' : 'font-normal'}">${fmtNum(valSub)}</td>
+        <td class="text-right py-1.5 px-3 whitespace-nowrap text-xs ${isHighlight ? 'col-total-keseluruhan' : ''} ${!isLast ? 'border-r border-[var(--border-color)]' : ''}">${formatPrelistValue(valPct, true, delta)}</td>
       `;
 
       if (filteredTree.length === 0) {
-        html += '<tr><td colspan="28" class="text-center py-8 text-[var(--text-muted)]">Tidak ada data yang sesuai filter.</td></tr>';
+        html += '<tr><td colspan="34" class="text-center py-8 text-[var(--text-muted)]">Tidak ada data yang sesuai filter.</td></tr>';
       } else {
         filteredTree.forEach(kab => {
           const isKabOpen = expandedPrelistNodes.has(kab.id);
@@ -1583,7 +1606,8 @@
             ${renderKabGroup(kab.klgBaruJml, kab.klgBaruSubmit, kab.klgBaruPct, kab.delta.klgBaruPct)}
             ${renderKabGroup(kab.usahaBaruJml, kab.usahaBaruSubmit, kab.usahaBaruPct, kab.delta.usahaBaruPct)}
             ${renderKabGroup(kab.lainnyaBaruJml, kab.lainnyaBaruSubmit, kab.lainnyaBaruPct, kab.delta.lainnyaBaruPct)}
-            ${renderKabGroup(kab.assignJml, kab.assignSubmit, kab.assignPct, kab.delta.assignPct, true)}
+            ${renderKabGroup(kab.assignJml, kab.assignSubmit, kab.assignPct, kab.delta.assignPct, false)}
+            ${renderKabGroup(kab.totalSemuaJml, kab.totalSemuaSubmit, kab.totalSemuaPct, kab.delta.totalSemuaPct, true, true)}
           </tr>`;
 
           if (isKabOpen && kab.children) {
@@ -1610,7 +1634,8 @@
                 ${renderKecGroup(kec.klgBaruJml, kec.klgBaruSubmit, kec.klgBaruPct, kec.delta.klgBaruPct)}
                 ${renderKecGroup(kec.usahaBaruJml, kec.usahaBaruSubmit, kec.usahaBaruPct, kec.delta.usahaBaruPct)}
                 ${renderKecGroup(kec.lainnyaBaruJml, kec.lainnyaBaruSubmit, kec.lainnyaBaruPct, kec.delta.lainnyaBaruPct)}
-                ${renderKecGroup(kec.assignJml, kec.assignSubmit, kec.assignPct, kec.delta.assignPct, true)}
+                ${renderKecGroup(kec.assignJml, kec.assignSubmit, kec.assignPct, kec.delta.assignPct, false)}
+                ${renderKecGroup(kec.totalSemuaJml, kec.totalSemuaSubmit, kec.totalSemuaPct, kec.delta.totalSemuaPct, true, true)}
               </tr>`;
 
               if (isKecOpen && kec.children) {
@@ -1637,7 +1662,8 @@
                     ${renderDesaGroup(desa.klgBaruJml, desa.klgBaruSubmit, desa.klgBaruPct, desa.delta.klgBaruPct)}
                     ${renderDesaGroup(desa.usahaBaruJml, desa.usahaBaruSubmit, desa.usahaBaruPct, desa.delta.usahaBaruPct)}
                     ${renderDesaGroup(desa.lainnyaBaruJml, desa.lainnyaBaruSubmit, desa.lainnyaBaruPct, desa.delta.lainnyaBaruPct)}
-                    ${renderDesaGroup(desa.assignJml, desa.assignSubmit, desa.assignPct, desa.delta.assignPct, true)}
+                    ${renderDesaGroup(desa.assignJml, desa.assignSubmit, desa.assignPct, desa.delta.assignPct, false)}
+                    ${renderDesaGroup(desa.totalSemuaJml, desa.totalSemuaSubmit, desa.totalSemuaPct, desa.delta.totalSemuaPct, true, true)}
                   </tr>`;
 
                   if (isDesaOpen && desa.children) {
@@ -1664,7 +1690,8 @@
                         ${renderSubGroup(sub.klgBaruJml, sub.klgBaruSubmit, sub.klgBaruPct, sub.delta.klgBaruPct)}
                         ${renderSubGroup(sub.usahaBaruJml, sub.usahaBaruSubmit, sub.usahaBaruPct, sub.delta.usahaBaruPct)}
                         ${renderSubGroup(sub.lainnyaBaruJml, sub.lainnyaBaruSubmit, sub.lainnyaBaruPct, sub.delta.lainnyaBaruPct)}
-                        ${renderSubGroup(sub.assignJml, sub.assignSubmit, sub.assignPct, sub.delta.assignPct, true)}
+                        ${renderSubGroup(sub.assignJml, sub.assignSubmit, sub.assignPct, sub.delta.assignPct, false)}
+                        ${renderSubGroup(sub.totalSemuaJml, sub.totalSemuaSubmit, sub.totalSemuaPct, sub.delta.totalSemuaPct, true, true)}
                       </tr>`;
                     });
                   }
@@ -1769,71 +1796,167 @@
       renderPrelistTable();
     }
 
-    function exportPrelistCSV() {
+    function exportPrelistExcel() {
+      if (typeof XLSX === 'undefined') {
+        alert('Library Excel sedang dimuat. Silakan coba beberapa saat lagi.');
+        return;
+      }
+
       const headers = [
-        'Tingkat', 'Kode Wilayah / Sub SLS', 'Nama Wilayah / SLS',
-        'Keluarga Prelist Total', 'Keluarga Prelist Submit', 'Keluarga Prelist %',
-        'Usaha Prelist Total', 'Usaha Prelist Submit', 'Usaha Prelist %',
-        'Non BKU Prelist Total', 'Non BKU Prelist Submit', 'Non BKU Prelist %',
+        'Kode Kabupaten', 'Nama Kabupaten',
+        'Kode Kecamatan', 'Nama Kecamatan',
+        'Kode Desa', 'Nama Desa',
+        'Kode Sub SLS', 'Nama SLS / Sub SLS',
+        'Prelist Keluarga Total', 'Prelist Keluarga Submit', 'Prelist Keluarga %',
+        'Prelist Usaha Total', 'Prelist Usaha Submit', 'Prelist Usaha %',
+        'Prelist Non BKU Total', 'Prelist Non BKU Submit', 'Prelist Non BKU %',
         'Total Prelist Total', 'Total Prelist Submit', 'Total Prelist %',
         'GL Keluarga Total', 'GL Keluarga Submit', 'GL Keluarga %',
         'GL Usaha Total', 'GL Usaha Submit', 'GL Usaha %',
-        'Keluarga Baru Total', 'Keluarga Baru Submit', 'Keluarga Baru %',
-        'Usaha Baru Total', 'Usaha Baru Submit', 'Usaha Baru %',
-        'Non BKU Baru Total', 'Non BKU Baru Submit', 'Non BKU Baru %',
-        'Total Assignment Baru Total', 'Total Assignment Baru Submit', 'Total Assignment Baru %'
+        'Assignment Baru Keluarga Total', 'Assignment Baru Keluarga Submit', 'Assignment Baru Keluarga %',
+        'Assignment Baru Usaha Total', 'Assignment Baru Usaha Submit', 'Assignment Baru Usaha %',
+        'Assignment Baru Non BKU Total', 'Assignment Baru Non BKU Submit', 'Assignment Baru Non BKU %',
+        'Total Assignment Baru Total', 'Total Assignment Baru Submit', 'Total Assignment Baru %',
+        'Total Keseluruhan Beban', 'Total Keseluruhan Submit', 'Total Keseluruhan %'
       ];
-
-      const rows = [];
-      const addRow = (level, kode, nama, item) => {
-        rows.push([
-          level, kode, nama,
-          item.klgPrelistJml, item.klgPrelistSubmit, item.klgPrelistPct !== null ? item.klgPrelistPct.toFixed(2) : '',
-          item.usahaPrelistJml, item.usahaPrelistSubmit, item.usahaPrelistPct !== null ? item.usahaPrelistPct.toFixed(2) : '',
-          item.lainnyaJml, item.lainnyaSubmit, item.lainnyaPct !== null ? item.lainnyaPct.toFixed(2) : '',
-          item.prelistJml, item.prelistSubmit, item.prelistPct !== null ? item.prelistPct.toFixed(2) : '',
-          item.glKlgJml, item.glKlgSubmit, item.glKlgPct !== null ? item.glKlgPct.toFixed(2) : '',
-          item.glUsahaJml, item.glUsahaSubmit, item.glUsahaPct !== null ? item.glUsahaPct.toFixed(2) : '',
-          item.klgBaruJml, item.klgBaruSubmit, item.klgBaruPct !== null ? item.klgBaruPct.toFixed(2) : '',
-          item.usahaBaruJml, item.usahaBaruSubmit, item.usahaBaruPct !== null ? item.usahaBaruPct.toFixed(2) : '',
-          item.lainnyaBaruJml, item.lainnyaBaruSubmit, item.lainnyaBaruPct !== null ? item.lainnyaBaruPct.toFixed(2) : '',
-          item.assignJml, item.assignSubmit, item.assignPct !== null ? item.assignPct.toFixed(2) : ''
-        ]);
-      };
 
       const filterKab = selectedKabPrelist || document.getElementById('filter-kab-prelist')?.value || '';
       const filterTerm = (document.getElementById('search-prelist')?.value || '').trim().toLowerCase();
 
-      prelistTreeData.forEach(kab => {
-        if (filterKab && kab.kode !== filterKab) return;
-        addRow('Kabupaten', kab.kode, kab.nama, kab);
-        if (kab.children) {
-          kab.children.forEach(kec => {
-            addRow('Kecamatan', kec.kode, kec.nama, kec);
-            if (kec.children) {
-              kec.children.forEach(desa => {
-                addRow('Desa', desa.kode, desa.nama, desa);
-                if (desa.children) {
-                  desa.children.forEach(sub => {
-                    if (!filterTerm || sub.kode.toLowerCase().includes(filterTerm) || (sub.namaSls && sub.namaSls.toLowerCase().includes(filterTerm))) {
-                      const sub2 = sub.kode.length >= 2 ? ` [${sub.kode.slice(-2)}]` : '';
-                      addRow('Sub SLS', sub.kode, `${sub.namaSls || 'Sub SLS'}${sub2}`, sub);
-                    }
-                  });
-                }
-              });
-            }
-          });
+      // Flat data per Sub SLS saja (tanpa baris induk hierarki)
+      const excelRows = [headers];
+
+      prelistSubSlsData.forEach(sub => {
+        const kode = String(sub.kode || '');
+        const kodeKab = kode.substring(0, 4);
+        if (filterKab && kodeKab !== filterKab) return;
+
+        if (filterTerm) {
+          const match = kode.toLowerCase().includes(filterTerm) || (sub.namaSls && sub.namaSls.toLowerCase().includes(filterTerm));
+          if (!match) return;
         }
+
+        const kodeKec = kode.length >= 7 ? kode.substring(0, 7) : '';
+        const kodeDesa = kode.length >= 10 ? kode.substring(0, 10) : '';
+
+        const kabObj = Array.isArray(dashboardData) ? dashboardData.find(w => w.kode === kodeKab) : null;
+        const namaKab = kabObj ? kabObj.nama : `[${kodeKab}]`;
+        const namaKec = masterKecMap.get(kodeKec) || `Kecamatan [${kodeKec.slice(-3)}]`;
+        const namaDesa = masterDesaMap.get(kodeDesa) || `Desa [${kodeDesa.slice(-3)}]`;
+        const sub2 = kode.length >= 2 ? ` [${kode.slice(-2)}]` : '';
+        const namaSls = `${sub.namaSls || 'Sub SLS'}${sub2}`;
+
+        const row = [
+          kodeKab, namaKab,
+          kodeKec, namaKec,
+          kodeDesa, namaDesa,
+          kode, namaSls,
+          sub.klgPrelistJml || 0, sub.klgPrelistSubmit || 0, sub.klgPrelistPct !== null ? sub.klgPrelistPct / 100 : 0,
+          sub.usahaPrelistJml || 0, sub.usahaPrelistSubmit || 0, sub.usahaPrelistPct !== null ? sub.usahaPrelistPct / 100 : 0,
+          sub.lainnyaJml || 0, sub.lainnyaSubmit || 0, sub.lainnyaPct !== null ? sub.lainnyaPct / 100 : 0,
+          sub.prelistJml || 0, sub.prelistSubmit || 0, sub.prelistPct !== null ? sub.prelistPct / 100 : 0,
+          sub.glKlgJml || 0, sub.glKlgSubmit || 0, sub.glKlgPct !== null ? sub.glKlgPct / 100 : 0,
+          sub.glUsahaJml || 0, sub.glUsahaSubmit || 0, sub.glUsahaPct !== null ? sub.glUsahaPct / 100 : 0,
+          sub.klgBaruJml || 0, sub.klgBaruSubmit || 0, sub.klgBaruPct !== null ? sub.klgBaruPct / 100 : 0,
+          sub.usahaBaruJml || 0, sub.usahaBaruSubmit || 0, sub.usahaBaruPct !== null ? sub.usahaBaruPct / 100 : 0,
+          sub.lainnyaBaruJml || 0, sub.lainnyaBaruSubmit || 0, sub.lainnyaBaruPct !== null ? sub.lainnyaBaruPct / 100 : 0,
+          sub.assignJml || 0, sub.assignSubmit || 0, sub.assignPct !== null ? sub.assignPct / 100 : 0,
+          sub.totalSemuaJml || 0, sub.totalSemuaSubmit || 0, sub.totalSemuaPct !== null ? sub.totalSemuaPct / 100 : 0
+        ];
+        excelRows.push(row);
       });
 
-      const csv = [headers, ...rows].map(row => row.map(val => `"${String(val ?? '').replace(/"/g, '""')}"`).join(',')).join('\r\n');
-      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `rekap-hierarki-prelist-subsls-${new Date().toISOString().slice(0, 10)}.csv`;
-      link.click();
-      URL.revokeObjectURL(link.href);
+      const ws = XLSX.utils.aoa_to_sheet(excelRows);
+
+      // Desain Header #f79039 (Oranye Mewah)
+      const headerStyle = {
+        fill: { fgColor: { rgb: "F79039" } },
+        font: { bold: true, color: { rgb: "FFFFFF" }, name: "Calibri", sz: 10.5 },
+        alignment: { horizontal: "center", vertical: "center", wrapText: true },
+        border: {
+          top: { style: "thin", color: { rgb: "D4721C" } },
+          bottom: { style: "thin", color: { rgb: "D4721C" } },
+          left: { style: "thin", color: { rgb: "D4721C" } },
+          right: { style: "thin", color: { rgb: "D4721C" } }
+        }
+      };
+
+      const borderStyle = {
+        top: { style: "thin", color: { rgb: "E2E8F0" } },
+        bottom: { style: "thin", color: { rgb: "E2E8F0" } },
+        left: { style: "thin", color: { rgb: "E2E8F0" } },
+        right: { style: "thin", color: { rgb: "E2E8F0" } }
+      };
+
+      const range = XLSX.utils.decode_range(ws['!ref'] || "A1:A1");
+
+      // Lebar kolom rapi
+      const colWidths = [];
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        if (C === 0) colWidths.push({ wch: 15 }); // Kode Kab
+        else if (C === 1) colWidths.push({ wch: 28 }); // Nama Kab
+        else if (C === 2) colWidths.push({ wch: 15 }); // Kode Kec
+        else if (C === 3) colWidths.push({ wch: 25 }); // Nama Kec
+        else if (C === 4) colWidths.push({ wch: 15 }); // Kode Desa
+        else if (C === 5) colWidths.push({ wch: 25 }); // Nama Desa
+        else if (C === 6) colWidths.push({ wch: 18 }); // Kode Sub SLS
+        else if (C === 7) colWidths.push({ wch: 30 }); // Nama SLS
+        else if (C >= 38) colWidths.push({ wch: 22 }); // Total Keseluruhan
+        else colWidths.push({ wch: 18 });
+      }
+      ws['!cols'] = colWidths;
+      ws['!rows'] = [{ hpt: 30 }];
+
+      // Format sel
+      for (let R = range.s.r; R <= range.e.r; ++R) {
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+          const addr = XLSX.utils.encode_cell({ r: R, c: C });
+          const cell = ws[addr];
+          if (!cell) continue;
+
+          if (R === 0) {
+            cell.s = headerStyle;
+          } else {
+            const isPctCol = (C >= 8) && ((C - 8) % 3 === 2);
+            const isNumCol = (C >= 8) && !isPctCol;
+            const isHighlightCol = (C >= 38);
+
+            const cellStyle = {
+              font: { name: "Calibri", sz: 10, bold: isHighlightCol },
+              border: borderStyle,
+              alignment: {
+                horizontal: isNumCol || isPctCol ? "right" : "left",
+                vertical: "center"
+              }
+            };
+
+            if (isHighlightCol) {
+              cellStyle.fill = { fgColor: { rgb: R % 2 === 0 ? "FFF5EB" : "FFF9F3" } };
+            } else if (R % 2 === 0) {
+              cellStyle.fill = { fgColor: { rgb: "F8FAFC" } };
+            }
+
+            if (isPctCol) {
+              cell.z = "0.00%";
+            } else if (isNumCol) {
+              cell.z = "#,##0";
+            } else {
+              cell.t = 's';
+            }
+
+            cell.s = cellStyle;
+          }
+        }
+      }
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Rekap Sub SLS");
+      const filterSuffix = filterKab ? `_Kab${filterKab}` : "";
+      XLSX.writeFile(wb, `Rekap_Prelist_SubSLS${filterSuffix}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    }
+
+    function exportPrelistCSV() {
+      exportPrelistExcel();
     }
 
     function updatePrelistSummaryCard() {
@@ -2990,55 +3113,138 @@
       filterWilayah();
     }
 
-    // CSV Export
-    function exportCSV() {
+    // Excel Export for Table 1
+    function exportExcel() {
+      if (typeof XLSX === 'undefined') {
+        alert('Library Excel sedang dimuat. Silakan coba beberapa saat lagi.');
+        return;
+      }
+
       const mode = document.getElementById('progress-mode-table') ? document.getElementById('progress-mode-table').value : 'fasih';
 
-      // Define CSV header
-      let csv = 'Kode,Wilayah,Prelist Awal-UMKM,Prelist Awal-UB,Prelist Awal-Keluarga,Total Prelist Awal,[SE2026] Open,[SE2026] Draft,[SE2026] Submit,[SE2026] Approved,[SE2026] Total,[SE2026] %,[SE2026-UB] Open,[SE2026-UB] Draft,[SE2026-UB] Submit,[SE2026-UB] Approved,[SE2026-UB] Total,[SE2026-UB] %,% Progres Akumulatif\n';
+      const headers = [
+        'Kode Wilayah', 'Nama Wilayah',
+        'Target Prelist UMKM', 'Target Prelist UB', 'Target Prelist Keluarga', 'Total Target Prelist',
+        '[SE2026 UMKM] Open', '[SE2026 UMKM] Draft', '[SE2026 UMKM] Submit', '[SE2026 UMKM] Approved', '[SE2026 UMKM] Total', '[SE2026 UMKM] %',
+        '[SE2026 UB] Open', '[SE2026 UB] Draft', '[SE2026 UB] Submit', '[SE2026 UB] Approved', '[SE2026 UB] Total', '[SE2026 UB] %',
+        '% Progres Akumulatif'
+      ];
 
-      const escape = (str) => `"${String(str).replace(/"/g, '""')}"`;
+      const excelRows = [headers];
 
-      // Helper to generate row
-      const generateRow = (kode, nama, d, isProv = false) => {
+      const addRow = (kode, nama, d, isProv = false, isKec = false) => {
         const totalTarget = mode === 'fasih' ? (d.umkmTotal + d.ubTotal) : (d.targetUmkm + d.targetUb + d.targetKeluarga);
-
         const umkmTarget = mode === 'fasih' ? d.umkmTotal : (d.targetUmkm + d.targetKeluarga);
-        const umkmProgress = umkmTarget > 0 ? (d.umkmSubmit / umkmTarget * 100) : 0;
-
+        const umkmProgress = umkmTarget > 0 ? (d.umkmSubmit / umkmTarget) : 0;
         const ubTarget = mode === 'fasih' ? d.ubTotal : d.targetUb;
-        const ubProgress = ubTarget > 0 ? (d.ubSubmit / ubTarget * 100) : 0;
-
-        const overallProgress = totalTarget > 0 ? ((d.umkmSubmit + d.ubSubmit) / totalTarget * 100) : 0;
+        const ubProgress = ubTarget > 0 ? (d.ubSubmit / ubTarget) : 0;
+        const overallProgress = totalTarget > 0 ? ((d.umkmSubmit + d.ubSubmit) / totalTarget) : 0;
 
         const tUmkm = d.targetUmkm || 0;
         const tUb = d.targetUb || 0;
         const tKel = d.targetKeluarga || 0;
         const tTot = tUmkm + tUb + tKel;
 
-        return `${kode},${escape(nama)},${tUmkm},${tUb},${tKel},${tTot},${d.umkmOpen},${d.umkmDraft},${d.umkmSubmit},${d.umkmApproved || 0},${d.umkmTotal},${mode === 'fasih' ? umkmProgress.toFixed(2) : '-'},${d.ubOpen},${d.ubDraft},${d.ubSubmit},${d.ubApproved || 0},${d.ubTotal},${mode === 'fasih' ? ubProgress.toFixed(2) : '-'},${overallProgress.toFixed(2)}\n`;
+        excelRows.push([
+          kode, nama,
+          tUmkm, tUb, tKel, tTot,
+          d.umkmOpen || 0, d.umkmDraft || 0, d.umkmSubmit || 0, d.umkmApproved || 0, d.umkmTotal || 0, umkmProgress,
+          d.ubOpen || 0, d.ubDraft || 0, d.ubSubmit || 0, d.ubApproved || 0, d.ubTotal || 0, ubProgress,
+          overallProgress
+        ]);
       };
 
-      // Province row
-      csv += generateRow('-', 'Provinsi Sumatera Barat', sumData, true);
+      addRow('-', 'Provinsi Sumatera Barat', sumData, true);
 
-      // Wilayah and Kecamatan rows
       dashboardData.forEach(w => {
-        csv += generateRow(w.kode, w.nama, w);
+        addRow(w.kode, w.nama, w);
         if (w.kecamatans && w.kecamatans.length > 0) {
           w.kecamatans.forEach(kec => {
-            csv += generateRow(kec.kode, `└ ${kec.nama}`, kec);
+            addRow(kec.kode, `  └ [${kec.kode}] ${kec.nama}`, kec, false, true);
           });
         }
       });
 
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.setAttribute('download', `SE2026_Progres_Harian_Sumbar_${new Date().toISOString().slice(0, 10)}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const ws = XLSX.utils.aoa_to_sheet(excelRows);
+
+      const headerStyle = {
+        fill: { fgColor: { rgb: "F79039" } },
+        font: { bold: true, color: { rgb: "FFFFFF" }, name: "Calibri", sz: 11 },
+        alignment: { horizontal: "center", vertical: "center", wrapText: true },
+        border: {
+          top: { style: "thin", color: { rgb: "D4721C" } },
+          bottom: { style: "thin", color: { rgb: "D4721C" } },
+          left: { style: "thin", color: { rgb: "D4721C" } },
+          right: { style: "thin", color: { rgb: "D4721C" } }
+        }
+      };
+
+      const borderStyle = {
+        top: { style: "thin", color: { rgb: "E2E8F0" } },
+        bottom: { style: "thin", color: { rgb: "E2E8F0" } },
+        left: { style: "thin", color: { rgb: "E2E8F0" } },
+        right: { style: "thin", color: { rgb: "E2E8F0" } }
+      };
+
+      const range = XLSX.utils.decode_range(ws['!ref'] || "A1:A1");
+
+      ws['!cols'] = [
+        { wch: 14 }, { wch: 32 },
+        { wch: 18 }, { wch: 18 }, { wch: 18 }, { wch: 20 },
+        { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 },
+        { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 },
+        { wch: 22 }
+      ];
+      ws['!rows'] = [{ hpt: 28 }];
+
+      for (let R = range.s.r; R <= range.e.r; ++R) {
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+          const addr = XLSX.utils.encode_cell({ r: R, c: C });
+          const cell = ws[addr];
+          if (!cell) continue;
+
+          if (R === 0) {
+            cell.s = headerStyle;
+          } else {
+            const isPctCol = (C === 11 || C === 17 || C === 18);
+            const isNumCol = (C >= 2 && !isPctCol);
+            const isProvRow = (R === 1);
+
+            const cellStyle = {
+              font: { name: "Calibri", sz: 10, bold: isProvRow || C === 18 },
+              border: borderStyle,
+              alignment: {
+                horizontal: isNumCol || isPctCol ? "right" : "left",
+                vertical: "center"
+              }
+            };
+
+            if (isProvRow) {
+              cellStyle.fill = { fgColor: { rgb: "FFF2E8" } };
+            } else if (R % 2 === 0) {
+              cellStyle.fill = { fgColor: { rgb: "F8FAFC" } };
+            }
+
+            if (isPctCol) {
+              cell.z = "0.00%";
+            } else if (isNumCol) {
+              cell.z = "#,##0";
+            } else {
+              cell.t = 's';
+            }
+
+            cell.s = cellStyle;
+          }
+        }
+      }
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Progres Wilayah");
+      XLSX.writeFile(wb, `SE2026_Progres_Harian_Sumbar_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    }
+
+    function exportCSV() {
+      exportExcel();
     }
 
     // ApexCharts settings & updates
