@@ -1,4 +1,4 @@
-﻿// helpers.js
+// helpers.js
 
 // Helper format angka Indonesia: titik pemisah ribuan, koma pemisah desimal
 function fmtNum(n) { return Number(n).toLocaleString('id-ID'); }
@@ -78,3 +78,41 @@ function updateDayCounter() {
   }
 }
 updateDayCounter();
+
+// ====== EXPORT PROGRESS MODAL CONTROLLER ======
+function showExportProgress(title = 'Menyiapkan File Excel', status = 'Mengolah data...', pct = 10, step = 'Memulai proses...') {
+  const modal = document.getElementById('export-modal');
+  const titleEl = document.getElementById('export-modal-title');
+  const statusEl = document.getElementById('export-modal-status');
+  const barEl = document.getElementById('export-modal-bar');
+  const pctEl = document.getElementById('export-modal-pct');
+  const stepEl = document.getElementById('export-modal-step');
+
+  if (titleEl) titleEl.textContent = title;
+  if (statusEl) statusEl.textContent = status;
+  if (barEl) barEl.style.width = `${Math.min(100, Math.max(0, pct))}%`;
+  if (pctEl) pctEl.textContent = `${Math.round(pct)}%`;
+  if (stepEl) stepEl.textContent = step;
+
+  if (modal) modal.classList.remove('hidden');
+}
+
+function updateExportProgress(pct, status, step) {
+  const barEl = document.getElementById('export-modal-bar');
+  const pctEl = document.getElementById('export-modal-pct');
+  const statusEl = document.getElementById('export-modal-status');
+  const stepEl = document.getElementById('export-modal-step');
+
+  if (barEl) barEl.style.width = `${Math.min(100, Math.max(0, pct))}%`;
+  if (pctEl) pctEl.textContent = `${Math.round(pct)}%`;
+  if (status && statusEl) statusEl.textContent = status;
+  if (step && stepEl) stepEl.textContent = step;
+}
+
+function hideExportProgress() {
+  updateExportProgress(100, 'Selesai!', 'Pengunduhan dimulai');
+  setTimeout(() => {
+    const modal = document.getElementById('export-modal');
+    if (modal) modal.classList.add('hidden');
+  }, 350);
+}

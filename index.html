@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id" class="dark">
 
 <head>
@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard Monitoring Harian SE2026 | BPS Sumatera Barat</title>
   <link class="favicon" rel="icon"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ðŸ“Š</text></svg>">
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='10' y='45' width='20' height='45' rx='4' fill='%23ea580c'/%3E%3Crect x='40' y='25' width='20' height='65' rx='4' fill='%23f97316'/%3E%3Crect x='70' y='10' width='20' height='80' rx='4' fill='%23fdba74'/%3E%3C/svg%3E">
   <meta name="description"
-    content="Command Center monitoring progres harian Sensus Ekonomi 2026 (SE2026) â€” BPS Provinsi Sumatera Barat, styled with Impeccable taste." />
+    content="Command Center monitoring progres harian Sensus Ekonomi 2026 (SE2026) — BPS Provinsi Sumatera Barat, styled with Impeccable taste." />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -86,7 +86,7 @@
             MONITORING HARIAN <span class="text-[var(--accent-color)]">SE2026</span>
           </h1>
           <p class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-widest mt-0.5">
-            Sensus Ekonomi 2026 â€” Badan Pusat Statistik Provinsi Sumatera Barat
+            Sensus Ekonomi 2026 — Badan Pusat Statistik Provinsi Sumatera Barat
           </p>
           <p id="day-counter" class="mt-1.5 text-xs font-semibold tracking-wide">
             <span
@@ -184,7 +184,7 @@
               <span id="stat-prelist-total" class="metric-value text-[var(--text-primary)]">0</span>
               <span id="stat-prelist-total-pct" class="text-sm font-bold ml-0.5"
                 style="color:var(--text-secondary)">0,00%</span>
-              <span id="stat-prelist-daily-change" class="text-[10px] font-bold" style="color:var(--success-color)">â€¢
+              <span id="stat-prelist-daily-change" class="text-[10px] font-bold" style="color:var(--success-color)">•
                 0,00%</span>
             </div>
           </div>
@@ -291,7 +291,7 @@
             <div class="flex items-baseline gap-2 mt-2">
               <span id="stat-progress" class="metric-value text-[var(--text-primary)]">0,00<span
                   class="font-sans text-2xl font-bold ml-0.5 text-[var(--accent-color)]">%</span></span>
-              <span id="stat-daily-change" class="text-[10px] text-[var(--success-color)] font-bold">â–² +0,00%</span>
+              <span id="stat-daily-change" class="text-[10px] text-[var(--success-color)] font-bold">▲ +0,00%</span>
             </div>
           </div>
           <div class="text-[var(--text-muted)]">
@@ -444,7 +444,7 @@
           <thead class="sticky top-0 z-20 shadow-sm">
             <tr>
               <th rowspan="2" class="cursor-pointer pl-6 select-none whitespace-nowrap border-r-2 border-category-divider" onclick="sortTable('wilayah')">
-                Wilayah <span id="sort-indicator-wilayah">â†•</span>
+                Wilayah <span id="sort-indicator-wilayah">↕</span>
               </th>
               <th colspan="4" class="text-center th-target-group border-r-2 border-category-divider">Target Prelist Awal</th>
               <th id="th-umkm-group" colspan="6" class="text-center th-umkm-group border-r-2 border-category-divider">[Sensus Ekonomi 2026
@@ -454,47 +454,47 @@
               </th>
               <th rowspan="2" class="text-right cursor-pointer align-middle select-none whitespace-nowrap"
                 onclick="sortTable('progress')">%
-                Progres<br>Akumulatif <span id="sort-indicator-progress">â†•</span></th>
+                Progres<br>Akumulatif <span id="sort-indicator-progress">↕</span></th>
             </tr>
             <tr class="text-[8px] md:text-[9px] whitespace-nowrap">
               <th class="text-right th-target-group text-[var(--text-secondary)] cursor-pointer select-none"
-                onclick="sortTable('targetUmkm')">UMKM <span id="sort-indicator-targetUmkm">â†•</span></th>
+                onclick="sortTable('targetUmkm')">UMKM <span id="sort-indicator-targetUmkm">↕</span></th>
               <th class="text-right th-target-group text-[var(--text-secondary)] cursor-pointer select-none"
-                onclick="sortTable('targetUb')">UB <span id="sort-indicator-targetUb">â†•</span></th>
+                onclick="sortTable('targetUb')">UB <span id="sort-indicator-targetUb">↕</span></th>
               <th class="text-right th-target-group text-[var(--text-secondary)] cursor-pointer select-none"
-                onclick="sortTable('targetKeluarga')">Keluarga <span id="sort-indicator-targetKeluarga">â†•</span></th>
+                onclick="sortTable('targetKeluarga')">Keluarga <span id="sort-indicator-targetKeluarga">↕</span></th>
               <th
                 class="text-right th-target-group border-r-2 border-category-divider text-[var(--text-secondary)] font-bold cursor-pointer select-none"
-                onclick="sortTable('targetTotal')">Total <span id="sort-indicator-targetTotal">â†•</span></th>
+                onclick="sortTable('targetTotal')">Total <span id="sort-indicator-targetTotal">↕</span></th>
 
               <th class="text-right th-umkm-group cursor-pointer select-none"
-                onclick="sortTable('umkmOpen')">Open <span id="sort-indicator-umkmOpen">â†•</span></th>
+                onclick="sortTable('umkmOpen')">Open <span id="sort-indicator-umkmOpen">↕</span></th>
               <th class="text-right th-umkm-group cursor-pointer select-none"
-                onclick="sortTable('umkmDraft')">Draft <span id="sort-indicator-umkmDraft">â†•</span></th>
+                onclick="sortTable('umkmDraft')">Draft <span id="sort-indicator-umkmDraft">↕</span></th>
               <th class="text-right th-umkm-group text-[var(--success-color)] cursor-pointer select-none"
-                onclick="sortTable('umkmSubmit')">Submit <span id="sort-indicator-umkmSubmit">â†•</span></th>
+                onclick="sortTable('umkmSubmit')">Submit <span id="sort-indicator-umkmSubmit">↕</span></th>
               <th class="text-right th-umkm-group text-[var(--accent-color)] cursor-pointer select-none"
-                onclick="sortTable('umkmApproved')">Approved <span id="sort-indicator-umkmApproved">â†•</span></th>
+                onclick="sortTable('umkmApproved')">Approved <span id="sort-indicator-umkmApproved">↕</span></th>
               <th id="th-umkm-total" class="text-right th-umkm-group font-bold cursor-pointer select-none"
-                onclick="sortTable('umkmTotal')">Total <span id="sort-indicator-umkmTotal">â†•</span></th>
+                onclick="sortTable('umkmTotal')">Total <span id="sort-indicator-umkmTotal">↕</span></th>
               <th id="th-umkm-pct"
                 class="text-right th-umkm-group border-r-2 border-category-divider font-bold text-[var(--accent-color)] cursor-pointer select-none"
-                onclick="sortTable('umkmPct')">% <span id="sort-indicator-umkmPct">â†•</span></th>
+                onclick="sortTable('umkmPct')">% <span id="sort-indicator-umkmPct">↕</span></th>
 
               <th class="text-right th-ub-group cursor-pointer select-none"
                 onclick="sortTable('ubOpen')">
-                Open <span id="sort-indicator-ubOpen">â†•</span></th>
+                Open <span id="sort-indicator-ubOpen">↕</span></th>
               <th class="text-right th-ub-group cursor-pointer select-none"
-                onclick="sortTable('ubDraft')">Draft <span id="sort-indicator-ubDraft">â†•</span></th>
+                onclick="sortTable('ubDraft')">Draft <span id="sort-indicator-ubDraft">↕</span></th>
               <th class="text-right th-ub-group text-[var(--success-color)] cursor-pointer select-none"
-                onclick="sortTable('ubSubmit')">Submit <span id="sort-indicator-ubSubmit">â†•</span></th>
+                onclick="sortTable('ubSubmit')">Submit <span id="sort-indicator-ubSubmit">↕</span></th>
               <th class="text-right th-ub-group text-[var(--accent-color)] cursor-pointer select-none"
-                onclick="sortTable('ubApproved')">Approved <span id="sort-indicator-ubApproved">â†•</span></th>
+                onclick="sortTable('ubApproved')">Approved <span id="sort-indicator-ubApproved">↕</span></th>
               <th id="th-ub-total" class="text-right th-ub-group font-bold cursor-pointer select-none"
-                onclick="sortTable('ubTotal')">Total <span id="sort-indicator-ubTotal">â†•</span></th>
+                onclick="sortTable('ubTotal')">Total <span id="sort-indicator-ubTotal">↕</span></th>
               <th id="th-ub-pct"
                 class="text-right th-ub-group border-r-2 border-category-divider font-bold text-[var(--accent-color)] cursor-pointer select-none"
-                onclick="sortTable('ubPct')">% <span id="sort-indicator-ubPct">â†•</span></th>
+                onclick="sortTable('ubPct')">% <span id="sort-indicator-ubPct">↕</span></th>
             </tr>
           </thead>
           <tbody id="table-body">
@@ -526,7 +526,7 @@
               BARU PER SUB SLS</h2>
           </div>
           <p class="text-xs text-[var(--text-muted)] mt-1">
-            Data dari SQL Lab Fasih â€” diurutkan per Kode Sub SLS. <span class="text-[var(--accent-color)] font-medium">*(Catatan: Rekapitulasi ini tidak termasuk assignment UB)*</span>
+            Data dari SQL Lab Fasih — diurutkan per Kode Sub SLS. <span class="text-[var(--accent-color)] font-medium">*(Catatan: Rekapitulasi ini tidak termasuk assignment UB)*</span>
           </p>
         </div>
         <div class="flex flex-wrap sm:flex-nowrap items-end gap-2.5 w-full lg:w-auto">
@@ -729,6 +729,31 @@
       </div>
     </section>
 
+  </div>
+
+  <!-- ===== EXPORT EXCEL PROGRESS MODAL ===== -->
+  <div id="export-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden transition-opacity duration-200" aria-hidden="true">
+    <div class="plinth-card p-6 max-w-sm w-full mx-4 flex flex-col items-center text-center space-y-4 shadow-2xl border border-[var(--border-focus)]">
+      <!-- Icon with pulse -->
+      <div class="w-14 h-14 rounded-full bg-[var(--accent-subtle)] border border-[var(--accent-color)] flex items-center justify-center text-[var(--accent-color)] shadow-sm">
+        <svg class="w-7 h-7 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <div>
+        <h3 id="export-modal-title" class="text-base font-bold text-[var(--text-primary)]">Menyiapkan File Excel</h3>
+        <p id="export-modal-status" class="text-xs text-[var(--text-muted)] mt-1">Mengolah data dan format lembar kerja...</p>
+      </div>
+      <!-- Progress Bar -->
+      <div class="w-full bg-[var(--bg-tertiary)] rounded-full h-2 overflow-hidden border border-[var(--border-color)]">
+        <div id="export-modal-bar" class="bg-[var(--accent-color)] h-full rounded-full transition-all duration-200" style="width: 15%"></div>
+      </div>
+      <div class="flex justify-between items-center w-full text-[11px] text-[var(--text-muted)] font-medium">
+        <span id="export-modal-step">Memulai proses...</span>
+        <span id="export-modal-pct" class="font-bold text-[var(--accent-color)] font-mono">15%</span>
+      </div>
+    </div>
   </div>
 
   <!-- ===== APPLICATION SCRIPTS (Modular JS) ===== -->

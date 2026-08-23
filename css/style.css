@@ -197,7 +197,6 @@ body {
   position: relative;
   vertical-align: middle;
   line-height: 1.25;
-  border-color: var(--border-color) !important;
   color: var(--text-secondary);
   padding: 10px 8px;
 }
@@ -227,7 +226,6 @@ body {
   padding: 11px 8px !important;
   font-size: 0.84rem;
   border-bottom: 1px solid var(--border-color);
-  border-color: var(--border-color) !important;
   line-height: 1.4;
 }
 
@@ -496,45 +494,71 @@ html.light #dashboard-table td.border-category-divider {
   border-right-color: rgba(234, 88, 12, 0.45) !important;
 }
 
-/* Outer Border Frame untuk Tabel (Top, Bottom, Left, Right, dan Header Separator) */
-.impeccable-table thead tr:first-child th {
+/* Outer Border Frame untuk Tabel 1 & Tabel 2 (Top, Bottom, Left, Right, dan Header Separator) */
+.impeccable-table thead tr:first-child th,
+#dashboard-table thead tr:first-child th,
+#prelist-subsls-table thead tr:first-child th {
   border-top: 2px solid rgba(249, 115, 22, 0.45) !important;
 }
-html.light .impeccable-table thead tr:first-child th {
+html.light .impeccable-table thead tr:first-child th,
+html.light #dashboard-table thead tr:first-child th,
+html.light #prelist-subsls-table thead tr:first-child th {
   border-top: 2px solid rgba(234, 88, 12, 0.45) !important;
 }
 
-.impeccable-table thead tr:last-child th {
+.impeccable-table thead tr:last-child th,
+#dashboard-table thead tr:last-child th,
+#prelist-subsls-table thead tr:last-child th {
   border-bottom: 2px solid rgba(249, 115, 22, 0.45) !important;
 }
-html.light .impeccable-table thead tr:last-child th {
+html.light .impeccable-table thead tr:last-child th,
+html.light #dashboard-table thead tr:last-child th,
+html.light #prelist-subsls-table thead tr:last-child th {
   border-bottom: 2px solid rgba(234, 88, 12, 0.45) !important;
 }
 
-.impeccable-table thead th:first-child,
-.impeccable-table tbody td:first-child {
+.impeccable-table thead tr th:first-child,
+.impeccable-table tbody tr td:first-child,
+#dashboard-table thead tr th:first-child,
+#dashboard-table tbody tr td:first-child,
+#prelist-subsls-table thead tr th:first-child,
+#prelist-subsls-table tbody tr td:first-child {
   border-left: 2px solid rgba(249, 115, 22, 0.45) !important;
 }
-html.light .impeccable-table thead th:first-child,
-html.light .impeccable-table tbody td:first-child {
+html.light .impeccable-table thead tr th:first-child,
+html.light .impeccable-table tbody tr td:first-child,
+html.light #dashboard-table thead tr th:first-child,
+html.light #dashboard-table tbody tr td:first-child,
+html.light #prelist-subsls-table thead tr th:first-child,
+html.light #prelist-subsls-table tbody tr td:first-child {
   border-left: 2px solid rgba(234, 88, 12, 0.45) !important;
 }
 
-.impeccable-table thead tr:first-child th:last-child,
-.impeccable-table thead tr:last-child th:last-child,
-.impeccable-table tbody td:last-child {
+.impeccable-table thead tr th:last-child,
+.impeccable-table tbody tr td:last-child,
+#dashboard-table thead tr th:last-child,
+#dashboard-table tbody tr td:last-child,
+#prelist-subsls-table thead tr th:last-child,
+#prelist-subsls-table tbody tr td:last-child {
   border-right: 2px solid rgba(249, 115, 22, 0.45) !important;
 }
-html.light .impeccable-table thead tr:first-child th:last-child,
-html.light .impeccable-table thead tr:last-child th:last-child,
-html.light .impeccable-table tbody td:last-child {
+html.light .impeccable-table thead tr th:last-child,
+html.light .impeccable-table tbody tr td:last-child,
+html.light #dashboard-table thead tr th:last-child,
+html.light #dashboard-table tbody tr td:last-child,
+html.light #prelist-subsls-table thead tr th:last-child,
+html.light #prelist-subsls-table tbody tr td:last-child {
   border-right: 2px solid rgba(234, 88, 12, 0.45) !important;
 }
 
-.impeccable-table tbody tr:last-child td {
+.impeccable-table tbody tr:last-child td,
+#dashboard-table tbody tr:last-child td,
+#prelist-subsls-table tbody tr:last-child td {
   border-bottom: 2px solid rgba(249, 115, 22, 0.45) !important;
 }
-html.light .impeccable-table tbody tr:last-child td {
+html.light .impeccable-table tbody tr:last-child td,
+html.light #dashboard-table tbody tr:last-child td,
+html.light #prelist-subsls-table tbody tr:last-child td {
   border-bottom: 2px solid rgba(234, 88, 12, 0.45) !important;
 }
 

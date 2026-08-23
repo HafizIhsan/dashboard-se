@@ -1,4 +1,4 @@
-﻿// main.js
+// main.js
 
 // ====== Loading Overlay Controller (Clean & Minimal with Progress) ======
 let loadingProgressTimer = null;
@@ -110,7 +110,7 @@ async function loadDataFromAppsScript() {
   try {
     const cachedData = await getIDBCache(DASHBOARD_CACHE_KEY);
     if (cachedData) {
-      console.log("âš¡ Menampilkan data dari cache lokal (instan)...");
+      console.log("⚡ Menampilkan data dari cache lokal (instan)...");
       processAndRenderData(cachedData);
     }
   } catch (cacheErr) {
@@ -131,7 +131,7 @@ async function loadDataFromAppsScript() {
 
     // Re-render dashboard dengan data terbaru
     processAndRenderData(data);
-    console.log("âœ… Data terbaru dari server berhasil dimuat.");
+    console.log("✅ Data terbaru dari server berhasil dimuat.");
   } catch (err) {
     console.error("Gagal memuat data dari Apps Script:", err);
   } finally {

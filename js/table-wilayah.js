@@ -1,4 +1,4 @@
-﻿// table-wilayah.js
+// table-wilayah.js
 
 // Toggle Kecamatan Rows Function
 function toggleKecamatan(kodeKab) {
@@ -151,7 +151,7 @@ function renderTable(data) {
         kecRow.style.display = 'none'; // Hidden by default
         kecRow.innerHTML = `
           <td class="py-2 pl-12 text-[var(--text-primary)] font-medium text-[13px] opacity-80 min-w-[140px] max-w-[200px] border-r-2 border-category-divider">
-            <div class="line-clamp-2" title="â”” [${kec.kode}] ${kec.nama}">â”” [${kec.kode}] ${kec.nama}</div>
+            <div class="line-clamp-2" title="└ [${kec.kode}] ${kec.nama}">└ [${kec.kode}] ${kec.nama}</div>
           </td>
           <td class="text-right py-2 px-2 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.targetUmkm)}</td>
           <td class="text-right py-2 px-2 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.targetUb)}</td>
@@ -247,18 +247,13 @@ function sortTable(key) {
   ];
   allSortKeys.forEach(k => {
     const ind = document.getElementById(`sort-indicator-${k}`);
-    if (ind) ind.innerText = 'â†•';
+    if (ind) ind.innerText = '↕';
   });
 
   const indicator = document.getElementById(`sort-indicator-${key}`);
   if (indicator) {
-    indicator.innerText = isSortAsc ? 'â–²' : 'â–¼';
+    indicator.innerText = isSortAsc ? '▲' : '▼';
   }
-
-  allSortKeys.forEach(k => {
-    const icon = document.getElementById(`sort-indicator-${k}`);
-    if (icon) icon.textContent = k === key ? (isSortAsc ? String.fromCharCode(9650) : String.fromCharCode(9660)) : String.fromCharCode(8597);
-  });
 
   // Sort data array
   const mode = document.getElementById('progress-mode-table') ? document.getElementById('progress-mode-table').value : 'fasih';
@@ -358,133 +353,154 @@ function sortTable(key) {
 }
 
 // Excel Export for Table 1
-function exportExcel() {
+// Excel Export for Table 1
+async function exportExcel() {
   if (typeof XLSX === 'undefined') {
     alert('Library Excel sedang dimuat. Silakan coba beberapa saat lagi.');
     return;
   }
 
-  const mode = document.getElementById('progress-mode-table') ? document.getElementById('progress-mode-table').value : 'fasih';
+  showExportProgress('Menyiapkan Rekap Wilayah', 'Mengumpulkan data kabupaten & kecamatan...', 15, 'Membaca data tabel...');
+  await new Promise(r => setTimeout(r, 80));
 
-  const headers = [
-    'Kode Wilayah', 'Nama Wilayah',
-    'Target Prelist UMKM', 'Target Prelist UB', 'Target Prelist Keluarga', 'Total Target Prelist',
-    '[SE2026 UMKM] Open', '[SE2026 UMKM] Draft', '[SE2026 UMKM] Submit', '[SE2026 UMKM] Approved', '[SE2026 UMKM] Total', '[SE2026 UMKM] %',
-    '[SE2026 UB] Open', '[SE2026 UB] Draft', '[SE2026 UB] Submit', '[SE2026 UB] Approved', '[SE2026 UB] Total', '[SE2026 UB] %',
-    '% Progres Akumulatif'
-  ];
+  try {
+    const mode = document.getElementById('progress-mode-table') ? document.getElementById('progress-mode-table').value : 'fasih';
 
-  const excelRows = [headers];
+    const headers = [
+      'Kode Wilayah', 'Nama Wilayah',
+      'Target Prelist UMKM', 'Target Prelist UB', 'Target Prelist Keluarga', 'Total Target Prelist',
+      '[SE2026 UMKM] Open', '[SE2026 UMKM] Draft', '[SE2026 UMKM] Submit', '[SE2026 UMKM] Approved', '[SE2026 UMKM] Total', '[SE2026 UMKM] %',
+      '[SE2026 UB] Open', '[SE2026 UB] Draft', '[SE2026 UB] Submit', '[SE2026 UB] Approved', '[SE2026 UB] Total', '[SE2026 UB] %',
+      '% Progres Akumulatif'
+    ];
 
-  const addRow = (kode, nama, d, isProv = false, isKec = false) => {
-    const totalTarget = mode === 'fasih' ? (d.umkmTotal + d.ubTotal) : (d.targetUmkm + d.targetUb + d.targetKeluarga);
-    const umkmTarget = mode === 'fasih' ? d.umkmTotal : (d.targetUmkm + d.targetKeluarga);
-    const umkmProgress = umkmTarget > 0 ? (d.umkmSubmit / umkmTarget) : 0;
-    const ubTarget = mode === 'fasih' ? d.ubTotal : d.targetUb;
-    const ubProgress = ubTarget > 0 ? (d.ubSubmit / ubTarget) : 0;
-    const overallProgress = totalTarget > 0 ? ((d.umkmSubmit + d.ubSubmit) / totalTarget) : 0;
+    const excelRows = [headers];
 
-    const tUmkm = d.targetUmkm || 0;
-    const tUb = d.targetUb || 0;
-    const tKel = d.targetKeluarga || 0;
-    const tTot = tUmkm + tUb + tKel;
+    const addRow = (kode, nama, d, isProv = false, isKec = false) => {
+      const totalTarget = mode === 'fasih' ? (d.umkmTotal + d.ubTotal) : (d.targetUmkm + d.targetUb + d.targetKeluarga);
+      const umkmTarget = mode === 'fasih' ? d.umkmTotal : (d.targetUmkm + d.targetKeluarga);
+      const umkmProgress = umkmTarget > 0 ? (d.umkmSubmit / umkmTarget) : 0;
+      const ubTarget = mode === 'fasih' ? d.ubTotal : d.targetUb;
+      const ubProgress = ubTarget > 0 ? (d.ubSubmit / ubTarget) : 0;
+      const overallProgress = totalTarget > 0 ? ((d.umkmSubmit + d.ubSubmit) / totalTarget) : 0;
 
-    excelRows.push([
-      kode, nama,
-      tUmkm, tUb, tKel, tTot,
-      d.umkmOpen || 0, d.umkmDraft || 0, d.umkmSubmit || 0, d.umkmApproved || 0, d.umkmTotal || 0, umkmProgress,
-      d.ubOpen || 0, d.ubDraft || 0, d.ubSubmit || 0, d.ubApproved || 0, d.ubTotal || 0, ubProgress,
-      overallProgress
-    ]);
-  };
+      const tUmkm = d.targetUmkm || 0;
+      const tUb = d.targetUb || 0;
+      const tKel = d.targetKeluarga || 0;
+      const tTot = tUmkm + tUb + tKel;
 
-  addRow('-', 'Provinsi Sumatera Barat', sumData, true);
+      excelRows.push([
+        kode, nama,
+        tUmkm, tUb, tKel, tTot,
+        d.umkmOpen || 0, d.umkmDraft || 0, d.umkmSubmit || 0, d.umkmApproved || 0, d.umkmTotal || 0, umkmProgress,
+        d.ubOpen || 0, d.ubDraft || 0, d.ubSubmit || 0, d.ubApproved || 0, d.ubTotal || 0, ubProgress,
+        overallProgress
+      ]);
+    };
 
-  dashboardData.forEach(w => {
-    addRow(w.kode, w.nama, w);
-    if (w.kecamatans && w.kecamatans.length > 0) {
-      w.kecamatans.forEach(kec => {
-        addRow(kec.kode, `  â”” [${kec.kode}] ${kec.nama}`, kec, false, true);
-      });
-    }
-  });
+    addRow('-', 'Provinsi Sumatera Barat', sumData, true);
 
-  const ws = XLSX.utils.aoa_to_sheet(excelRows);
+    dashboardData.forEach(w => {
+      addRow(w.kode, w.nama, w);
+      if (w.kecamatans && w.kecamatans.length > 0) {
+        w.kecamatans.forEach(kec => {
+          addRow(kec.kode, `  └ [${kec.kode}] ${kec.nama}`, kec, false, true);
+        });
+      }
+    });
 
-  const headerStyle = {
-    fill: { fgColor: { rgb: "F79039" } },
-    font: { bold: true, color: { rgb: "FFFFFF" }, name: "Calibri", sz: 11 },
-    alignment: { horizontal: "center", vertical: "center", wrapText: true },
-    border: {
-      top: { style: "thin", color: { rgb: "D4721C" } },
-      bottom: { style: "thin", color: { rgb: "D4721C" } },
-      left: { style: "thin", color: { rgb: "D4721C" } },
-      right: { style: "thin", color: { rgb: "D4721C" } }
-    }
-  };
+    updateExportProgress(50, 'Menyusun lembar kerja Excel...', 'Membuat worksheet...');
+    await new Promise(r => setTimeout(r, 60));
 
-  const borderStyle = {
-    top: { style: "thin", color: { rgb: "E2E8F0" } },
-    bottom: { style: "thin", color: { rgb: "E2E8F0" } },
-    left: { style: "thin", color: { rgb: "E2E8F0" } },
-    right: { style: "thin", color: { rgb: "E2E8F0" } }
-  };
+    const ws = XLSX.utils.aoa_to_sheet(excelRows);
 
-  const range = XLSX.utils.decode_range(ws['!ref'] || "A1:A1");
+    const headerStyle = {
+      fill: { fgColor: { rgb: "F79039" } },
+      font: { bold: true, color: { rgb: "FFFFFF" }, name: "Calibri", sz: 11 },
+      alignment: { horizontal: "center", vertical: "center", wrapText: true },
+      border: {
+        top: { style: "thin", color: { rgb: "D4721C" } },
+        bottom: { style: "thin", color: { rgb: "D4721C" } },
+        left: { style: "thin", color: { rgb: "D4721C" } },
+        right: { style: "thin", color: { rgb: "D4721C" } }
+      }
+    };
 
-  ws['!cols'] = [
-    { wch: 14 }, { wch: 32 },
-    { wch: 18 }, { wch: 18 }, { wch: 18 }, { wch: 20 },
-    { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 },
-    { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 },
-    { wch: 22 }
-  ];
-  ws['!rows'] = [{ hpt: 28 }];
+    const borderStyle = {
+      top: { style: "thin", color: { rgb: "E2E8F0" } },
+      bottom: { style: "thin", color: { rgb: "E2E8F0" } },
+      left: { style: "thin", color: { rgb: "E2E8F0" } },
+      right: { style: "thin", color: { rgb: "E2E8F0" } }
+    };
 
-  for (let R = range.s.r; R <= range.e.r; ++R) {
-    for (let C = range.s.c; C <= range.e.c; ++C) {
-      const addr = XLSX.utils.encode_cell({ r: R, c: C });
-      const cell = ws[addr];
-      if (!cell) continue;
+    const range = XLSX.utils.decode_range(ws['!ref'] || "A1:A1");
 
-      if (R === 0) {
-        cell.s = headerStyle;
-      } else {
-        const isPctCol = (C === 11 || C === 17 || C === 18);
-        const isNumCol = (C >= 2 && !isPctCol);
-        const isProvRow = (R === 1);
+    ws['!cols'] = [
+      { wch: 14 }, { wch: 32 },
+      { wch: 18 }, { wch: 18 }, { wch: 18 }, { wch: 20 },
+      { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 },
+      { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 },
+      { wch: 22 }
+    ];
+    ws['!rows'] = [{ hpt: 28 }];
 
-        const cellStyle = {
-          font: { name: "Calibri", sz: 10, bold: isProvRow || C === 18 },
-          border: borderStyle,
-          alignment: {
-            horizontal: isNumCol || isPctCol ? "right" : "left",
-            vertical: "center"
-          }
-        };
+    updateExportProgress(75, 'Menerapkan gaya sel & format persentase...', 'Memformat cell...');
+    await new Promise(r => setTimeout(r, 60));
 
-        if (isProvRow) {
-          cellStyle.fill = { fgColor: { rgb: "FFF2E8" } };
-        } else if (R % 2 === 0) {
-          cellStyle.fill = { fgColor: { rgb: "F8FAFC" } };
-        }
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const addr = XLSX.utils.encode_cell({ r: R, c: C });
+        const cell = ws[addr];
+        if (!cell) continue;
 
-        if (isPctCol) {
-          cell.z = "0.00%";
-        } else if (isNumCol) {
-          cell.z = "#,##0";
+        if (R === 0) {
+          cell.s = headerStyle;
         } else {
-          cell.t = 's';
-        }
+          const isPctCol = (C === 11 || C === 17 || C === 18);
+          const isNumCol = (C >= 2 && !isPctCol);
+          const isProvRow = (R === 1);
 
-        cell.s = cellStyle;
+          const cellStyle = {
+            font: { name: "Calibri", sz: 10, bold: isProvRow || C === 18 },
+            border: borderStyle,
+            alignment: {
+              horizontal: isNumCol || isPctCol ? "right" : "left",
+              vertical: "center"
+            }
+          };
+
+          if (isProvRow) {
+            cellStyle.fill = { fgColor: { rgb: "FFF2E8" } };
+          } else if (R % 2 === 0) {
+            cellStyle.fill = { fgColor: { rgb: "F8FAFC" } };
+          }
+
+          if (isPctCol) {
+            cell.z = "0.00%";
+          } else if (isNumCol) {
+            cell.z = "#,##0";
+          } else {
+            cell.t = 's';
+          }
+
+          cell.s = cellStyle;
+        }
       }
     }
-  }
 
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Progres Wilayah");
-  XLSX.writeFile(wb, `SE2026_Progres_Harian_Sumbar_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    updateExportProgress(90, 'Menyimpan berkas spreadsheet...', 'Mengunduh file...');
+    await new Promise(r => setTimeout(r, 60));
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Progres Wilayah");
+    XLSX.writeFile(wb, `SE2026_Progres_Harian_Sumbar_${new Date().toISOString().slice(0, 10)}.xlsx`);
+
+    hideExportProgress();
+  } catch (err) {
+    console.error('Gagal export excel:', err);
+    hideExportProgress();
+    alert('Terjadi kesalahan saat mengekspor data ke Excel.');
+  }
 }
 
 function exportCSV() {

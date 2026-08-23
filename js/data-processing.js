@@ -1,4 +1,4 @@
-﻿// data-processing.js
+// data-processing.js
 
 window.updateProgressCard = function () {
   const mode = document.getElementById('progress-mode').value;
@@ -36,7 +36,7 @@ window.updateProgressCard = function () {
 
   const dailyChangeSpan = document.getElementById('stat-daily-change');
   if (dailyChangeSpan) {
-    dailyChangeSpan.innerText = `â–² +${fmtPct(dailyProgressPct)}%`;
+    dailyChangeSpan.innerText = `▲ +${fmtPct(dailyProgressPct)}%`;
     dailyChangeSpan.style.color = getDailyColor(dailyProgressPct);
   }
 };

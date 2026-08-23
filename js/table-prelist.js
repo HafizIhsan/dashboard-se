@@ -483,7 +483,7 @@ function renderPrelistTable() {
             <td class="pl-10 py-2 whitespace-nowrap border-r-2 border-category-divider">
               <div class="flex items-center">
                 ${kecToggle}
-                <span class="font-semibold text-xs text-[var(--text-primary)]">â”” [${kec.kode}] ${escapePrelistHtml(kec.nama)}</span>
+                <span class="font-semibold text-xs text-[var(--text-primary)]">└ [${kec.kode}] ${escapePrelistHtml(kec.nama)}</span>
               </div>
             </td>
             ${renderKecGroup(kec.klgPrelistJml, kec.klgPrelistSubmit, kec.klgPrelistPct, kec.delta.klgPrelistPct, false)}
@@ -511,7 +511,7 @@ function renderPrelistTable() {
                 <td class="pl-14 py-2 whitespace-nowrap border-r-2 border-category-divider">
                   <div class="flex items-center">
                     ${desaToggle}
-                    <span class="font-medium text-xs text-[var(--text-secondary)]">â””â”€ [${desa.kode}] ${escapePrelistHtml(desa.nama)}</span>
+                    <span class="font-medium text-xs text-[var(--text-secondary)]">└── [${desa.kode}] ${escapePrelistHtml(desa.nama)}</span>
                   </div>
                 </td>
                 ${renderDesaGroup(desa.klgPrelistJml, desa.klgPrelistSubmit, desa.klgPrelistPct, desa.delta.klgPrelistPct, false)}
@@ -645,163 +645,188 @@ function filterPrelistSubSls() {
   renderPrelistTable();
 }
 
-function exportPrelistExcel() {
+async function exportPrelistExcel() {
   if (typeof XLSX === 'undefined') {
     alert('Library Excel sedang dimuat. Silakan coba beberapa saat lagi.');
     return;
   }
 
-  const headers = [
-    'Kode Kabupaten', 'Nama Kabupaten',
-    'Kode Kecamatan', 'Nama Kecamatan',
-    'Kode Desa', 'Nama Desa',
-    'Kode Sub SLS', 'Nama SLS / Sub SLS',
-    'Prelist Keluarga Total', 'Prelist Keluarga Submit', 'Prelist Keluarga %',
-    'Prelist Usaha Total', 'Prelist Usaha Submit', 'Prelist Usaha %',
-    'Prelist Non BKU Total', 'Prelist Non BKU Submit', 'Prelist Non BKU %',
-    'Total Prelist Total', 'Total Prelist Submit', 'Total Prelist %',
-    'GL Keluarga Total', 'GL Keluarga Submit', 'GL Keluarga %',
-    'GL Usaha Total', 'GL Usaha Submit', 'GL Usaha %',
-    'Assignment Baru Keluarga Total', 'Assignment Baru Keluarga Submit', 'Assignment Baru Keluarga %',
-    'Assignment Baru Usaha Total', 'Assignment Baru Usaha Submit', 'Assignment Baru Usaha %',
-    'Assignment Baru Non BKU Total', 'Assignment Baru Non BKU Submit', 'Assignment Baru Non BKU %',
-    'Total Assignment Baru Total', 'Total Assignment Baru Submit', 'Total Assignment Baru %',
-    'Total Keseluruhan Beban', 'Total Keseluruhan Submit', 'Total Keseluruhan %'
-  ];
+  showExportProgress('Menyiapkan Rekap Sub SLS', 'Mengumpulkan dan memfilter baris data Sub SLS...', 10, 'Membaca data Sub SLS...');
+  await new Promise(r => setTimeout(r, 80));
 
-  const filterKab = selectedKabPrelist || document.getElementById('filter-kab-prelist')?.value || '';
-  const filterTerm = (document.getElementById('search-prelist')?.value || '').trim().toLowerCase();
-
-  // Flat data per Sub SLS saja (tanpa baris induk hierarki)
-  const excelRows = [headers];
-
-  prelistSubSlsData.forEach(sub => {
-    const kode = String(sub.kode || '');
-    const kodeKab = kode.substring(0, 4);
-    if (filterKab && kodeKab !== filterKab) return;
-
-    if (filterTerm) {
-      const match = kode.toLowerCase().includes(filterTerm) || (sub.namaSls && sub.namaSls.toLowerCase().includes(filterTerm));
-      if (!match) return;
-    }
-
-    const kodeKec = kode.length >= 7 ? kode.substring(0, 7) : '';
-    const kodeDesa = kode.length >= 10 ? kode.substring(0, 10) : '';
-
-    const kabObj = Array.isArray(dashboardData) ? dashboardData.find(w => w.kode === kodeKab) : null;
-    const namaKab = kabObj ? kabObj.nama : `[${kodeKab}]`;
-    const namaKec = masterKecMap.get(kodeKec) || `Kecamatan [${kodeKec.slice(-3)}]`;
-    const namaDesa = masterDesaMap.get(kodeDesa) || `Desa [${kodeDesa.slice(-3)}]`;
-    const sub2 = kode.length >= 2 ? ` [${kode.slice(-2)}]` : '';
-    const namaSls = `${sub.namaSls || 'Sub SLS'}${sub2}`;
-
-    const row = [
-      kodeKab, namaKab,
-      kodeKec, namaKec,
-      kodeDesa, namaDesa,
-      kode, namaSls,
-      sub.klgPrelistJml || 0, sub.klgPrelistSubmit || 0, sub.klgPrelistPct !== null ? sub.klgPrelistPct / 100 : 0,
-      sub.usahaPrelistJml || 0, sub.usahaPrelistSubmit || 0, sub.usahaPrelistPct !== null ? sub.usahaPrelistPct / 100 : 0,
-      sub.lainnyaJml || 0, sub.lainnyaSubmit || 0, sub.lainnyaPct !== null ? sub.lainnyaPct / 100 : 0,
-      sub.prelistJml || 0, sub.prelistSubmit || 0, sub.prelistPct !== null ? sub.prelistPct / 100 : 0,
-      sub.glKlgJml || 0, sub.glKlgSubmit || 0, sub.glKlgPct !== null ? sub.glKlgPct / 100 : 0,
-      sub.glUsahaJml || 0, sub.glUsahaSubmit || 0, sub.glUsahaPct !== null ? sub.glUsahaPct / 100 : 0,
-      sub.klgBaruJml || 0, sub.klgBaruSubmit || 0, sub.klgBaruPct !== null ? sub.klgBaruPct / 100 : 0,
-      sub.usahaBaruJml || 0, sub.usahaBaruSubmit || 0, sub.usahaBaruPct !== null ? sub.usahaBaruPct / 100 : 0,
-      sub.lainnyaBaruJml || 0, sub.lainnyaBaruSubmit || 0, sub.lainnyaBaruPct !== null ? sub.lainnyaBaruPct / 100 : 0,
-      sub.assignJml || 0, sub.assignSubmit || 0, sub.assignPct !== null ? sub.assignPct / 100 : 0,
-      sub.totalSemuaJml || 0, sub.totalSemuaSubmit || 0, sub.totalSemuaPct !== null ? sub.totalSemuaPct / 100 : 0
+  try {
+    const headers = [
+      'Kode Kabupaten', 'Nama Kabupaten',
+      'Kode Kecamatan', 'Nama Kecamatan',
+      'Kode Desa', 'Nama Desa',
+      'Kode Sub SLS', 'Nama SLS / Sub SLS',
+      'Prelist Keluarga Total', 'Prelist Keluarga Submit', 'Prelist Keluarga %',
+      'Prelist Usaha Total', 'Prelist Usaha Submit', 'Prelist Usaha %',
+      'Prelist Non BKU Total', 'Prelist Non BKU Submit', 'Prelist Non BKU %',
+      'Total Prelist Total', 'Total Prelist Submit', 'Total Prelist %',
+      'GL Keluarga Total', 'GL Keluarga Submit', 'GL Keluarga %',
+      'GL Usaha Total', 'GL Usaha Submit', 'GL Usaha %',
+      'Assignment Baru Keluarga Total', 'Assignment Baru Keluarga Submit', 'Assignment Baru Keluarga %',
+      'Assignment Baru Usaha Total', 'Assignment Baru Usaha Submit', 'Assignment Baru Usaha %',
+      'Assignment Baru Non BKU Total', 'Assignment Baru Non BKU Submit', 'Assignment Baru Non BKU %',
+      'Total Assignment Baru Total', 'Total Assignment Baru Submit', 'Total Assignment Baru %',
+      'Total Keseluruhan Beban', 'Total Keseluruhan Submit', 'Total Keseluruhan %'
     ];
-    excelRows.push(row);
-  });
 
-  const ws = XLSX.utils.aoa_to_sheet(excelRows);
+    const filterKab = selectedKabPrelist || document.getElementById('filter-kab-prelist')?.value || '';
+    const filterTerm = (document.getElementById('search-prelist')?.value || '').trim().toLowerCase();
 
-  // Desain Header #f79039 (Oranye Mewah)
-  const headerStyle = {
-    fill: { fgColor: { rgb: "F79039" } },
-    font: { bold: true, color: { rgb: "FFFFFF" }, name: "Calibri", sz: 10.5 },
-    alignment: { horizontal: "center", vertical: "center", wrapText: true },
-    border: {
-      top: { style: "thin", color: { rgb: "D4721C" } },
-      bottom: { style: "thin", color: { rgb: "D4721C" } },
-      left: { style: "thin", color: { rgb: "D4721C" } },
-      right: { style: "thin", color: { rgb: "D4721C" } }
+    // Flat data per Sub SLS saja (tanpa baris induk hierarki)
+    const excelRows = [headers];
+
+    const totalSubRows = prelistSubSlsData.length;
+    let processed = 0;
+
+    for (let i = 0; i < totalSubRows; i++) {
+      const sub = prelistSubSlsData[i];
+      const kode = String(sub.kode || '');
+      const kodeKab = kode.substring(0, 4);
+      if (filterKab && kodeKab !== filterKab) continue;
+
+      if (filterTerm) {
+        const match = kode.toLowerCase().includes(filterTerm) || (sub.namaSls && sub.namaSls.toLowerCase().includes(filterTerm));
+        if (!match) continue;
+      }
+
+      const kodeKec = kode.length >= 7 ? kode.substring(0, 7) : '';
+      const kodeDesa = kode.length >= 10 ? kode.substring(0, 10) : '';
+
+      const kabObj = Array.isArray(dashboardData) ? dashboardData.find(w => w.kode === kodeKab) : null;
+      const namaKab = kabObj ? kabObj.nama : `[${kodeKab}]`;
+      const namaKec = masterKecMap.get(kodeKec) || `Kecamatan [${kodeKec.slice(-3)}]`;
+      const namaDesa = masterDesaMap.get(kodeDesa) || `Desa [${kodeDesa.slice(-3)}]`;
+      const sub2 = kode.length >= 2 ? ` [${kode.slice(-2)}]` : '';
+      const namaSls = `${sub.namaSls || 'Sub SLS'}${sub2}`;
+
+      const row = [
+        kodeKab, namaKab,
+        kodeKec, namaKec,
+        kodeDesa, namaDesa,
+        kode, namaSls,
+        sub.klgPrelistJml || 0, sub.klgPrelistSubmit || 0, sub.klgPrelistPct !== null ? sub.klgPrelistPct / 100 : 0,
+        sub.usahaPrelistJml || 0, sub.usahaPrelistSubmit || 0, sub.usahaPrelistPct !== null ? sub.usahaPrelistPct / 100 : 0,
+        sub.lainnyaJml || 0, sub.lainnyaSubmit || 0, sub.lainnyaPct !== null ? sub.lainnyaPct / 100 : 0,
+        sub.prelistJml || 0, sub.prelistSubmit || 0, sub.prelistPct !== null ? sub.prelistPct / 100 : 0,
+        sub.glKlgJml || 0, sub.glKlgSubmit || 0, sub.glKlgPct !== null ? sub.glKlgPct / 100 : 0,
+        sub.glUsahaJml || 0, sub.glUsahaSubmit || 0, sub.glUsahaPct !== null ? sub.glUsahaPct / 100 : 0,
+        sub.klgBaruJml || 0, sub.klgBaruSubmit || 0, sub.klgBaruPct !== null ? sub.klgBaruPct / 100 : 0,
+        sub.usahaBaruJml || 0, sub.usahaBaruSubmit || 0, sub.usahaBaruPct !== null ? sub.usahaBaruPct / 100 : 0,
+        sub.lainnyaBaruJml || 0, sub.lainnyaBaruSubmit || 0, sub.lainnyaBaruPct !== null ? sub.lainnyaBaruPct / 100 : 0,
+        sub.assignJml || 0, sub.assignSubmit || 0, sub.assignPct !== null ? sub.assignPct / 100 : 0,
+        sub.totalSemuaJml || 0, sub.totalSemuaSubmit || 0, sub.totalSemuaPct !== null ? sub.totalSemuaPct / 100 : 0
+      ];
+      excelRows.push(row);
+      processed++;
     }
-  };
 
-  const borderStyle = {
-    top: { style: "thin", color: { rgb: "E2E8F0" } },
-    bottom: { style: "thin", color: { rgb: "E2E8F0" } },
-    left: { style: "thin", color: { rgb: "E2E8F0" } },
-    right: { style: "thin", color: { rgb: "E2E8F0" } }
-  };
+    updateExportProgress(45, `Menyusun ${fmtNum(excelRows.length - 1)} baris ke sheet...`, 'Membangun tabel Excel...');
+    await new Promise(r => setTimeout(r, 60));
 
-  const range = XLSX.utils.decode_range(ws['!ref'] || "A1:A1");
+    const ws = XLSX.utils.aoa_to_sheet(excelRows);
 
-  // Lebar kolom rapi
-  const colWidths = [];
-  for (let C = range.s.c; C <= range.e.c; ++C) {
-    if (C === 0) colWidths.push({ wch: 15 }); // Kode Kab
-    else if (C === 1) colWidths.push({ wch: 28 }); // Nama Kab
-    else if (C === 2) colWidths.push({ wch: 15 }); // Kode Kec
-    else if (C === 3) colWidths.push({ wch: 25 }); // Nama Kec
-    else if (C === 4) colWidths.push({ wch: 15 }); // Kode Desa
-    else if (C === 5) colWidths.push({ wch: 25 }); // Nama Desa
-    else if (C === 6) colWidths.push({ wch: 18 }); // Kode Sub SLS
-    else if (C === 7) colWidths.push({ wch: 30 }); // Nama SLS
-    else if (C >= 38) colWidths.push({ wch: 22 }); // Total Keseluruhan
-    else colWidths.push({ wch: 18 });
-  }
-  ws['!cols'] = colWidths;
-  ws['!rows'] = [{ hpt: 30 }];
+    // Desain Header #f79039 (Oranye Mewah)
+    const headerStyle = {
+      fill: { fgColor: { rgb: "F79039" } },
+      font: { bold: true, color: { rgb: "FFFFFF" }, name: "Calibri", sz: 10.5 },
+      alignment: { horizontal: "center", vertical: "center", wrapText: true },
+      border: {
+        top: { style: "thin", color: { rgb: "D4721C" } },
+        bottom: { style: "thin", color: { rgb: "D4721C" } },
+        left: { style: "thin", color: { rgb: "D4721C" } },
+        right: { style: "thin", color: { rgb: "D4721C" } }
+      }
+    };
 
-  // Format sel
-  for (let R = range.s.r; R <= range.e.r; ++R) {
+    const borderStyle = {
+      top: { style: "thin", color: { rgb: "E2E8F0" } },
+      bottom: { style: "thin", color: { rgb: "E2E8F0" } },
+      left: { style: "thin", color: { rgb: "E2E8F0" } },
+      right: { style: "thin", color: { rgb: "E2E8F0" } }
+    };
+
+    const range = XLSX.utils.decode_range(ws['!ref'] || "A1:A1");
+
+    // Lebar kolom rapi
+    const colWidths = [];
     for (let C = range.s.c; C <= range.e.c; ++C) {
-      const addr = XLSX.utils.encode_cell({ r: R, c: C });
-      const cell = ws[addr];
-      if (!cell) continue;
+      if (C === 0) colWidths.push({ wch: 15 }); // Kode Kab
+      else if (C === 1) colWidths.push({ wch: 28 }); // Nama Kab
+      else if (C === 2) colWidths.push({ wch: 15 }); // Kode Kec
+      else if (C === 3) colWidths.push({ wch: 25 }); // Nama Kec
+      else if (C === 4) colWidths.push({ wch: 15 }); // Kode Desa
+      else if (C === 5) colWidths.push({ wch: 25 }); // Nama Desa
+      else if (C === 6) colWidths.push({ wch: 18 }); // Kode Sub SLS
+      else if (C === 7) colWidths.push({ wch: 30 }); // Nama SLS
+      else if (C >= 38) colWidths.push({ wch: 22 }); // Total Keseluruhan
+      else colWidths.push({ wch: 18 });
+    }
+    ws['!cols'] = colWidths;
+    ws['!rows'] = [{ hpt: 30 }];
 
-      if (R === 0) {
-        cell.s = headerStyle;
-      } else {
-        const isPctCol = (C >= 8) && ((C - 8) % 3 === 2);
-        const isNumCol = (C >= 8) && !isPctCol;
-        const isHighlightCol = (C >= 38);
+    updateExportProgress(75, 'Menerapkan format angka, warna & batas sel...', 'Memformat cell...');
+    await new Promise(r => setTimeout(r, 60));
 
-        const cellStyle = {
-          font: { name: "Calibri", sz: 10, bold: isHighlightCol },
-          border: borderStyle,
-          alignment: {
-            horizontal: isNumCol || isPctCol ? "right" : "left",
-            vertical: "center"
-          }
-        };
+    // Format sel
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const addr = XLSX.utils.encode_cell({ r: R, c: C });
+        const cell = ws[addr];
+        if (!cell) continue;
 
-        if (isHighlightCol) {
-          cellStyle.fill = { fgColor: { rgb: R % 2 === 0 ? "FFF5EB" : "FFF9F3" } };
-        } else if (R % 2 === 0) {
-          cellStyle.fill = { fgColor: { rgb: "F8FAFC" } };
-        }
-
-        if (isPctCol) {
-          cell.z = "0.00%";
-        } else if (isNumCol) {
-          cell.z = "#,##0";
+        if (R === 0) {
+          cell.s = headerStyle;
         } else {
-          cell.t = 's';
-        }
+          const isPctCol = (C >= 8) && ((C - 8) % 3 === 2);
+          const isNumCol = (C >= 8) && !isPctCol;
+          const isHighlightCol = (C >= 38);
 
-        cell.s = cellStyle;
+          const cellStyle = {
+            font: { name: "Calibri", sz: 10, bold: isHighlightCol },
+            border: borderStyle,
+            alignment: {
+              horizontal: isNumCol || isPctCol ? "right" : "left",
+              vertical: "center"
+            }
+          };
+
+          if (isHighlightCol) {
+            cellStyle.fill = { fgColor: { rgb: R % 2 === 0 ? "FFF5EB" : "FFF9F3" } };
+          } else if (R % 2 === 0) {
+            cellStyle.fill = { fgColor: { rgb: "F8FAFC" } };
+          }
+
+          if (isPctCol) {
+            cell.z = "0.00%";
+          } else if (isNumCol) {
+            cell.z = "#,##0";
+          } else {
+            cell.t = 's';
+          }
+
+          cell.s = cellStyle;
+        }
       }
     }
-  }
 
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Rekap Sub SLS");
-  const filterSuffix = filterKab ? `_Kab${filterKab}` : "";
-  XLSX.writeFile(wb, `Rekap_Prelist_SubSLS${filterSuffix}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    updateExportProgress(92, 'Menyimpan berkas spreadsheet...', 'Mengunduh file Excel...');
+    await new Promise(r => setTimeout(r, 60));
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Rekap Sub SLS");
+    const filterSuffix = filterKab ? `_Kab${filterKab}` : "";
+    XLSX.writeFile(wb, `Rekap_Prelist_SubSLS${filterSuffix}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+
+    hideExportProgress();
+  } catch (err) {
+    console.error('Gagal export prelist excel:', err);
+    hideExportProgress();
+    alert('Terjadi kesalahan saat mengekspor data Rekap Prelist ke Excel.');
+  }
 }
 
 function exportPrelistCSV() {
@@ -853,7 +878,7 @@ function updatePrelistSummaryCard() {
   if (elStatPrelistDaily) {
     if (deltaPrelistSum !== null) {
       const sign = deltaPrelistSum > 0 ? '+' : '';
-      const icon = deltaPrelistSum > 0 ? 'â–²' : deltaPrelistSum < 0 ? 'â–¼' : 'â€¢';
+      const icon = deltaPrelistSum > 0 ? '▲' : deltaPrelistSum < 0 ? '▼' : '•';
       elStatPrelistDaily.innerText = `${icon} ${sign}${fmtPct(deltaPrelistSum)}%`;
       elStatPrelistDaily.style.color = getDeltaColor(deltaPrelistSum);
       elStatPrelistDaily.title = `Perubahan vs baseline ${prelistBaselineDate}`;
@@ -900,7 +925,7 @@ function updatePrelistKabDropdown() {
     <div onclick="selectPrelistKab('', 'Semua Kabupaten/Kota')"
       class="px-3 py-2 rounded cursor-pointer transition-colors flex items-center justify-between ${!selectedKabPrelist ? 'bg-[var(--accent-color)]/15 font-bold text-[var(--accent-color)]' : 'hover:bg-[rgba(249,115,22,0.1)] text-[var(--text-primary)]'}">
       <span>Semua Kabupaten/Kota</span>
-      ${!selectedKabPrelist ? '<span class="text-[10px]">âœ“</span>' : ''}
+      ${!selectedKabPrelist ? '<span class="text-[10px]">✓</span>' : ''}
     </div>
   `;
 
@@ -913,7 +938,7 @@ function updatePrelistKabDropdown() {
       <div onclick="selectPrelistKab('${code}', '${displayName.replace(/'/g, "\\'")}')"
         class="px-3 py-2 rounded cursor-pointer transition-colors flex items-center justify-between ${isSelected ? 'bg-[var(--accent-color)]/15 font-bold text-[var(--accent-color)]' : 'hover:bg-[rgba(249,115,22,0.1)] text-[var(--text-primary)]'}">
         <span class="truncate pr-2">${displayName}</span>
-        ${isSelected ? '<span class="text-[10px]">âœ“</span>' : ''}
+        ${isSelected ? '<span class="text-[10px]">✓</span>' : ''}
       </div>
     `;
   });
