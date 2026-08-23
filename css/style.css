@@ -445,73 +445,97 @@ html.light #prelist-kab-btn {
 }
 
 /* Solid Table Header Backgrounds for Sticky Table Headers */
+/* Solid Table Header Backgrounds for Sticky Table Headers */
 .impeccable-table thead th {
   background-color: var(--bg-tertiary);
 }
 
-/* Table 1 Header Groups (Solid) */
-.th-target-group {
-  background-color: #211c15 !important;
-}
-html.light .th-target-group {
-  background-color: #ded7c9 !important;
-}
-
-.th-umkm-group {
-  background-color: #1a231c !important;
-}
-html.light .th-umkm-group {
-  background-color: #d8e2d6 !important;
-}
-
-.th-ub-group {
-  background-color: #252016 !important;
-}
-html.light .th-ub-group {
-  background-color: #ded6c6 !important;
-}
-
-/* Table 2 Prelist & Assignment Groups (Solid) */
-.th-prelist-main {
-  background-color: #1a241c !important;
-}
-html.light .th-prelist-main {
-  background-color: #d7e2d5 !important;
-}
-
-.th-prelist-sub {
-  background-color: #192019 !important;
-}
-html.light .th-prelist-sub {
-  background-color: #dbe4d9 !important;
-}
-
-.th-gl-main {
-  background-color: #1e2c21 !important;
-}
-html.light .th-gl-main {
-  background-color: #d0ded0 !important;
-}
-
-.th-gl-sub {
-  background-color: #1c261e !important;
-}
-html.light .th-gl-sub {
-  background-color: #d6e2d5 !important;
-}
-
-.th-assign-main {
-  background-color: #262016 !important;
-}
-html.light .th-assign-main {
-  background-color: #e0d8c8 !important;
-}
-
+/* Neutralized Table Header Groups (Uniform Background) */
+.th-target-group,
+.th-umkm-group,
+.th-ub-group,
+.th-prelist-main,
+.th-prelist-sub,
+.th-gl-main,
+.th-gl-sub,
+.th-assign-main,
 .th-assign-sub {
-  background-color: #211c14 !important;
+  background-color: var(--bg-tertiary) !important;
 }
+
+html.light .th-target-group,
+html.light .th-umkm-group,
+html.light .th-ub-group,
+html.light .th-prelist-main,
+html.light .th-prelist-sub,
+html.light .th-gl-main,
+html.light .th-gl-sub,
+html.light .th-assign-main,
 html.light .th-assign-sub {
-  background-color: #ded6c6 !important;
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* Tebal stroke batas pemisah antar kategori & outer frame tabel */
+.border-category-divider,
+#prelist-subsls-table thead th.border-category-divider,
+#prelist-subsls-table td.border-category-divider,
+#dashboard-table thead th.border-category-divider,
+#dashboard-table td.border-category-divider {
+  border-right-width: 2px !important;
+  border-right-style: solid !important;
+  border-right-color: rgba(249, 115, 22, 0.45) !important;
+}
+
+html.light .border-category-divider,
+html.light #prelist-subsls-table thead th.border-category-divider,
+html.light #prelist-subsls-table td.border-category-divider,
+html.light #dashboard-table thead th.border-category-divider,
+html.light #dashboard-table td.border-category-divider {
+  border-right-width: 2px !important;
+  border-right-style: solid !important;
+  border-right-color: rgba(234, 88, 12, 0.45) !important;
+}
+
+/* Outer Border Frame untuk Tabel (Top, Bottom, Left, Right, dan Header Separator) */
+.impeccable-table thead tr:first-child th {
+  border-top: 2px solid rgba(249, 115, 22, 0.45) !important;
+}
+html.light .impeccable-table thead tr:first-child th {
+  border-top: 2px solid rgba(234, 88, 12, 0.45) !important;
+}
+
+.impeccable-table thead tr:last-child th {
+  border-bottom: 2px solid rgba(249, 115, 22, 0.45) !important;
+}
+html.light .impeccable-table thead tr:last-child th {
+  border-bottom: 2px solid rgba(234, 88, 12, 0.45) !important;
+}
+
+.impeccable-table thead th:first-child,
+.impeccable-table tbody td:first-child {
+  border-left: 2px solid rgba(249, 115, 22, 0.45) !important;
+}
+html.light .impeccable-table thead th:first-child,
+html.light .impeccable-table tbody td:first-child {
+  border-left: 2px solid rgba(234, 88, 12, 0.45) !important;
+}
+
+.impeccable-table thead tr:first-child th:last-child,
+.impeccable-table thead tr:last-child th:last-child,
+.impeccable-table tbody td:last-child {
+  border-right: 2px solid rgba(249, 115, 22, 0.45) !important;
+}
+html.light .impeccable-table thead tr:first-child th:last-child,
+html.light .impeccable-table thead tr:last-child th:last-child,
+html.light .impeccable-table tbody td:last-child {
+  border-right: 2px solid rgba(234, 88, 12, 0.45) !important;
+}
+
+.impeccable-table tbody tr:last-child td {
+  border-bottom: 2px solid rgba(249, 115, 22, 0.45) !important;
+}
+html.light .impeccable-table tbody tr:last-child td {
+  border-bottom: 2px solid rgba(234, 88, 12, 0.45) !important;
 }
 
 /* Total Keseluruhan (Solid on Headers, Soft on Body) */
