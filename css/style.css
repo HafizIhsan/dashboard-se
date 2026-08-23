@@ -444,24 +444,110 @@ html.light #prelist-kab-btn {
   pointer-events: none;
 }
 
-/* Total Keseluruhan Column Highlight */
-.col-total-keseluruhan {
+/* Solid Table Header Backgrounds for Sticky Table Headers */
+.impeccable-table thead th {
+  background-color: var(--bg-tertiary);
+}
+
+/* Table 1 Header Groups (Solid) */
+.th-target-group {
+  background-color: #211c15 !important;
+}
+html.light .th-target-group {
+  background-color: #ded7c9 !important;
+}
+
+.th-umkm-group {
+  background-color: #1a231c !important;
+}
+html.light .th-umkm-group {
+  background-color: #d8e2d6 !important;
+}
+
+.th-ub-group {
+  background-color: #252016 !important;
+}
+html.light .th-ub-group {
+  background-color: #ded6c6 !important;
+}
+
+/* Table 2 Prelist & Assignment Groups (Solid) */
+.th-prelist-main {
+  background-color: #1a241c !important;
+}
+html.light .th-prelist-main {
+  background-color: #d7e2d5 !important;
+}
+
+.th-prelist-sub {
+  background-color: #192019 !important;
+}
+html.light .th-prelist-sub {
+  background-color: #dbe4d9 !important;
+}
+
+.th-gl-main {
+  background-color: #1e2c21 !important;
+}
+html.light .th-gl-main {
+  background-color: #d0ded0 !important;
+}
+
+.th-gl-sub {
+  background-color: #1c261e !important;
+}
+html.light .th-gl-sub {
+  background-color: #d6e2d5 !important;
+}
+
+.th-assign-main {
+  background-color: #262016 !important;
+}
+html.light .th-assign-main {
+  background-color: #e0d8c8 !important;
+}
+
+.th-assign-sub {
+  background-color: #211c14 !important;
+}
+html.light .th-assign-sub {
+  background-color: #ded6c6 !important;
+}
+
+/* Total Keseluruhan (Solid on Headers, Soft on Body) */
+.col-total-keseluruhan-header {
+  background-color: #2d1f15 !important;
+}
+html.light .col-total-keseluruhan-header {
+  background-color: #ebd5c5 !important;
+}
+
+.col-total-keseluruhan-subheader {
+  background-color: #271b13 !important;
+}
+html.light .col-total-keseluruhan-subheader {
+  background-color: #e8d8cc !important;
+}
+
+th.col-total-keseluruhan {
+  background-color: #221711 !important;
+}
+html.light th.col-total-keseluruhan {
+  background-color: #e4d9d0 !important;
+}
+
+td.col-total-keseluruhan {
   background-color: rgba(249, 115, 22, 0.045);
 }
-
-html.light .col-total-keseluruhan {
+html.light td.col-total-keseluruhan {
   background-color: rgba(234, 88, 12, 0.04);
-}
-
-.col-total-keseluruhan-header {
-  background-color: rgba(249, 115, 22, 0.09) !important;
-}
-
-html.light .col-total-keseluruhan-header {
-  background-color: rgba(234, 88, 12, 0.08) !important;
 }
 
 .col-total-keseluruhan-summary {
   background-color: rgba(249, 115, 22, 0.09) !important;
 }
+html.light .col-total-keseluruhan-summary {
+  background-color: rgba(234, 88, 12, 0.08) !important;
+}
+
 

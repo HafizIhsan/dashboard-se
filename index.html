@@ -446,10 +446,10 @@
               <th rowspan="2" class="cursor-pointer pl-6 select-none whitespace-nowrap" onclick="sortTable('wilayah')">
                 Wilayah <span id="sort-indicator-wilayah">↕</span>
               </th>
-              <th colspan="4" class="text-center bg-[rgba(212,178,122,0.02)]">Target Prelist Awal</th>
-              <th id="th-umkm-group" colspan="6" class="text-center bg-[rgba(163,201,168,0.02)]">[Sensus Ekonomi 2026
+              <th colspan="4" class="text-center th-target-group">Target Prelist Awal</th>
+              <th id="th-umkm-group" colspan="6" class="text-center th-umkm-group">[Sensus Ekonomi 2026
                 (UMKM)]</th>
-              <th id="th-ub-group" colspan="6" class="text-center bg-[rgba(229,185,116,0.02)]">[Sensus Ekonomi 2026
+              <th id="th-ub-group" colspan="6" class="text-center th-ub-group">[Sensus Ekonomi 2026
                 (UB)]
               </th>
               <th rowspan="2" class="text-right cursor-pointer align-middle select-none whitespace-nowrap"
@@ -457,43 +457,43 @@
                 Progres<br>Akumulatif <span id="sort-indicator-progress">↕</span></th>
             </tr>
             <tr class="text-[8px] md:text-[9px] whitespace-nowrap">
-              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)] cursor-pointer select-none"
+              <th class="text-right th-target-group text-[var(--text-secondary)] cursor-pointer select-none"
                 onclick="sortTable('targetUmkm')">UMKM <span id="sort-indicator-targetUmkm">↕</span></th>
-              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)] cursor-pointer select-none"
+              <th class="text-right th-target-group text-[var(--text-secondary)] cursor-pointer select-none"
                 onclick="sortTable('targetUb')">UB <span id="sort-indicator-targetUb">↕</span></th>
-              <th class="text-right bg-[rgba(212,178,122,0.02)] text-[var(--text-secondary)] cursor-pointer select-none"
+              <th class="text-right th-target-group text-[var(--text-secondary)] cursor-pointer select-none"
                 onclick="sortTable('targetKeluarga')">Keluarga <span id="sort-indicator-targetKeluarga">↕</span></th>
               <th
-                class="text-right bg-[rgba(212,178,122,0.02)] border-r border-[var(--border-color)] text-[var(--text-secondary)] font-bold cursor-pointer select-none"
+                class="text-right th-target-group border-r border-[var(--border-color)] text-[var(--text-secondary)] font-bold cursor-pointer select-none"
                 onclick="sortTable('targetTotal')">Total <span id="sort-indicator-targetTotal">↕</span></th>
 
-              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
+              <th class="text-right th-umkm-group cursor-pointer select-none"
                 onclick="sortTable('umkmOpen')">Open <span id="sort-indicator-umkmOpen">↕</span></th>
-              <th class="text-right bg-[rgba(163,201,168,0.02)] cursor-pointer select-none"
+              <th class="text-right th-umkm-group cursor-pointer select-none"
                 onclick="sortTable('umkmDraft')">Draft <span id="sort-indicator-umkmDraft">↕</span></th>
-              <th class="text-right bg-[rgba(163,201,168,0.02)] text-[var(--success-color)] cursor-pointer select-none"
+              <th class="text-right th-umkm-group text-[var(--success-color)] cursor-pointer select-none"
                 onclick="sortTable('umkmSubmit')">Submit <span id="sort-indicator-umkmSubmit">↕</span></th>
-              <th class="text-right bg-[rgba(163,201,168,0.02)] text-[var(--accent-color)] cursor-pointer select-none"
+              <th class="text-right th-umkm-group text-[var(--accent-color)] cursor-pointer select-none"
                 onclick="sortTable('umkmApproved')">Approved <span id="sort-indicator-umkmApproved">↕</span></th>
-              <th id="th-umkm-total" class="text-right bg-[rgba(163,201,168,0.02)] font-bold cursor-pointer select-none"
+              <th id="th-umkm-total" class="text-right th-umkm-group font-bold cursor-pointer select-none"
                 onclick="sortTable('umkmTotal')">Total <span id="sort-indicator-umkmTotal">↕</span></th>
               <th id="th-umkm-pct"
-                class="text-right bg-[rgba(163,201,168,0.02)] border-r border-[var(--border-color)] font-bold text-[var(--accent-color)] cursor-pointer select-none"
+                class="text-right th-umkm-group border-r border-[var(--border-color)] font-bold text-[var(--accent-color)] cursor-pointer select-none"
                 onclick="sortTable('umkmPct')">% <span id="sort-indicator-umkmPct">↕</span></th>
 
-              <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
+              <th class="text-right th-ub-group cursor-pointer select-none"
                 onclick="sortTable('ubOpen')">
                 Open <span id="sort-indicator-ubOpen">↕</span></th>
-              <th class="text-right bg-[rgba(229,185,116,0.02)] cursor-pointer select-none"
+              <th class="text-right th-ub-group cursor-pointer select-none"
                 onclick="sortTable('ubDraft')">Draft <span id="sort-indicator-ubDraft">↕</span></th>
-              <th class="text-right bg-[rgba(229,185,116,0.02)] text-[var(--success-color)] cursor-pointer select-none"
+              <th class="text-right th-ub-group text-[var(--success-color)] cursor-pointer select-none"
                 onclick="sortTable('ubSubmit')">Submit <span id="sort-indicator-ubSubmit">↕</span></th>
-              <th class="text-right bg-[rgba(229,185,116,0.02)] text-[var(--accent-color)] cursor-pointer select-none"
+              <th class="text-right th-ub-group text-[var(--accent-color)] cursor-pointer select-none"
                 onclick="sortTable('ubApproved')">Approved <span id="sort-indicator-ubApproved">↕</span></th>
-              <th id="th-ub-total" class="text-right bg-[rgba(229,185,116,0.02)] font-bold cursor-pointer select-none"
+              <th id="th-ub-total" class="text-right th-ub-group font-bold cursor-pointer select-none"
                 onclick="sortTable('ubTotal')">Total <span id="sort-indicator-ubTotal">↕</span></th>
               <th id="th-ub-pct"
-                class="text-right bg-[rgba(229,185,116,0.02)] border-r border-[var(--border-color)] font-bold text-[var(--accent-color)] cursor-pointer select-none"
+                class="text-right th-ub-group border-r border-[var(--border-color)] font-bold text-[var(--accent-color)] cursor-pointer select-none"
                 onclick="sortTable('ubPct')">% <span id="sort-indicator-ubPct">↕</span></th>
             </tr>
           </thead>
@@ -593,39 +593,39 @@
                 class="pl-6 select-none align-middle text-left border-r border-[var(--border-color)] min-w-[260px]">
                 Wilayah / SLS / Sub SLS
               </th>
-              <th colspan="12" class="text-center bg-[rgba(163,201,168,0.06)] border-r border-[var(--border-color)]"
+              <th colspan="12" class="text-center th-prelist-main border-r border-[var(--border-color)]"
                 style="border-bottom: 2px solid var(--success-color);">Prelist</th>
-              <th colspan="6" class="text-center bg-[rgba(163,201,168,0.12)] border-r border-[var(--border-color)]"
+              <th colspan="6" class="text-center th-gl-main border-r border-[var(--border-color)]"
                 style="border-bottom: 2px solid var(--success-color);">General Link</th>
-              <th colspan="12" class="text-center bg-[rgba(229,185,116,0.06)] border-r border-[var(--border-color)]"
+              <th colspan="12" class="text-center th-assign-main border-r border-[var(--border-color)]"
                 style="border-bottom: 2px solid var(--warning-color);">Assignment Baru</th>
               <th colspan="3" class="text-center col-total-keseluruhan-header"
                 style="border-bottom: 2px solid var(--accent-color);">Total Keseluruhan</th>
             </tr>
             <!-- Row 2: Sub-group Headers -->
             <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
-              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">
+              <th colspan="3" class="text-center th-prelist-sub border-r border-[var(--border-color)]">
                 Keluarga</th>
-              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">
+              <th colspan="3" class="text-center th-prelist-sub border-r border-[var(--border-color)]">
                 Usaha</th>
-              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Non
+              <th colspan="3" class="text-center th-prelist-sub border-r border-[var(--border-color)]">Non
                 BKU</th>
               <th colspan="3"
-                class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">
+                class="text-center th-prelist-sub border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">
                 Total</th>
-              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">
+              <th colspan="3" class="text-center th-gl-sub border-r border-[var(--border-color)]">
                 Keluarga</th>
-              <th colspan="3" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">
+              <th colspan="3" class="text-center th-gl-sub border-r border-[var(--border-color)]">
                 Usaha</th>
-              <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">
+              <th colspan="3" class="text-center th-assign-sub border-r border-[var(--border-color)]">
                 Keluarga</th>
-              <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">
+              <th colspan="3" class="text-center th-assign-sub border-r border-[var(--border-color)]">
                 Usaha</th>
-              <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">
+              <th colspan="3" class="text-center th-assign-sub border-r border-[var(--border-color)]">
                 Non BKU</th>
-              <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">Total
+              <th colspan="3" class="text-center th-assign-sub border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">Total
               </th>
-              <th colspan="3" class="text-center bg-[rgba(249,115,22,0.06)] font-bold text-[var(--accent-color)]">Total
+              <th colspan="3" class="text-center col-total-keseluruhan-subheader font-bold text-[var(--accent-color)]">Total
               </th>
             </tr>
             <!-- Row 3: Leaf Headers -->
@@ -1452,24 +1452,24 @@
           <th rowspan="3" class="pl-6 select-none align-middle text-left border-r border-[var(--border-color)] min-w-[260px]">
             Wilayah / SLS / Sub SLS
           </th>
-          <th colspan="12" class="text-center bg-[rgba(163,201,168,0.06)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">Prelist</th>
-          <th colspan="6" class="text-center bg-[rgba(163,201,168,0.12)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">General Link</th>
-          <th colspan="12" class="text-center bg-[rgba(229,185,116,0.06)] border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--warning-color);">Assignment Baru</th>
+          <th colspan="12" class="text-center th-prelist-main border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">Prelist</th>
+          <th colspan="6" class="text-center th-gl-main border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--success-color);">General Link</th>
+          <th colspan="12" class="text-center th-assign-main border-r border-[var(--border-color)]" style="border-bottom: 2px solid var(--warning-color);">Assignment Baru</th>
           <th colspan="3" class="text-center col-total-keseluruhan-header" style="border-bottom: 2px solid var(--accent-color);">Total Keseluruhan</th>
         </tr>
         <!-- Row 2: Sub-group Headers -->
         <tr class="text-[9px] md:text-[10px] whitespace-nowrap">
-          <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Keluarga</th>
-          <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Usaha</th>
-          <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)]">Non BKU</th>
-          <th colspan="3" class="text-center bg-[rgba(163,201,168,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">Total</th>
-          <th colspan="3" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Keluarga</th>
-          <th colspan="3" class="text-center bg-[rgba(163,201,168,0.08)] border-r border-[var(--border-color)]">Usaha</th>
-          <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Keluarga</th>
-          <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Usaha</th>
-          <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)]">Non BKU</th>
-          <th colspan="3" class="text-center bg-[rgba(229,185,116,0.03)] border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">Total</th>
-          <th colspan="3" class="text-center bg-[rgba(249,115,22,0.06)] font-bold text-[var(--accent-color)]">Total</th>
+          <th colspan="3" class="text-center th-prelist-sub border-r border-[var(--border-color)]">Keluarga</th>
+          <th colspan="3" class="text-center th-prelist-sub border-r border-[var(--border-color)]">Usaha</th>
+          <th colspan="3" class="text-center th-prelist-sub border-r border-[var(--border-color)]">Non BKU</th>
+          <th colspan="3" class="text-center th-prelist-sub border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">Total</th>
+          <th colspan="3" class="text-center th-gl-sub border-r border-[var(--border-color)]">Keluarga</th>
+          <th colspan="3" class="text-center th-gl-sub border-r border-[var(--border-color)]">Usaha</th>
+          <th colspan="3" class="text-center th-assign-sub border-r border-[var(--border-color)]">Keluarga</th>
+          <th colspan="3" class="text-center th-assign-sub border-r border-[var(--border-color)]">Usaha</th>
+          <th colspan="3" class="text-center th-assign-sub border-r border-[var(--border-color)]">Non BKU</th>
+          <th colspan="3" class="text-center th-assign-sub border-r border-[var(--border-color)] font-bold text-[var(--text-primary)]">Total</th>
+          <th colspan="3" class="text-center col-total-keseluruhan-subheader font-bold text-[var(--accent-color)]">Total</th>
         </tr>
         <!-- Row 3: Leaf Headers -->
         <tr class="text-[8px] md:text-[9px] whitespace-nowrap">
