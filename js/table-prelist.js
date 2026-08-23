@@ -1,4 +1,4 @@
-﻿// table-prelist.js
+// table-prelist.js
 
 function getPrelistSource(data) {
   return data['Rekap Prelist SubSLS'] || data['Rekap Prelist SE2026 - SubSLS'] || [];
@@ -596,18 +596,6 @@ function resetPrelistTable() {
   expandedPrelistNodes.clear();
   renderPrelistTable();
 }
-
-const debounce = (func, wait) => {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-};
 
 const debouncedFilterPrelistSubSls = debounce(() => {
   filterPrelistSubSls();
