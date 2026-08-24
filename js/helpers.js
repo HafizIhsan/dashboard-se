@@ -27,7 +27,9 @@ function getProgressColor(progress) {
   if (progress === null || progress === undefined || isNaN(progress)) return 'inherit';
   const target = getTargetProgress();
   if (target <= 0) {
-    if (progress > 0) return 'var(--success-color)';
+    if (progress >= 100) return 'var(--success-color)';
+    if (progress >= 75) return 'var(--warning-color)';
+    if (progress > 0) return 'var(--danger-color)';
     return 'var(--text-muted)';
   }
   if (progress >= target) return 'var(--success-color)';

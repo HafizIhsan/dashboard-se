@@ -18,8 +18,7 @@ window.updateProgressCard = function () {
   const progressValue = denominator > 0 ? (totalSubmit / denominator) * 100 : 0;
   const dailyProgressPct = denominator > 0 ? (totalHarian / denominator) * 100 : 0;
 
-  const targetProg = getTargetProgress();
-  const mainProgColorVar = progressValue < targetProg ? 'var(--danger-color)' : 'var(--success-color)';
+  const mainProgColorVar = getProgressColor(progressValue);
 
   const percentSpan = `<span class="font-sans text-2xl font-bold ml-0.5" style="color: ${mainProgColorVar}">%</span>`;
 

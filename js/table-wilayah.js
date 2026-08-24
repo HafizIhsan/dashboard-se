@@ -163,16 +163,16 @@ function renderTable(data) {
           <td class="text-right py-2 px-2 text-[var(--success-color)] text-[13px]">${fmtNum(kec.umkmSubmit)}</td>
           <td class="text-right py-2 px-2 text-[var(--accent-color)] text-[13px] font-semibold">${fmtNum(kec.umkmApproved || 0)}</td>
           <td class="text-right py-2 px-2 font-semibold text-[13px] ${!showPct ? 'border-r-2 border-category-divider' : ''}">${fmtNum(kec.umkmTotal)}</td>
-          ${showPct ? `<td class="text-right py-2 px-2 border-r-2 border-category-divider font-bold text-[13px] text-[var(--accent-color)]">${fmtPct(kUmkmProgress)}%</td>` : ''}
+          ${showPct ? `<td class="text-right py-2 px-2 border-r-2 border-category-divider font-bold text-[13px]" style="color: ${getProgressColor(kUmkmProgress)}">${fmtPct(kUmkmProgress)}%</td>` : ''}
           
           <td class="text-right py-2 pr-2 pl-4 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.ubOpen)}</td>
           <td class="text-right py-2 px-2 text-[var(--warning-color)] text-[13px]">${fmtNum(kec.ubDraft)}</td>
           <td class="text-right py-2 px-2 text-[var(--success-color)] text-[13px]">${fmtNum(kec.ubSubmit)}</td>
           <td class="text-right py-2 px-2 text-[var(--accent-color)] text-[13px] font-semibold">${fmtNum(kec.ubApproved || 0)}</td>
           <td class="text-right py-2 px-2 font-semibold text-[13px] ${!showPct ? 'border-r-2 border-category-divider' : ''}">${fmtNum(kec.ubTotal)}</td>
-          ${showPct ? `<td class="text-right py-2 px-2 border-r-2 border-category-divider font-bold text-[13px] text-[var(--accent-color)]">${fmtPct(kUbProgress)}%</td>` : ''}
+          ${showPct ? `<td class="text-right py-2 px-2 border-r-2 border-category-divider font-bold text-[13px]" style="color: ${getProgressColor(kUbProgress)}">${fmtPct(kUbProgress)}%</td>` : ''}
           
-          <td class="text-right py-2 pl-2 pr-4 font-bold text-[13px] text-[var(--accent-color)]">${fmtPct(kec.progress)}%</td>
+          <td class="text-right py-2 pl-2 pr-4 font-bold text-[13px]" style="color: ${getProgressColor(kec.progress)}">${fmtPct(kec.progress)}%</td>
         `;
         fragment.appendChild(kecRow);
       });
@@ -443,6 +443,8 @@ async function exportExcel() {
       { wch: 22 }
     ];
     ws['!rows'] = [{ hpt: 28 }];
+    ws['!autofilter'] = { ref: ws['!ref'] };
+    ws['!views'] = [{ state: 'frozen', xSplit: 2, ySplit: 1, topLeftCell: 'C2', activePane: 'bottomRight' }];
 
     updateExportProgress(75, 'Menerapkan gaya sel & format persentase...', 'Memformat cell...');
     await new Promise(r => setTimeout(r, 60));

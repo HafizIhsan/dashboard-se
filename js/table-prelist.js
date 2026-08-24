@@ -85,6 +85,9 @@ function buildPrelistRow(row) {
   prelistPctKeys.forEach(key => {
     result.delta[key] = baseline && result[key] !== null && baseline[key] !== null ? result[key] - baseline[key] : null;
   });
+  result.delta.totalSemuaSubmit = baseline && result.totalSemuaSubmit !== null && baseline.totalSemuaSubmit !== null
+    ? (result.totalSemuaSubmit - baseline.totalSemuaSubmit)
+    : 0;
   return result;
 }
 
@@ -173,8 +176,18 @@ function aggregatePrelistMetrics(items) {
         agg.delta[pctKey] = null;
       }
     });
+
+    let baseTotalSemuaSub = 0;
+    items.forEach(it => {
+      const baseRow = prelistBaselineByCode.get(it.kode);
+      if (baseRow) {
+        baseTotalSemuaSub += baseRow.totalSemuaSubmit || 0;
+      }
+    });
+    agg.delta.totalSemuaSubmit = agg.totalSemuaSubmit - baseTotalSemuaSub;
   } else {
     prelistPctKeys.forEach(k => { agg.delta[k] = null; });
+    agg.delta.totalSemuaSubmit = 0;
   }
 
   return agg;
@@ -670,7 +683,8 @@ async function exportPrelistExcel() {
       'Assignment Baru Usaha Total', 'Assignment Baru Usaha Submit', 'Assignment Baru Usaha %',
       'Assignment Baru Non BKU Total', 'Assignment Baru Non BKU Submit', 'Assignment Baru Non BKU %',
       'Total Assignment Baru Total', 'Total Assignment Baru Submit', 'Total Assignment Baru %',
-      'Total Keseluruhan Beban', 'Total Keseluruhan Submit', 'Total Keseluruhan %'
+      'Total Keseluruhan Beban', 'Total Keseluruhan Submit', 'Total Keseluruhan %',
+      'Delta Harian Total Keseluruhan (Jml)', 'Delta Harian Total Keseluruhan (%)'
     ];
 
     const filterKab = selectedKabPrelist || document.getElementById('filter-kab-prelist')?.value || '';
@@ -703,6 +717,13 @@ async function exportPrelistExcel() {
       const sub2 = kode.length >= 2 ? ` [${kode.slice(-2)}]` : '';
       const namaSls = `${sub.namaSls || 'Sub SLS'}${sub2}`;
 
+      const deltaJml = (sub.delta && sub.delta.totalSemuaSubmit !== undefined && sub.delta.totalSemuaSubmit !== null)
+        ? sub.delta.totalSemuaSubmit
+        : 0;
+      const deltaPct = (sub.delta && sub.delta.totalSemuaPct !== undefined && sub.delta.totalSemuaPct !== null)
+        ? sub.delta.totalSemuaPct / 100
+        : 0;
+
       const row = [
         kodeKab, namaKab,
         kodeKec, namaKec,
@@ -718,7 +739,8 @@ async function exportPrelistExcel() {
         sub.usahaBaruJml || 0, sub.usahaBaruSubmit || 0, sub.usahaBaruPct !== null ? sub.usahaBaruPct / 100 : 0,
         sub.lainnyaBaruJml || 0, sub.lainnyaBaruSubmit || 0, sub.lainnyaBaruPct !== null ? sub.lainnyaBaruPct / 100 : 0,
         sub.assignJml || 0, sub.assignSubmit || 0, sub.assignPct !== null ? sub.assignPct / 100 : 0,
-        sub.totalSemuaJml || 0, sub.totalSemuaSubmit || 0, sub.totalSemuaPct !== null ? sub.totalSemuaPct / 100 : 0
+        sub.totalSemuaJml || 0, sub.totalSemuaSubmit || 0, sub.totalSemuaPct !== null ? sub.totalSemuaPct / 100 : 0,
+        deltaJml, deltaPct
       ];
       excelRows.push(row);
       processed++;
@@ -762,11 +784,13 @@ async function exportPrelistExcel() {
       else if (C === 5) colWidths.push({ wch: 25 }); // Nama Desa
       else if (C === 6) colWidths.push({ wch: 18 }); // Kode Sub SLS
       else if (C === 7) colWidths.push({ wch: 30 }); // Nama SLS
-      else if (C >= 38) colWidths.push({ wch: 22 }); // Total Keseluruhan
+      else if (C >= 38) colWidths.push({ wch: 24 }); // Total Keseluruhan & Delta
       else colWidths.push({ wch: 18 });
     }
     ws['!cols'] = colWidths;
     ws['!rows'] = [{ hpt: 30 }];
+    ws['!autofilter'] = { ref: ws['!ref'] };
+    ws['!views'] = [{ state: 'frozen', xSplit: 2, ySplit: 1, topLeftCell: 'C2', activePane: 'bottomRight' }];
 
     updateExportProgress(75, 'Menerapkan format angka, warna & batas sel...', 'Memformat cell...');
     await new Promise(r => setTimeout(r, 60));
@@ -781,7 +805,10 @@ async function exportPrelistExcel() {
         if (R === 0) {
           cell.s = headerStyle;
         } else {
-          const isPctCol = (C >= 8) && ((C - 8) % 3 === 2);
+          const isStandardPctCol = (C >= 8 && C <= 40) && ((C - 8) % 3 === 2);
+          const isDeltaPctCol = (C === 42);
+          const isPctCol = isStandardPctCol || isDeltaPctCol;
+          const isDeltaNumCol = (C === 41);
           const isNumCol = (C >= 8) && !isPctCol;
           const isHighlightCol = (C >= 38);
 
@@ -800,7 +827,11 @@ async function exportPrelistExcel() {
             cellStyle.fill = { fgColor: { rgb: "F8FAFC" } };
           }
 
-          if (isPctCol) {
+          if (isDeltaPctCol) {
+            cell.z = "+0.00%;-0.00%;0.00%";
+          } else if (isDeltaNumCol) {
+            cell.z = "+#,##0;-#,##0;0";
+          } else if (isPctCol) {
             cell.z = "0.00%";
           } else if (isNumCol) {
             cell.z = "#,##0";
