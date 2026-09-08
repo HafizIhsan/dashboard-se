@@ -62,7 +62,13 @@ const prelistNumber = (value) => {
 
 const prelistPercent = (submitted, total) => {
   const denominator = prelistNumber(total);
-  return denominator > 0 ? (prelistNumber(submitted) / denominator) * 100 : null;
+  const sub = prelistNumber(submitted);
+  if (denominator <= 0) return null;
+  const pct = (sub / denominator) * 100;
+  if (sub < denominator && pct >= 99.99) {
+    return 99.99;
+  }
+  return pct;
 };
 
 // ====== STRATEGI 3: LocalStorage Caching di Browser ======

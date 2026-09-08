@@ -15,7 +15,7 @@ window.updateProgressCard = function () {
     denominator = sumData.targetUmkm + sumData.targetUb + sumData.targetKeluarga;
   }
 
-  const progressValue = denominator > 0 ? (totalSubmit / denominator) * 100 : 0;
+  const progressValue = calcProgressPct(totalSubmit, denominator);
   const dailyProgressPct = denominator > 0 ? (totalHarian / denominator) * 100 : 0;
 
   const mainProgColorVar = getProgressColor(progressValue);
@@ -60,19 +60,19 @@ window.updateTableData = function () {
   dashboardData.forEach(w => {
     let totalSubmit = w.umkmSubmit + w.ubSubmit;
     let den = mode === 'fasih' ? w.umkmTotal + w.ubTotal : (w.targetUmkm + w.targetUb + w.targetKeluarga);
-    w.progress = den > 0 ? (totalSubmit / den) * 100 : 0;
+    w.progress = calcProgressPct(totalSubmit, den);
 
     w.kecamatans.forEach(k => {
       let kTotalSubmit = k.umkmSubmit + k.ubSubmit;
       let kDen = mode === 'fasih' ? k.umkmTotal + k.ubTotal : (k.targetUmkm + k.targetUb + k.targetKeluarga);
-      k.progress = kDen > 0 ? (kTotalSubmit / kDen) * 100 : 0;
+      k.progress = calcProgressPct(kTotalSubmit, kDen);
     });
   });
 
   // Update sumData progress globally for table province row
   let sumTotalSubmit = sumData.umkmSubmit + sumData.ubSubmit;
   let sumDen = mode === 'fasih' ? sumData.umkmTotal + sumData.ubTotal : (sumData.targetUmkm + sumData.targetUb + sumData.targetKeluarga);
-  sumData.progress = sumDen > 0 ? (sumTotalSubmit / sumDen) * 100 : 0;
+  sumData.progress = calcProgressPct(sumTotalSubmit, sumDen);
 
   if (currentSortColumn !== null) {
     dashboardData.sort((a, b) => {
@@ -568,7 +568,7 @@ function processAndRenderData(data) {
 
         // Progres Kecamatan
         const totalTarget = kData.umkmTotal + kData.ubTotal;
-        kData.progress = totalTarget > 0 ? ((kData.umkmSubmit + kData.ubSubmit) / totalTarget) * 100 : 0;
+        kData.progress = calcProgressPct(kData.umkmSubmit + kData.ubSubmit, totalTarget);
 
         // AGREGASI KE KABUPATEN INDUK
         parentKab.targetUmkm += kData.targetUmkm;
@@ -600,7 +600,7 @@ function processAndRenderData(data) {
 
       // Re-calculate Progress untuk tiap Kabupaten setelah diagregasi dari Kecamatan
       const totalAll = w.umkmTotal + w.ubTotal;
-      w.progress = totalAll > 0 ? ((w.umkmSubmit + w.ubSubmit) / totalAll) * 100 : 0;
+      w.progress = calcProgressPct(w.umkmSubmit + w.ubSubmit, totalAll);
     });
   }
 
@@ -625,7 +625,7 @@ function processAndRenderData(data) {
   sumData.harianUb = dashboardData.reduce((s, x) => s + (x.harianUb || 0), 0);
 
   const globalTotalAssignment = sumData.umkmTotal + sumData.ubTotal;
-  sumData.progress = globalTotalAssignment > 0 ? ((sumData.umkmSubmit + sumData.ubSubmit) / globalTotalAssignment) * 100 : 0;
+  sumData.progress = calcProgressPct(sumData.umkmSubmit + sumData.ubSubmit, globalTotalAssignment);
 
   // Update values in HTML cards
   if (document.getElementById('stat-target')) {

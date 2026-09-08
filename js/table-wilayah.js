@@ -50,16 +50,18 @@ function renderTable(data) {
     else thUbTotal.classList.add('border-r-2', 'border-category-divider');
   }
 
+  const provTotalSubmit = sumData.umkmSubmit + sumData.ubSubmit;
   const provTotalHarian = (sumData.harianUmkm || 0) + (sumData.harianUb || 0);
   const provTotalTarget = mode === 'fasih' ? (sumData.umkmTotal + sumData.ubTotal) : (sumData.targetUmkm + sumData.targetUb + sumData.targetKeluarga);
   const provDailyPct = provTotalTarget > 0 ? (provTotalHarian / provTotalTarget * 100) : 0;
+  sumData.progress = calcProgressPct(provTotalSubmit, provTotalTarget);
 
   const provUmkmTarget = mode === 'fasih' ? sumData.umkmTotal : (sumData.targetUmkm + sumData.targetKeluarga);
-  const provUmkmProgress = provUmkmTarget > 0 ? (sumData.umkmSubmit / provUmkmTarget * 100) : 0;
+  const provUmkmProgress = calcProgressPct(sumData.umkmSubmit, provUmkmTarget);
   const provUmkmDailyPct = provUmkmTarget > 0 ? ((sumData.harianUmkm || 0) / provUmkmTarget * 100) : 0;
 
   const provUbTarget = mode === 'fasih' ? sumData.ubTotal : sumData.targetUb;
-  const provUbProgress = provUbTarget > 0 ? (sumData.ubSubmit / provUbTarget * 100) : 0;
+  const provUbProgress = calcProgressPct(sumData.ubSubmit, provUbTarget);
   const provUbDailyPct = provUbTarget > 0 ? ((sumData.harianUb || 0) / provUbTarget * 100) : 0;
 
   const provRow = document.createElement('tr');
@@ -91,16 +93,18 @@ function renderTable(data) {
 
   // Wilayah Rows
   data.forEach((w, index) => {
+    const totalSubmit = w.umkmSubmit + w.ubSubmit;
     const totalHarian = (w.harianUmkm || 0) + (w.harianUb || 0);
     const totalTarget = mode === 'fasih' ? (w.umkmTotal + w.ubTotal) : (w.targetUmkm + w.targetUb + w.targetKeluarga);
     const dailyPct = totalTarget > 0 ? (totalHarian / totalTarget * 100) : 0;
+    w.progress = calcProgressPct(totalSubmit, totalTarget);
 
     const wUmkmTarget = mode === 'fasih' ? w.umkmTotal : (w.targetUmkm + w.targetKeluarga);
-    const wUmkmProgress = wUmkmTarget > 0 ? (w.umkmSubmit / wUmkmTarget * 100) : 0;
+    const wUmkmProgress = calcProgressPct(w.umkmSubmit, wUmkmTarget);
     const wUmkmDailyPct = wUmkmTarget > 0 ? ((w.harianUmkm || 0) / wUmkmTarget * 100) : 0;
 
     const wUbTarget = mode === 'fasih' ? w.ubTotal : w.targetUb;
-    const wUbProgress = wUbTarget > 0 ? (w.ubSubmit / wUbTarget * 100) : 0;
+    const wUbProgress = calcProgressPct(w.ubSubmit, wUbTarget);
     const wUbDailyPct = wUbTarget > 0 ? ((w.harianUb || 0) / wUbTarget * 100) : 0;
 
     const hasKec = w.kecamatans && w.kecamatans.length > 0;
@@ -139,11 +143,15 @@ function renderTable(data) {
 
     if (hasKec) {
       w.kecamatans.forEach((kec, kIndex) => {
+        const kTotalSubmit = kec.umkmSubmit + kec.ubSubmit;
+        const kTotalTarget = mode === 'fasih' ? (kec.umkmTotal + kec.ubTotal) : (kec.targetUmkm + kec.targetUb + kec.targetKeluarga);
+        kec.progress = calcProgressPct(kTotalSubmit, kTotalTarget);
+
         const kUmkmTarget = mode === 'fasih' ? kec.umkmTotal : (kec.targetUmkm + kec.targetKeluarga);
-        const kUmkmProgress = kUmkmTarget > 0 ? (kec.umkmSubmit / kUmkmTarget * 100) : 0;
+        const kUmkmProgress = calcProgressPct(kec.umkmSubmit, kUmkmTarget);
 
         const kUbTarget = mode === 'fasih' ? kec.ubTotal : kec.targetUb;
-        const kUbProgress = kUbTarget > 0 ? (kec.ubSubmit / kUbTarget * 100) : 0;
+        const kUbProgress = calcProgressPct(kec.ubSubmit, kUbTarget);
 
         const bgClass = kIndex % 2 !== 0 ? 'bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.02)]' : 'bg-[rgba(0,0,0,0.015)] dark:bg-[rgba(255,255,255,0.01)]';
         const kecRow = document.createElement('tr');
@@ -378,11 +386,19 @@ async function exportExcel() {
 
     const addRow = (kode, nama, d, isProv = false, isKec = false) => {
       const totalTarget = mode === 'fasih' ? (d.umkmTotal + d.ubTotal) : (d.targetUmkm + d.targetUb + d.targetKeluarga);
+      const totalSubmit = (d.umkmSubmit || 0) + (d.ubSubmit || 0);
+      let overallProgress = totalTarget > 0 ? (totalSubmit / totalTarget) : 0;
+      if (totalSubmit < totalTarget && overallProgress >= 0.9999) overallProgress = 0.9999;
+
       const umkmTarget = mode === 'fasih' ? d.umkmTotal : (d.targetUmkm + d.targetKeluarga);
-      const umkmProgress = umkmTarget > 0 ? (d.umkmSubmit / umkmTarget) : 0;
+      const uSubmit = d.umkmSubmit || 0;
+      let umkmProgress = umkmTarget > 0 ? (uSubmit / umkmTarget) : 0;
+      if (uSubmit < umkmTarget && umkmProgress >= 0.9999) umkmProgress = 0.9999;
+
       const ubTarget = mode === 'fasih' ? d.ubTotal : d.targetUb;
-      const ubProgress = ubTarget > 0 ? (d.ubSubmit / ubTarget) : 0;
-      const overallProgress = totalTarget > 0 ? ((d.umkmSubmit + d.ubSubmit) / totalTarget) : 0;
+      const bSubmit = d.ubSubmit || 0;
+      let ubProgress = ubTarget > 0 ? (bSubmit / ubTarget) : 0;
+      if (bSubmit < ubTarget && ubProgress >= 0.9999) ubProgress = 0.9999;
 
       const tUmkm = d.targetUmkm || 0;
       const tUb = d.targetUb || 0;

@@ -877,10 +877,10 @@ function updatePrelistSummaryCard() {
   const subUsahaPrelist = prelistSubSlsData.reduce((s, r) => s + r.usahaPrelistSubmit, 0);
   const subLainnyaPrelist = prelistSubSlsData.reduce((s, r) => s + r.lainnyaSubmit, 0);
 
-  const pctPrelist = totalPrelist > 0 ? (subPrelist / totalPrelist) * 100 : 0;
-  const pctKlgPrelist = totalKlgPrelist > 0 ? (subKlgPrelist / totalKlgPrelist) * 100 : 0;
-  const pctUsahaPrelist = totalUsahaPrelist > 0 ? (subUsahaPrelist / totalUsahaPrelist) * 100 : 0;
-  const pctLainnyaPrelist = totalLainnyaPrelist > 0 ? (subLainnyaPrelist / totalLainnyaPrelist) * 100 : 0;
+  const pctPrelist = prelistPercent(subPrelist, totalPrelist) ?? 0;
+  const pctKlgPrelist = prelistPercent(subKlgPrelist, totalKlgPrelist) ?? 0;
+  const pctUsahaPrelist = prelistPercent(subUsahaPrelist, totalUsahaPrelist) ?? 0;
+  const pctLainnyaPrelist = prelistPercent(subLainnyaPrelist, totalLainnyaPrelist) ?? 0;
 
   let deltaPrelistSum = null;
   if (prelistBaselineByCode && prelistBaselineByCode.size > 0) {

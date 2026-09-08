@@ -4,6 +4,18 @@
 function fmtNum(n) { return Number(n).toLocaleString('id-ID'); }
 function fmtPct(n) { return Number(n).toFixed(2).replace('.', ','); }
 
+// Hitung persentase progres: jika submit belum keseluruhan (misal draft/open masih ada), jangan sampai 100%, batasi maksimal 99.99%
+function calcProgressPct(submitted, total) {
+  const sub = Number(submitted) || 0;
+  const tot = Number(total) || 0;
+  if (tot <= 0) return 0;
+  const pct = (sub / tot) * 100;
+  if (sub < tot && pct >= 99.99) {
+    return 99.99;
+  }
+  return pct;
+}
+
 // Hitung persentase target progress berdasarkan hari berjalan (15 Juni 2026 - 31 Agustus 2026)
 function getTargetProgress() {
   const totalDays = 78;
