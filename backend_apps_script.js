@@ -405,13 +405,27 @@ function doGet() {
         if (name === "target-wilayah") {
           mappedRow["Wilayah"] =
             getValCI(row, "Wilayah") || getValCI(row, "kode");
-          mappedRow["Target UMKM"] =
-            getValCI(row, "Target UMKM") || getValCI(row, "TARGET UMKM");
+          var tUmk = getValCI(row, "Target UMK") || getValCI(row, "TARGET UMK") || getValCI(row, "UMK");
+          var tUm = getValCI(row, "Target UM") || getValCI(row, "TARGET UM") || getValCI(row, "UM");
+          var tUmkm = getValCI(row, "Target UMKM") || getValCI(row, "TARGET UMKM");
+
+          mappedRow["Target UMK"] = tUmk !== undefined && tUmk !== "" ? tUmk : "";
+          mappedRow["Target UM"] = tUm !== undefined && tUm !== "" ? tUm : "";
           mappedRow["Target UB"] =
-            getValCI(row, "Target UB") || getValCI(row, "TARGET UB");
+            getValCI(row, "Target UB") || getValCI(row, "TARGET UB") || getValCI(row, "UB");
           mappedRow["Target Keluarga"] =
             getValCI(row, "Target Keluarga") ||
-            getValCI(row, "TARGET KELUARGA");
+            getValCI(row, "TARGET KELUARGA") ||
+            getValCI(row, "Keluarga");
+
+          if (tUmkm !== undefined && tUmkm !== "") {
+            mappedRow["Target UMKM"] = tUmkm;
+          } else if (tUmk !== undefined || tUm !== undefined) {
+            mappedRow["Target UMKM"] = Number(tUmk || 0) + Number(tUm || 0);
+          } else {
+            mappedRow["Target UMKM"] = 0;
+          }
+
           mappedRow["Nama Wilayah"] =
             getValCI(row, "Nama Wilayah") || getValCI(row, "nama");
         } else if (

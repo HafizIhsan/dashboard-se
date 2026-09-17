@@ -68,10 +68,11 @@ function renderTable(data) {
   provRow.className = 'bg-[rgba(212,178,122,0.06)] font-bold';
   provRow.innerHTML = `
     <td class="pl-6 border-r-2 border-category-divider">Sumatera Barat</td>
-    <td class="text-right text-[var(--text-secondary)]">${fmtNum(sumData.targetUmkm)}</td>
+    <td class="text-right text-[var(--text-secondary)]">${fmtNum(sumData.targetUmk)}</td>
+    <td class="text-right text-[var(--text-secondary)]">${fmtNum(sumData.targetUm)}</td>
     <td class="text-right text-[var(--text-secondary)]">${fmtNum(sumData.targetUb)}</td>
     <td class="text-right text-[var(--text-secondary)]">${fmtNum(sumData.targetKeluarga)}</td>
-    <td class="text-right border-r-2 border-category-divider text-[var(--text-secondary)] font-bold">${fmtNum(sumData.targetUmkm + sumData.targetUb + sumData.targetKeluarga)}</td>
+    <td class="text-right border-r-2 border-category-divider text-[var(--text-secondary)] font-bold">${fmtNum(sumData.targetUmk + sumData.targetUm + sumData.targetUb + sumData.targetKeluarga)}</td>
     
     <td class="text-right text-neutral-400">${fmtNum(sumData.umkmOpen)}</td>
     <td class="text-right text-[var(--warning-color)]">${fmtNum(sumData.umkmDraft)}</td>
@@ -118,10 +119,11 @@ function renderTable(data) {
       <td class="font-medium pl-6 align-middle min-w-[140px] max-w-[200px] border-r-2 border-category-divider">
         <div class="flex items-center">${toggleIcon}<span class="line-clamp-2" title="[${w.kode}] ${w.nama}">[${w.kode}] ${w.nama}</span></div>
       </td>
-      <td class="text-right text-[var(--text-muted)] align-middle">${fmtNum(w.targetUmkm)}</td>
+      <td class="text-right text-[var(--text-muted)] align-middle">${fmtNum(w.targetUmk)}</td>
+      <td class="text-right text-[var(--text-muted)] align-middle">${fmtNum(w.targetUm)}</td>
       <td class="text-right text-[var(--text-muted)]">${fmtNum(w.targetUb)}</td>
       <td class="text-right text-[var(--text-muted)]">${fmtNum(w.targetKeluarga)}</td>
-      <td class="text-right border-r-2 border-category-divider text-[var(--text-muted)] font-bold">${fmtNum(w.targetUmkm + w.targetUb + w.targetKeluarga)}</td>
+      <td class="text-right border-r-2 border-category-divider text-[var(--text-muted)] font-bold">${fmtNum(w.targetUmk + w.targetUm + w.targetUb + w.targetKeluarga)}</td>
       
       <td class="text-right text-[var(--text-muted)]">${fmtNum(w.umkmOpen)}</td>
       <td class="text-right text-[var(--warning-color)]">${fmtNum(w.umkmDraft)}</td>
@@ -161,10 +163,11 @@ function renderTable(data) {
           <td class="py-2 pl-12 text-[var(--text-primary)] font-medium text-[13px] opacity-80 min-w-[140px] max-w-[200px] border-r-2 border-category-divider">
             <div class="line-clamp-2" title="└ [${kec.kode}] ${kec.nama}">└ [${kec.kode}] ${kec.nama}</div>
           </td>
-          <td class="text-right py-2 px-2 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.targetUmkm)}</td>
+          <td class="text-right py-2 px-2 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.targetUmk)}</td>
+          <td class="text-right py-2 px-2 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.targetUm)}</td>
           <td class="text-right py-2 px-2 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.targetUb)}</td>
           <td class="text-right py-2 px-2 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.targetKeluarga)}</td>
-          <td class="text-right py-2 px-2 border-r-2 border-category-divider text-[var(--text-muted)] text-[13px] font-bold">${fmtNum(kec.targetUmkm + kec.targetUb + kec.targetKeluarga)}</td>
+          <td class="text-right py-2 px-2 border-r-2 border-category-divider text-[var(--text-muted)] text-[13px] font-bold">${fmtNum(kec.targetUmk + kec.targetUm + kec.targetUb + kec.targetKeluarga)}</td>
           
           <td class="text-right py-2 pr-2 pl-4 text-[var(--text-muted)] text-[13px]">${fmtNum(kec.umkmOpen)}</td>
           <td class="text-right py-2 px-2 text-[var(--warning-color)] text-[13px]">${fmtNum(kec.umkmDraft)}</td>
@@ -249,7 +252,7 @@ function sortTable(key) {
 
   // Reset indicators
   const allSortKeys = [
-    'wilayah', 'targetUmkm', 'targetUb', 'targetKeluarga', 'targetTotal',
+    'wilayah', 'targetUmk', 'targetUm', 'targetUmkm', 'targetUb', 'targetKeluarga', 'targetTotal',
     'umkmOpen', 'umkmDraft', 'umkmApproved', 'umkmSubmit', 'umkmTotal', 'umkmPct',
     'ubOpen', 'ubDraft', 'ubApproved', 'ubSubmit', 'ubTotal', 'ubPct', 'progress'
   ];
@@ -272,6 +275,14 @@ function sortTable(key) {
       case 1:
         valA = a.kode;
         valB = b.kode;
+        break;
+      case 'targetUmk':
+        valA = a.targetUmk || 0;
+        valB = b.targetUmk || 0;
+        break;
+      case 'targetUm':
+        valA = a.targetUm || 0;
+        valB = b.targetUm || 0;
         break;
       case 'targetUmkm':
         valA = a.targetUmkm;
@@ -376,7 +387,7 @@ async function exportExcel() {
 
     const headers = [
       'Kode Wilayah', 'Nama Wilayah',
-      'Target Prelist UMKM', 'Target Prelist UB', 'Target Prelist Keluarga', 'Total Target Prelist',
+      'Target Prelist UMK', 'Target Prelist UM', 'Target Prelist UB', 'Target Prelist Keluarga', 'Total Target Prelist',
       '[SE2026 UMKM] Open', '[SE2026 UMKM] Draft', '[SE2026 UMKM] Submit', '[SE2026 UMKM] Approved', '[SE2026 UMKM] Total', '[SE2026 UMKM] %',
       '[SE2026 UB] Open', '[SE2026 UB] Draft', '[SE2026 UB] Submit', '[SE2026 UB] Approved', '[SE2026 UB] Total', '[SE2026 UB] %',
       '% Progres Akumulatif'
@@ -400,14 +411,15 @@ async function exportExcel() {
       let ubProgress = ubTarget > 0 ? (bSubmit / ubTarget) : 0;
       if (bSubmit < ubTarget && ubProgress >= 0.9999) ubProgress = 0.9999;
 
-      const tUmkm = d.targetUmkm || 0;
+      const tUmk = d.targetUmk || 0;
+      const tUm = d.targetUm || 0;
       const tUb = d.targetUb || 0;
       const tKel = d.targetKeluarga || 0;
-      const tTot = tUmkm + tUb + tKel;
+      const tTot = tUmk + tUm + tUb + tKel;
 
       excelRows.push([
         kode, nama,
-        tUmkm, tUb, tKel, tTot,
+        tUmk, tUm, tUb, tKel, tTot,
         d.umkmOpen || 0, d.umkmDraft || 0, d.umkmSubmit || 0, d.umkmApproved || 0, d.umkmTotal || 0, umkmProgress,
         d.ubOpen || 0, d.ubDraft || 0, d.ubSubmit || 0, d.ubApproved || 0, d.ubTotal || 0, ubProgress,
         overallProgress
@@ -453,7 +465,7 @@ async function exportExcel() {
 
     ws['!cols'] = [
       { wch: 14 }, { wch: 32 },
-      { wch: 18 }, { wch: 18 }, { wch: 18 }, { wch: 20 },
+      { wch: 18 }, { wch: 18 }, { wch: 18 }, { wch: 18 }, { wch: 20 },
       { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 },
       { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 },
       { wch: 22 }
@@ -474,12 +486,12 @@ async function exportExcel() {
         if (R === 0) {
           cell.s = headerStyle;
         } else {
-          const isPctCol = (C === 11 || C === 17 || C === 18);
+          const isPctCol = (C === 12 || C === 18 || C === 19);
           const isNumCol = (C >= 2 && !isPctCol);
           const isProvRow = (R === 1);
 
           const cellStyle = {
-            font: { name: "Calibri", sz: 10, bold: isProvRow || C === 18 },
+            font: { name: "Calibri", sz: 10, bold: isProvRow || C === 19 },
             border: borderStyle,
             alignment: {
               horizontal: isNumCol || isPctCol ? "right" : "left",

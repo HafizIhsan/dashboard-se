@@ -154,18 +154,23 @@
             </svg>
           </div>
         </div>
-        <div class="grid grid-cols-3 gap-2 mt-4 border-t border-[var(--border-color)] pt-3 text-xs w-full">
+        <div class="grid grid-cols-4 gap-1.5 mt-4 border-t border-[var(--border-color)] pt-3 text-xs w-full">
           <div>
-            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">UMKM</span>
-            <span id="stat-target-umkm"
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">UMK</span>
+            <span id="stat-target-umk"
               class="font-bold text-[var(--text-secondary)] text-sm mt-0.5 block leading-tight">0</span>
           </div>
-          <div class="border-l border-[var(--border-color)] pl-3">
+          <div class="border-l border-[var(--border-color)] pl-1.5 sm:pl-2">
+            <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">UM</span>
+            <span id="stat-target-um"
+              class="font-bold text-[var(--text-secondary)] text-sm mt-0.5 block leading-tight">0</span>
+          </div>
+          <div class="border-l border-[var(--border-color)] pl-1.5 sm:pl-2">
             <span class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">UB</span>
             <span id="stat-target-ub"
               class="font-bold text-[var(--text-secondary)] text-sm mt-0.5 block leading-tight">0</span>
           </div>
-          <div class="border-l border-[var(--border-color)] pl-3">
+          <div class="border-l border-[var(--border-color)] pl-1.5 sm:pl-2">
             <span
               class="text-[9px] text-[var(--text-muted)] uppercase tracking-wider block font-semibold">KELUARGA</span>
             <span id="stat-target-keluarga"
@@ -446,7 +451,7 @@
               <th rowspan="2" class="cursor-pointer pl-6 select-none whitespace-nowrap border-r-2 border-category-divider" onclick="sortTable('wilayah')">
                 Wilayah <span id="sort-indicator-wilayah">↕</span>
               </th>
-              <th colspan="4" class="text-center th-target-group border-r-2 border-category-divider">Target Prelist Awal</th>
+              <th colspan="5" class="text-center th-target-group border-r-2 border-category-divider">Target Prelist Awal</th>
               <th id="th-umkm-group" colspan="6" class="text-center th-umkm-group border-r-2 border-category-divider">[Sensus Ekonomi 2026
                 (UMKM)]</th>
               <th id="th-ub-group" colspan="6" class="text-center th-ub-group border-r-2 border-category-divider">[Sensus Ekonomi 2026
@@ -458,7 +463,9 @@
             </tr>
             <tr class="text-[8px] md:text-[9px] whitespace-nowrap">
               <th class="text-right th-target-group text-[var(--text-secondary)] cursor-pointer select-none"
-                onclick="sortTable('targetUmkm')">UMKM <span id="sort-indicator-targetUmkm">↕</span></th>
+                onclick="sortTable('targetUmk')">UMK <span id="sort-indicator-targetUmk">↕</span></th>
+              <th class="text-right th-target-group text-[var(--text-secondary)] cursor-pointer select-none"
+                onclick="sortTable('targetUm')">UM <span id="sort-indicator-targetUm">↕</span></th>
               <th class="text-right th-target-group text-[var(--text-secondary)] cursor-pointer select-none"
                 onclick="sortTable('targetUb')">UB <span id="sort-indicator-targetUb">↕</span></th>
               <th class="text-right th-target-group text-[var(--text-secondary)] cursor-pointer select-none"

@@ -84,6 +84,14 @@ window.updateTableData = function () {
           valA = a.kode;
           valB = b.kode;
           break;
+        case 'targetUmk':
+          valA = a.targetUmk || 0;
+          valB = b.targetUmk || 0;
+          break;
+        case 'targetUm':
+          valA = a.targetUm || 0;
+          valB = b.targetUm || 0;
+          break;
         case 'targetUmkm':
           valA = a.targetUmkm;
           valB = b.targetUmkm;
@@ -418,6 +426,8 @@ function processAndRenderData(data) {
 
   // Initialize dashboardData (Kabupaten) to 0, data will be aggregated from Kecamatan
   dashboardData.forEach(w => {
+    w.targetUmk = 0;
+    w.targetUm = 0;
     w.targetUmkm = 0;
     w.targetUb = 0;
     w.targetKeluarga = 0;
@@ -489,7 +499,7 @@ function processAndRenderData(data) {
         let kData = {
           kode: idKec,
           nama: nmKec,
-          targetUmkm: 0, targetUb: 0, targetKeluarga: 0,
+          targetUmk: 0, targetUm: 0, targetUmkm: 0, targetUb: 0, targetKeluarga: 0,
           umkmOpen: 0, umkmDraft: 0, umkmApproved: 0, umkmSubmit: 0, umkmTotal: 0,
           ubOpen: 0, ubDraft: 0, ubApproved: 0, ubSubmit: 0, ubTotal: 0,
           progress: 0
@@ -503,9 +513,24 @@ function processAndRenderData(data) {
             if (typeof val === 'number') return val;
             return Number(String(val).replace(/,/g, '').replace(/\./g, '')) || 0;
           };
-          kData.targetUmkm = parseTarget(targetRow["Target UMKM"] || targetRow["TARGET UMKM"]);
-          kData.targetUb = parseTarget(targetRow["Target UB"] || targetRow["TARGET UB"]);
-          kData.targetKeluarga = parseTarget(targetRow["Target Keluarga"] || targetRow["TARGET KELUARGA"]);
+          const rawUmk = targetRow["Target UMK"] ?? targetRow["TARGET UMK"] ?? targetRow["UMK"];
+          const rawUm = targetRow["Target UM"] ?? targetRow["TARGET UM"] ?? targetRow["UM"];
+          const rawUmkm = targetRow["Target UMKM"] ?? targetRow["TARGET UMKM"];
+
+          kData.targetUmk = parseTarget(rawUmk);
+          kData.targetUm = parseTarget(rawUm);
+
+          if (rawUmkm !== undefined && rawUmkm !== null && rawUmkm !== "") {
+            kData.targetUmkm = parseTarget(rawUmkm);
+            if (!rawUmk && !rawUm && kData.targetUmkm > 0) {
+              kData.targetUmk = kData.targetUmkm;
+            }
+          } else {
+            kData.targetUmkm = kData.targetUmk + kData.targetUm;
+          }
+
+          kData.targetUb = parseTarget(targetRow["Target UB"] || targetRow["TARGET UB"] || targetRow["UB"]);
+          kData.targetKeluarga = parseTarget(targetRow["Target Keluarga"] || targetRow["TARGET KELUARGA"] || targetRow["Keluarga"]);
         }
 
         // UMKM Kecamatan
@@ -571,6 +596,8 @@ function processAndRenderData(data) {
         kData.progress = calcProgressPct(kData.umkmSubmit + kData.ubSubmit, totalTarget);
 
         // AGREGASI KE KABUPATEN INDUK
+        parentKab.targetUmk += kData.targetUmk;
+        parentKab.targetUm += kData.targetUm;
         parentKab.targetUmkm += kData.targetUmkm;
         parentKab.targetUb += kData.targetUb;
         parentKab.targetKeluarga += kData.targetKeluarga;
@@ -605,7 +632,9 @@ function processAndRenderData(data) {
   }
 
   // Recalculate global sumData
-  sumData.targetUmkm = dashboardData.reduce((s, x) => s + x.targetUmkm, 0);
+  sumData.targetUmk = dashboardData.reduce((s, x) => s + (x.targetUmk || 0), 0);
+  sumData.targetUm = dashboardData.reduce((s, x) => s + (x.targetUm || 0), 0);
+  sumData.targetUmkm = dashboardData.reduce((s, x) => s + (x.targetUmkm || 0), 0);
   sumData.targetUb = dashboardData.reduce((s, x) => s + x.targetUb, 0);
   sumData.targetKeluarga = dashboardData.reduce((s, x) => s + (x.targetKeluarga || 0), 0);
 
@@ -629,7 +658,13 @@ function processAndRenderData(data) {
 
   // Update values in HTML cards
   if (document.getElementById('stat-target')) {
-    document.getElementById('stat-target').innerText = fmtNum(sumData.targetUmkm + sumData.targetUb + sumData.targetKeluarga);
+    document.getElementById('stat-target').innerText = fmtNum(sumData.targetUmk + sumData.targetUm + sumData.targetUb + sumData.targetKeluarga);
+  }
+  if (document.getElementById('stat-target-umk')) {
+    document.getElementById('stat-target-umk').innerText = fmtNum(sumData.targetUmk);
+  }
+  if (document.getElementById('stat-target-um')) {
+    document.getElementById('stat-target-um').innerText = fmtNum(sumData.targetUm);
   }
   if (document.getElementById('stat-target-umkm')) {
     document.getElementById('stat-target-umkm').innerText = fmtNum(sumData.targetUmkm);

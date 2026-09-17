@@ -56,7 +56,7 @@ Google Spreadsheet database harus memiliki tab-tab dengan nama dan kolom berikut
 
 ### 1. `target-wilayah`
 Menyimpan target riil sensus untuk masing-masing kabupaten.
-*   **Kolom Wajib**: `Wilayah` (Kode Kab), `Target UMKM`, `Target UB`, `Target Keluarga`, `Nama Wilayah`
+*   **Kolom Wajib**: `Wilayah` (Kode Kab/Kec), `Target UMK`, `Target UM`, `Target UB`, `Target Keluarga`, `Nama Wilayah` *(Catatan: `Target UMKM` tetap didukung sebagai fallback otomatis jika UM dan UMK belum dipisah)*.
 
 ### 2. `master-kec` & `master-subsls`
 Data master wilayah untuk pemetaan nama kecamatan dan sub-SLS.
